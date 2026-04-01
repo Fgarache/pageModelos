@@ -1,228 +1,153 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { API_FIREBASE } from '../data';
+import { API_FIREBASE } from '../data'; // Verifica que esta ruta sea correcta
 import DetailSkeletonLoader from '../components/DetailSkeletonLoader';
-import TourCard from '../components/TourCard';
-import RifaCard from '../components/RifaCard';
+import InformacionPerfil from '../components/InformacionPerfil';
+import ToursDisponibles from '../components/ToursDisponibles';
+import RifasDisponibles from '../components/RifasDisponibles';
 import '../styles/ModeloDetail.css';
 
-interface User {
-  id: string;
-  user_alias: string;
-  nombre: string;
-  numero?: number;
-  disponibleLugar?: string;
-  info?: string;
-  metodosPago?: string;
-  lugarTours?: string;
-}
-
-interface Tour {
-  id: string;
-  lugar: string;
-  titulo: string;
-  deposito: number;
-  fecha: string;
-  estado: boolean;
-  lugarAtencion: string;
-  detalles: string;
-}
-
-interface Rifa {
-  idRifa: string;
-  titulo: string;
-  premio: string;
-  precio: number;
-  numerosTotales: number;
-  estado: boolean;
-  fechaSorteo: string;
-  numerosDisponibles: number[];
-  cantidadLibre: number;
+interface UserData {
+  user: any | null;
+  tours: any[];
+  rifas: any[];
 }
 
 export default function ModeloDetail() {
   const { user: userParam } = useParams();
-  const [user, setUser] = useState<User | null>(null);
-  const [tours, setTours] = useState<Tour[]>([]);
-  const [rifas, setRifas] = useState<Rifa[]>([]);
+  const [data, setData] = useState<UserData>({ user: null, tours: [], rifas: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchData();
+    const fetchAllData = async () => {
+      try {
+        setLoading(true);
+        if (!userParam) return;
+
+        // 1. Obtener todos para filtrar por alias
+        const allUsers = await API_FIREBASE.getAllUsers();
+        const foundUser = allUsers.find((u: any) => u.user_alias === userParam);
+
+        if (!foundUser) {
+          setError('Perfil no encontrado');
+          return;
+        }
+
+        const userId = foundUser.id;
+
+        // 2. CORRECCIÓN: Usar API_FIREBASE uniformemente
+        const [userData, toursData, rifasData] = await Promise.all([
+          API_FIREBASE.getUserInfo(userId),
+          API_FIREBASE.getTours(userId),
+          API_FIREBASE.getRifas(userId),
+        ]);
+
+        setData({
+          user: { ...foundUser, ...userData },
+          tours: Array.isArray(toursData) ? toursData : [],
+          rifas: Array.isArray(rifasData) ? rifasData : []
+        });
+
+        setError(null);
+      } catch (err) {
+        console.error("Error en fetchData:", err);
+        setError('Error al conectar con el servidor');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+    window.scrollTo(0, 0);
   }, [userParam]);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      if (!userParam) {
-        setError('Usuario no válido');
-        return;
-      }
+  if (loading) return <DetailSkeletonLoader />;
 
-      // Obtener todos los usuarios para encontrar por user_alias
-      const allUsers = await API_FIREBASE.getAllUsers();
-      const foundUser = allUsers.find((u: User) => u.user_alias === userParam);
-
-      if (!foundUser) {
-        setError('Usuario no encontrado');
-        return;
-      }
-
-      const userId = foundUser.id;
-      setUser(foundUser);
-
-      // Hacer todos los fetches en paralelo después de encontrar el usuario
-      const [userData, toursData, rifasData] = await Promise.all([
-        API_FIREBASE.getUserInfo(userId),
-        API_FIREBASE.getTours(userId),
-        API_FIREBASE.getRifas(userId),
-      ]);
-
-      setUser(userData);
-      setTours(Array.isArray(toursData) ? toursData : []);
-      setRifas(Array.isArray(rifasData) ? rifasData : []);
-    } catch (err) {
-      setError('Error al cargar los detalles del modelo');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (error || !data.user) {
     return (
-      <div className="modelo-detail">
-        <div className="detail-container">
-          <Link to="/modelos" className="back-link">
-            ← Volver a Modelos
-          </Link>
-          <DetailSkeletonLoader />
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !user) {
-    return (
-      <div className="modelo-detail">
-        <div className="detail-container">
-          <div className="error-state">
-            <p className="error-text">{error || 'Modelo no encontrado'}</p>
-            <Link to="/modelos" className="back-button">
-              ← Volver a Modelos
-            </Link>
-          </div>
+      <div className="error-screen">
+        <div className="liquid-glass error-card">
+          <p>{error || 'Modelo no encontrado'}</p>
+          <button onClick={() => window.history.back()} className="back-link-glass" style={{marginTop: '20px', cursor: 'pointer'}}>
+            ← VOLVER ATRÁS
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="modelo-detail">
+    <div className="modelo-detail-page">
+      {/* Ambiente Liquid Glass */}
+      <div style={styles.blob1}></div>
+      <div style={styles.blob2}></div>
+
       <div className="detail-container">
-        {/* Header con botón de volver */}
-        <Link to="/modelos" className="back-link">
-          ← Volver a Modelos
-        </Link>
-
-        {/* Sección principal */}
-        <div className="detail-main">
-          <div className="detail-avatar-section">
-            <div className="detail-avatar-container">
-              <div className="detail-avatar">
-                {user.nombre?.charAt(0).toUpperCase() ||
-                  user.user_alias?.charAt(0).toUpperCase() ||
-                  'U'}
-              </div>
-            </div>
+        
+        {/* Perfil con botones de Tours, Rifas y WhatsApp integrados */}
+        <InformacionPerfil 
+          user={data.user} 
+          hasTours={data.tours.length > 0} 
+          hasRifas={data.rifas.length > 0} 
+        />
+        
+        {/* Sección de Tours con ancla para el botón */}
+        {data.tours.length > 0 && (
+          <div id="seccion-tours" style={{ scrollMarginTop: '100px' }}>
+            <ToursDisponibles tours={data.tours} user={data.user} />
           </div>
-
-          <div className="detail-info-section">
-            <h1 className="detail-title">{user.nombre || user.user_alias}</h1>
-            <p className="detail-username">@{user.user_alias}</p>
-
-            {user.disponibleLugar && (
-              <p className="detail-location">📍 {user.disponibleLugar}</p>
-            )}
-
-            {user.numero && (
-              <p className="detail-phone">📞 {user.numero}</p>
-            )}
-
-            {user.info && (
-              <div className="detail-bio">
-                <h3>Acerca de</h3>
-                <p>{user.info}</p>
-              </div>
-            )}
-
-            {user.metodosPago && (
-              <div className="detail-payment">
-                <h3>Métodos de Pago</h3>
-                <p>💳 {user.metodosPago}</p>
-              </div>
-            )}
-
-            {user.lugarTours && (
-              <div className="detail-lugares">
-                <h3>Lugares de Tours</h3>
-                <p>🌍 {user.lugarTours}</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tours Section */}
-        {tours.length > 0 && (
-          <div className="detail-section">
-            <h2>🎫 Tours Disponibles</h2>
-            <div className="tours-grid">
-              {tours.map((tour) => (
-                <TourCard
-                  key={tour.id}
-                  tour={tour}
-                  nombreModelo={user.nombre}
-                  userAlias={user.user_alias}
-                />
-              ))}
-            </div>
+        )}
+        
+        {/* Sección de Rifas con ancla para el botón */}
+        {data.rifas.length > 0 && (
+          <div id="seccion-rifas" style={{ scrollMarginTop: '100px' }}>
+            <RifasDisponibles rifas={data.rifas} user={data.user} />
           </div>
         )}
 
-        {/* Rifas Section */}
-        {rifas.length > 0 && (
-          <div className="detail-section">
-            <h2>🎰 Rifas y Sorteos</h2>
-            <div className="rifas-section">
-              {rifas.map((rifa) => (
-                <RifaCard
-                  key={rifa.idRifa}
-                  rifa={{
-                    idRifa: rifa.idRifa,
-                    titulo: rifa.titulo,
-                    premio: rifa.premio,
-                    precio: rifa.precio,
-                    numerosTotales: rifa.numerosTotales,
-                    estado: rifa.estado,
-                    fechaSorteo: rifa.fechaSorteo,
-                    numerosDisponibles: rifa.numerosDisponibles,
-                  }}
-                  nombreModelo={user.nombre}
-                  userAlias={user.user_alias}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty states */}
-        {tours.length === 0 && rifas.length === 0 && (
-          <div className="empty-sections">
-            <p>No hay tours o rifas disponibles en este momento</p>
+        {/* Estado vacío sutil */}
+        {data.tours.length === 0 && data.rifas.length === 0 && (
+          <div className="empty-profile-notice liquid-glass" style={styles.emptyNotice}>
+            <p>Próximamente más eventos disponibles.</p>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+const styles: { [key: string]: React.CSSProperties } = {
+  blob1: {
+    position: 'absolute',
+    top: '-5%',
+    left: '-10%',
+    width: '70vw',
+    height: '70vw',
+    background: 'radial-gradient(circle, rgba(212, 175, 55, 0.07) 0%, transparent 70%)',
+    borderRadius: '50%',
+    filter: 'blur(120px)',
+    zIndex: 0,
+    pointerEvents: 'none',
+  },
+  blob2: {
+    position: 'absolute',
+    bottom: '10%',
+    right: '-5%',
+    width: '50vw',
+    height: '50vw',
+    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%)',
+    borderRadius: '50%',
+    filter: 'blur(100px)',
+    zIndex: 0,
+    pointerEvents: 'none',
+  },
+  emptyNotice: {
+    padding: '30px',
+    textAlign: 'center',
+    marginTop: '40px',
+    borderRadius: '25px',
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: '0.9rem'
+  }
+};

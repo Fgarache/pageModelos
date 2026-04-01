@@ -3,11 +3,11 @@ import { API_FIREBASE } from '../data';
 import '../styles/TinderCards.css';
 
 export default function TinderCards() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedUsers, setLikedUsers] = useState([]);
+  const [likedUsers, setLikedUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -20,161 +20,78 @@ export default function TinderCards() {
       setUsers(data);
     } catch (err) {
       setError('Error al cargar los usuarios');
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLike = () => {
+  const handleAction = (type: 'like' | 'dislike') => {
     if (currentIndex < users.length) {
-      setLikedUsers([...likedUsers, users[currentIndex]]);
-    }
-    handleNext();
-  };
-
-  const handleDislike = () => {
-    handleNext();
-  };
-
-  const handleNext = () => {
-    if (currentIndex < users.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      if (type === 'like') setLikedUsers([...likedUsers, users[currentIndex]]);
+      if (currentIndex < users.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        setCurrentIndex(users.length); // Finalizado
+      }
     }
   };
 
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+  if (loading) return <div className="tinder-loading liquid-glass">Sincronizando perfiles...</div>;
 
-  const handleReset = () => {
-    setCurrentIndex(0);
-    setLikedUsers([]);
-  };
-
-  if (loading) {
-    return <div className="tinder-container loading">Cargando usuarios...</div>;
-  }
-
-  if (error) {
-    return <div className="tinder-container error">{error}</div>;
-  }
-
-  if (users.length === 0) {
-    return <div className="tinder-container empty">No hay usuarios disponibles</div>;
-  }
-
-  const currentUser = users[currentIndex];
-  const isLastCard = currentIndex === users.length - 1;
+  const isFinished = currentIndex >= users.length;
 
   return (
-    <div className="tinder-container">
-      {/* Vista Móvil */}
-      <div className="tinder-mobile">
-        <div className="mobile-header">
-          <h2>Descubre</h2>
-          <span className="card-counter">
-            {currentIndex + 1} / {users.length}
-          </span>
-        </div>
+    <div className="tinder-page">
+      <div className="tinder-bg-glow"></div>
+      
+      <div className="tinder-container">
+        {!isFinished ? (
+          <>
+            <div className="tinder-header">
+              <span className="tinder-badge">DESCUBRE TALENTO</span>
+              <h2 className="tinder-counter">{currentIndex + 1} <span>/ {users.length}</span></h2>
+            </div>
 
-        <div className="tinder-stack">
-          {users.slice(currentIndex, currentIndex + 2).map((user, idx) => (
-            <div
-              key={user.id}
-              className={`tinder-card ${idx === 0 ? 'active' : 'next'}`}
-            >
-              <div className="card-content">
-                <div className="card-image-placeholder">
-                  <div className="user-avatar">
-                    {user.nombre?.charAt(0).toUpperCase() || 'U'}
+            <div className="tinder-stack">
+              {users.slice(currentIndex, currentIndex + 1).map((user) => (
+                <div key={user.id} className="tinder-card liquid-glass animate-in">
+                  <div className="card-image-section">
+                    {user.profile_pic ? (
+                      <img src={user.profile_pic} alt={user.nombre} />
+                    ) : (
+                      <div className="avatar-placeholder">{user.nombre?.charAt(0)}</div>
+                    )}
+                    <div className="card-overlay-gradient"></div>
+                  </div>
+                  
+                  <div className="card-info-section">
+                    <h3 className="card-name">{user.nombre || user.user} <span className="age">24</span></h3>
+                    <p className="card-alias">@{user.user_alias || user.user}</p>
+                    <div className="card-meta">
+                      <span>📍 {user.disponibleLugar || 'Cerca de ti'}</span>
+                    </div>
+                    <p className="card-bio">{user.info?.substring(0, 120) || "Sin descripción disponible."}</p>
                   </div>
                 </div>
-                <div className="card-info">
-                  <h3 className="card-name">{user.nombre || user.user}</h3>
-                  <p className="card-username">@{user.user}</p>
-                  {user.disponibleLugar && (
-                    <p className="card-location">📍 {user.disponibleLugar}</p>
-                  )}
-                  {user.info && <p className="card-bio">{user.info}</p>}
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        <div className="tinder-buttons">
-          <button
-            className="btn btn-dislike"
-            onClick={handleDislike}
-            aria-label="No me gusta"
-          >
-            ✕
-          </button>
-          <button
-            className="btn btn-reset"
-            onClick={handleReset}
-            title="Reiniciar"
-            aria-label="Reiniciar"
-          >
-            ↺
-          </button>
-          <button
-            className="btn btn-like"
-            onClick={handleLike}
-            aria-label="Me gusta"
-          >
-            ♥
-          </button>
-        </div>
-
-        {isLastCard && likedUsers.length > 0 && (
-          <div className="completion-message">
-            ¡Hiciste {likedUsers.length} match{likedUsers.length > 1 ? 'es' : ''}!
+            <div className="tinder-controls">
+              <button className="ctrl-btn btn-dislike" onClick={() => handleAction('dislike')}>✕</button>
+              <button className="ctrl-btn btn-reset" onClick={() => setCurrentIndex(0)}>↺</button>
+              <button className="ctrl-btn btn-like" onClick={() => handleAction('like')}>♥</button>
+            </div>
+          </>
+        ) : (
+          <div className="tinder-finished liquid-glass">
+            <div className="icon">✨</div>
+            <h2>¡Exploración terminada!</h2>
+            <p>Has encontrado {likedUsers.length} perfiles interesantes.</p>
+            <button className="btn-restart" onClick={() => {setCurrentIndex(0); setLikedUsers([]);}}>
+              Volver a empezar
+            </button>
           </div>
         )}
-      </div>
-
-      {/* Vista Web */}
-      <div className="tinder-web">
-        <div className="web-header">
-          <h2>Todos los modelos disponibles</h2>
-          <p className="total-count">Total: {users.length} usuarios</p>
-        </div>
-
-        <div className="users-grid">
-          {users.map((user) => (
-            <div key={user.id} className="user-card">
-              <div className="user-card-image">
-                <div className="user-avatar-large">
-                  {user.nombre?.charAt(0).toUpperCase() ||
-                    user.user?.charAt(0).toUpperCase() ||
-                    'U'}
-                </div>
-              </div>
-              <div className="user-card-body">
-                <h3 className="user-card-name">{user.nombre || user.user}</h3>
-                <p className="user-card-username">@{user.user}</p>
-                {user.disponibleLugar && (
-                  <p className="user-card-location">📍 {user.disponibleLugar}</p>
-                )}
-                {user.info && <p className="user-card-bio">{user.info}</p>}
-                {user.metodosPago && (
-                  <p className="user-card-payment">💳 {user.metodosPago}</p>
-                )}
-              </div>
-              <div className="user-card-footer">
-                <button className="btn-sm btn-like-sm">Me gusta</button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="web-footer">
-          <p>{likedUsers.length > 0 ? `${likedUsers.length} Me gusta` : ''}</p>
-        </div>
       </div>
     </div>
   );

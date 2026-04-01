@@ -28,27 +28,19 @@ export default function ToursPage() {
   const fetchTours = async () => {
     try {
       setLoading(true);
-      
-      // Obtener todos los usuarios
       const allUsers = await API_FIREBASE.getAllUsers();
-      
-      // Para cada usuario, obtener sus tours
       let todosLosTours: Tour[] = [];
       
       for (const user of allUsers) {
         const toursDelUsuario = await API_FIREBASE.getTours(user.id);
-        
-        // Agregar información del usuario a cada tour
         const toursConDatos = toursDelUsuario.map((tour: any) => ({
           ...tour,
           nombreModelo: user.nombre,
           userAlias: user.user_alias,
           idUser: user.id,
         }));
-        
         todosLosTours = [...todosLosTours, ...toursConDatos];
       }
-      
       setTours(todosLosTours);
     } catch (error) {
       console.error('Error cargando tours:', error);
@@ -59,26 +51,31 @@ export default function ToursPage() {
 
   return (
     <div className="tours-page">
+      {/* Elementos decorativos de fondo */}
+      <div className="tours-bg-blob"></div>
+
       <div className="tours-page-container">
-        <div className="tours-page-header">
-          <h1>✈️ Tours y Experiencias</h1>
+        <header className="tours-page-header">
+          <span className="tours-badge">DESTINOS EXCLUSIVOS</span>
+          <h1 className="tours-title">TOURS & <span className="gold-text">EXPERIENCIAS</span></h1>
           <p className="tours-subtitle">
-            Todos los tours disponibles con nuestras modelos
+            Acompaña a nuestras modelos en sus próximas paradas internacionales.
           </p>
-        </div>
+        </header>
 
         {loading ? (
-          <div className="tours-loading">
-            <p>Cargando tours...</p>
+          <div className="tours-loading-container">
+            <div className="glass-loader"></div>
+            <p>Sincronizando agendas...</p>
           </div>
         ) : tours.length === 0 ? (
-          <div className="tours-empty">
-            <p>No hay tours disponibles en este momento</p>
+          <div className="tours-empty liquid-glass">
+            <p>No hay tours programados en este momento. Vuelve pronto.</p>
           </div>
         ) : (
           <div className="tours-list">
             {tours.map((tour) => (
-              <div key={tour.id} className="tour-item-wrapper">
+              <div key={tour.id} className="tour-item-wrapper animate-card">
                 <TourCard 
                   tour={tour} 
                   nombreModelo={tour.nombreModelo}

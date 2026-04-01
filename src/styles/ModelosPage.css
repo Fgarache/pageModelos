@@ -1,192 +1,177 @@
-/* Modelos Page Styles */
 .modelos-page {
-  min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 3rem 1rem;
+  background-color: #050505;
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  position: relative;
+  overflow: hidden;
 }
 
-.modelos-page.error-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.error-message {
-  color: white;
-  font-size: 1.1rem;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 2rem;
-  border-radius: 15px;
-  max-width: 400px;
-}
-
-.retry-button {
-  background: white;
-  color: #667eea;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: all 0.2s ease;
-}
-
-.retry-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.bg-glow {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: 0;
 }
 
 .modelos-container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .modelos-header {
   text-align: center;
+  margin-bottom: 60px;
+}
+
+.title-glow {
+  font-size: 3rem;
+  font-weight: 900;
   color: white;
-  margin-bottom: 3rem;
+  letter-spacing: -1px;
 }
 
-.modelos-header h1 {
-  margin: 0 0 0.5rem;
-  font-size: 2.5rem;
+.title-glow .gold {
+  color: #d4af37;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
-.modelos-header p {
-  margin: 0;
-  font-size: 1.1rem;
-  opacity: 0.9;
+.subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2px;
+  font-weight: 300;
+  margin-top: 10px;
 }
 
+/* GRID */
 .modelos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  gap: 30px;
 }
 
-.modelo-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
+/* CARD LIQUID GLASS */
 .modelo-card {
-  background: white;
-  border-radius: 15px;
+  height: 450px;
+  border-radius: 30px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  cursor: pointer;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .modelo-card:hover {
   transform: translateY(-15px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-.modelo-avatar-container {
-  position: relative;
+.modelo-image-wrapper {
+  height: 100%;
   width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+}
+
+.modelo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.modelo-card:hover .modelo-img {
+  transform: scale(1.1);
+}
+
+.modelo-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #1a1a1a, #333);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 5rem;
+  color: #d4af37;
 }
 
-.modelo-avatar {
-  width: 140px;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
-  font-weight: bold;
-  color: white;
-}
-
-.online-badge {
+/* INFO OVERLAY */
+.modelo-info-glass {
   position: absolute;
-  bottom: 15px;
-  right: 15px;
-  font-size: 1.5rem;
-  color: #4ade80;
-  filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
-}
-
-.modelo-card-content {
-  padding: 1.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  bottom: 0;
+  width: 100%;
+  padding: 25px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.95));
+  backdrop-filter: blur(5px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modelo-name {
-  margin: 0 0 0.3rem;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #333;
+  color: white;
+  margin-bottom: 5px;
 }
 
-.modelo-username {
-  margin: 0 0 0.8rem;
-  color: #888;
-  font-size: 0.9rem;
-}
-
-.modelo-location {
-  margin: 0 0 0.8rem;
-  color: #666;
-  font-size: 0.9rem;
-}
-
-.modelo-bio {
-  margin: 0 0 auto;
-  color: #999;
+.modelo-meta {
   font-size: 0.85rem;
-  line-height: 1.4;
-}
-
-.modelo-card-footer {
-  padding-top: 1rem;
-  border-top: 1px solid #f0f0f0;
-  color: #667eea;
+  color: #d4af37;
   font-weight: 600;
-  transition: color 0.3s ease;
+  margin-bottom: 12px;
 }
 
-.view-details {
+.modelo-bio-short {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.status-badge {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 200, 0, 0.6);
+  backdrop-filter: blur(5px);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.btn-details {
   display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.3s;
 }
 
-.modelo-card:hover .view-details {
-  color: #764ba2;
+.modelo-card:hover .btn-details {
+  background: #d4af37;
+  color: black;
 }
 
+/* EMPTY STATE */
 .empty-state {
   text-align: center;
-  color: white;
-  padding: 3rem;
-  font-size: 1.2rem;
+  padding: 50px;
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 768px) {
-  .modelos-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .modelos-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .modelo-card-content {
-    padding: 1rem;
-  }
+  .title-glow { font-size: 2rem; }
+  .modelos-grid { grid-template-columns: 1fr; }
 }

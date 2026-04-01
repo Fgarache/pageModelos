@@ -1,75 +1,147 @@
-/* Tours Page */
+/* --- TOURS PAGE BASE --- */
 .tours-page {
-  min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  padding: 3rem 1rem;
+  background-color: #050505;
+  min-height: 100vh;
+  padding: 120px 20px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blob de fondo líquido */
+.tours-bg-blob {
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(112, 0, 255, 0.05) 0%, transparent 70%);
+  filter: blur(100px);
+  z-index: 0;
 }
 
 .tours-page-container {
-  max-width: 1400px;
+  max-width: 1100px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
+/* --- HEADER --- */
 .tours-page-header {
   text-align: center;
-  color: white;
-  margin-bottom: 3rem;
+  margin-bottom: 80px;
 }
 
-.tours-page-header h1 {
-  font-size: 3.5rem;
-  margin: 0 0 1rem;
+.tours-badge {
+  color: #d4af37;
+  font-size: 0.8rem;
+  letter-spacing: 5px;
   font-weight: 800;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, #d4af37 0%, #ffed4e 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 6px 15px;
+  border-radius: 50px;
+  display: inline-block;
+  margin-bottom: 20px;
+  background: rgba(212, 175, 55, 0.05);
+}
+
+.tours-title {
+  font-size: clamp(2.5rem, 7vw, 4rem);
+  font-weight: 900;
+  color: white;
+  margin: 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.gold-text {
+  color: #d4af37;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .tours-subtitle {
-  font-size: 1.3rem;
-  margin: 0;
-  opacity: 0.9;
-  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1.1rem;
+  margin-top: 15px;
+  font-weight: 300;
 }
 
+/* --- LISTADO Y CARDS --- */
 .tours-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
 }
 
+/* Estilo para que la TourCard se vea Liquid Glass */
 .tour-item-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  padding: 10px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.tours-loading,
-.tours-empty {
-  background: rgba(255, 255, 255, 0.97);
-  border-radius: 25px;
-  padding: 4rem;
+.tour-item-wrapper:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: rgba(212, 175, 55, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* --- LOADING & EMPTY --- */
+.tours-loading-container {
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  color: #666;
-  font-size: 1.2rem;
-  grid-column: 1 / -1;
+  padding: 100px 0;
+  color: #d4af37;
 }
 
+.glass-loader {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(212, 175, 55, 0.1);
+  border-top: 3px solid #d4af37;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.tours-empty {
+  padding: 60px;
+  text-align: center;
+  border-radius: 30px;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* --- ANIMACIÓN ENTRADA --- */
+.animate-card {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .tours-page-header h1 {
-    font-size: 2.2rem;
-  }
-
-  .tours-subtitle {
-    font-size: 1.1rem;
-  }
-
-  .tours-list {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
+  .tours-page { padding-top: 100px; }
+  .tours-title { font-size: 2.2rem; }
+  .tours-list { grid-template-columns: 1fr; }
 }

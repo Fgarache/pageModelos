@@ -10,6 +10,7 @@ interface User {
   nombre: string;
   disponibleLugar?: string;
   info?: string;
+  profile_pic?: string; // Añadimos campo para foto
 }
 
 export default function ModelosPage() {
@@ -18,8 +19,6 @@ export default function ModelosPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const abortController = new AbortController();
-
     const fetchUsers = async () => {
       try {
         setLoading(true);
@@ -27,86 +26,51 @@ export default function ModelosPage() {
         setUsers(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
-        if (err instanceof Error && err.name !== 'AbortError') {
-          setError('Error al cargar los modelos. Intenta de nuevo.');
-          console.error(err);
-        }
+        setError('Error al cargar los modelos. Intenta de nuevo.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchUsers();
-
-    return () => abortController.abort();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="modelos-page">
-        <div className="modelos-container">
-          <div className="modelos-header">
-            <h1>Nuestros Modelos Disponibles</h1>
-            <p>Selecciona un modelo para ver más detalles</p>
-          </div>
-          <LoadingSkeleton />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="modelos-page error-page">
-        <div className="error-message">
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()} className="retry-button">
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="modelos-page"><LoadingSkeleton /></div>;
 
   return (
     <div className="modelos-page">
+      <div className="bg-glow"></div>
+      
       <div className="modelos-container">
-        <div className="modelos-header">
-          <h1>Nuestros Modelos Disponibles</h1>
-          <p>Selecciona un modelo para ver más detalles</p>
-        </div>
+        <header className="modelos-header">
+          <h1 className="title-glow">CATÁLOGO <span className="gold">EXCLUSIVO</span></h1>
+          <p className="subtitle">Descubre el talento verificado de PageModelos</p>
+        </header>
 
         <div className="modelos-grid">
           {users.map((user) => (
-            <Link
-              key={user.id}
-              to={`/${user.user_alias}`}
-              className="modelo-card-link"
-            >
-              <div className="modelo-card">
-                <div className="modelo-avatar-container">
-                  <div className="modelo-avatar">
-                    {user.nombre?.charAt(0).toUpperCase() ||
-                      user.user_alias?.charAt(0).toUpperCase() ||
-                      'U'}
-                  </div>
-                  <span className="online-badge">●</span>
+            <Link key={user.id} to={`/${user.user_alias}`} className="modelo-card-link">
+              <div className="modelo-card liquid-glass">
+                <div className="modelo-image-wrapper">
+                  {user.profile_pic ? (
+                    <img src={user.profile_pic} alt={user.nombre} className="modelo-img" />
+                  ) : (
+                    <div className="modelo-avatar-placeholder">
+                      {user.nombre?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="status-badge">DISPONIBLE</div>
                 </div>
 
-                <div className="modelo-card-content">
+                <div className="modelo-info-glass">
                   <h3 className="modelo-name">{user.nombre || user.user_alias}</h3>
-                  <p className="modelo-username">@{user.user_alias}</p>
-
-                  {user.disponibleLugar && (
-                    <p className="modelo-location">📍 {user.disponibleLugar}</p>
-                  )}
-
-                  {user.info && (
-                    <p className="modelo-bio">{user.info.substring(0, 80)}...</p>
-                  )}
-
+                  <div className="modelo-meta">
+                    <span className="location">📍 {user.disponibleLugar || 'Consultar'}</span>
+                  </div>
+                  <p className="modelo-bio-short">
+                    {user.info ? `${user.info.substring(0, 60)}...` : 'Sin descripción disponible.'}
+                  </p>
                   <div className="modelo-card-footer">
-                    <span className="view-details">Ver detalles →</span>
+                    <span className="btn-details">VER PERFIL</span>
                   </div>
                 </div>
               </div>
@@ -115,8 +79,8 @@ export default function ModelosPage() {
         </div>
 
         {users.length === 0 && (
-          <div className="empty-state">
-            <p>No hay modelos disponibles en este momento</p>
+          <div className="empty-state liquid-glass">
+            <p>No hay modelos disponibles en este momento.</p>
           </div>
         )}
       </div>

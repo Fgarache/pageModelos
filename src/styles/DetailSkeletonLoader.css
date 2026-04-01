@@ -1,89 +1,97 @@
-/* Detail Skeleton Loader Styles */
-.detail-skeleton {
-  background: white;
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.detail-skeleton-main {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 3rem;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.skeleton-avatar-detail {
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
-  border-radius: 20px;
-}
-
-.skeleton-info {
+.detail-skeleton-page {
+  background-color: #050505;
+  min-height: 100vh;
+  padding: 120px 20px;
   display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+  justify-content: center;
 }
 
-.skeleton-title-detail {
-  width: 60%;
-  height: 1.5rem;
-}
-
-.skeleton-text-detail {
+.detail-skeleton-container {
   width: 100%;
-  height: 0.8rem;
+  max-width: 1000px;
 }
 
-.skeleton-text-detail.short {
-  width: 40%;
+/* Base del efecto Shimmer (Brillo) */
+.liquid-glass-skeleton {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
 }
 
+.liquid-glass-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* Elementos de Texto */
 .skeleton-line {
-  background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-bottom: 15px;
+  position: relative;
 }
 
-.skeleton-divider {
-  height: 1px;
-  background: #f0f0f0;
-  margin: 0.8rem 0;
+.skeleton-line.title { height: 40px; width: 60%; }
+.skeleton-line.subtitle { height: 20px; width: 40%; }
+.skeleton-line.heading { height: 25px; width: 30%; margin-bottom: 30px; border-left: 3px solid #d4af37; }
+.skeleton-line.body-text { height: 15px; width: 100%; }
+.skeleton-line.short { width: 70%; }
+
+/* Estructura Hero */
+.skeleton-hero {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 40px;
+  margin-bottom: 50px;
 }
 
-.detail-skeleton-section {
-  margin-top: 2rem;
-}
-
-.skeleton-heading {
-  width: 30%;
-  height: 1.3rem;
-  margin-bottom: 1.5rem;
-}
-
-.skeleton-card-detail {
+.skeleton-avatar-circle {
+  width: 120px;
   height: 120px;
-  background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
-  border-radius: 12px;
-  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* Grid de Cards */
+.detail-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
 }
 
+.skeleton-card-visual {
+  height: 400px; /* Misma altura que tus nuevas RifaCard/TourCard */
+}
+
+/* Adaptación Móvil */
 @media (max-width: 768px) {
-  .detail-skeleton-main {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+  .skeleton-hero {
+    flex-direction: column;
+    text-align: center;
   }
+  .skeleton-avatar-circle { width: 100px; height: 100px; }
+  .skeleton-line.title { width: 80%; margin: 0 auto 15px; }
+  .skeleton-line.subtitle { width: 50%; margin: 0 auto; }
 }
