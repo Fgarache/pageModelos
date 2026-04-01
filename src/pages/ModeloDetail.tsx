@@ -1,153 +1,117 @@
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { API_FIREBASE } from '../data'; // Verifica que esta ruta sea correcta
-import DetailSkeletonLoader from '../components/DetailSkeletonLoader';
+import { API_FIREBASE } from '../data';
 import InformacionPerfil from '../components/InformacionPerfil';
-import ToursDisponibles from '../components/ToursDisponibles';
-import RifasDisponibles from '../components/RifasDisponibles';
-import '../styles/ModeloDetail.css';
+import TourCard from '../components/TourCard';
+import RifaCard from '../components/RifaCard';
 
-interface UserData {
-  user: any | null;
-  tours: any[];
-  rifas: any[];
-}
-
-export default function ModeloDetail() {
-  const { user: userParam } = useParams();
-  const [data, setData] = useState<UserData>({ user: null, tours: [], rifas: [] });
+const ModeloDetail: React.FC = () => {
+  const { user: userAlias } = useParams();
+  const [modelo, setModelo] = useState<any>(null);
+  const [tours, setTours] = useState<any[]>([]);
+  const [rifas, setRifas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAllData = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        if (!userParam) return;
-
-        // 1. Obtener todos para filtrar por alias
-        const allUsers = await API_FIREBASE.getAllUsers();
-        const foundUser = allUsers.find((u: any) => u.user_alias === userParam);
-
-        if (!foundUser) {
-          setError('Perfil no encontrado');
+        
+        // 1. Obtener info del modelo por user_alias o googleId
+        const modelData = await API_FIREBASE.getUserInfo(userAlias || '');
+        if (!modelData) {
+          setError('Modelo no encontrado');
+          setLoading(false);
           return;
         }
-
-        const userId = foundUser.id;
-
-        // 2. CORRECCIÓN: Usar API_FIREBASE uniformemente
-        const [userData, toursData, rifasData] = await Promise.all([
-          API_FIREBASE.getUserInfo(userId),
-          API_FIREBASE.getTours(userId),
-          API_FIREBASE.getRifas(userId),
-        ]);
-
-        setData({
-          user: { ...foundUser, ...userData },
-          tours: Array.isArray(toursData) ? toursData : [],
-          rifas: Array.isArray(rifasData) ? rifasData : []
-        });
-
-        setError(null);
+        
+        setModelo(modelData);
+        
+        // 2. Obtener tours del modelo usando id (que es googleId)
+        const toursData = await API_FIREBASE.getTours(modelData.id);
+        setTours(toursData);
+        
+        // 3. Obtener rifas del modelo usando id (que es googleId)
+        const rifasData = await API_FIREBASE.getRifas(modelData.id);
+        setRifas(rifasData);
+        
+        setLoading(false);
       } catch (err) {
-        console.error("Error en fetchData:", err);
-        setError('Error al conectar con el servidor');
-      } finally {
+        console.error('Error cargando datos del modelo:', err);
+        setError('Error al cargar los datos');
         setLoading(false);
       }
     };
 
-    fetchAllData();
-    window.scrollTo(0, 0);
-  }, [userParam]);
+    loadData();
+  }, [userAlias]);
 
-  if (loading) return <DetailSkeletonLoader />;
-
-  if (error || !data.user) {
-    return (
-      <div className="error-screen">
-        <div className="liquid-glass error-card">
-          <p>{error || 'Modelo no encontrado'}</p>
-          <button onClick={() => window.history.back()} className="back-link-glass" style={{marginTop: '20px', cursor: 'pointer'}}>
-            ← VOLVER ATRÁS
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <p style={{ padding: '20px' }}>Cargando perfil...</p>;
+  if (error) return <p style={{ padding: '20px', color: '#721c24' }}>{error}</p>;
+  if (!modelo) return <p style={{ padding: '20px' }}>Modelo no encontrado</p>;
 
   return (
-    <div className="modelo-detail-page">
-      {/* Ambiente Liquid Glass */}
-      <div style={styles.blob1}></div>
-      <div style={styles.blob2}></div>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Información del Perfil */}
+      <InformacionPerfil user={modelo} />
+      
+      {/* Galería de Fotos */}
+      {modelo.fotos && Object.keys(modelo.fotos).length > 0 && (
+        <>
+          <h3 style={{ marginTop: '40px', color: '#d4af37' }}>Galería de Fotos</h3>
+          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', padding: '10px 0' }}>
+            {Object.values(modelo.fotos).map((f: any, i: number) => (
+              <img 
+                key={i} 
+                src={f.link} 
+                alt={f.titulo || 'Foto'} 
+                style={{ height: '300px', borderRadius: '8px', objectFit: 'cover' }} 
+              />
+            ))}
+          </div>
+        </>
+      )}
 
-      <div className="detail-container">
-        
-        {/* Perfil con botones de Tours, Rifas y WhatsApp integrados */}
-        <InformacionPerfil 
-          user={data.user} 
-          hasTours={data.tours.length > 0} 
-          hasRifas={data.rifas.length > 0} 
-        />
-        
-        {/* Sección de Tours con ancla para el botón */}
-        {data.tours.length > 0 && (
-          <div id="seccion-tours" style={{ scrollMarginTop: '100px' }}>
-            <ToursDisponibles tours={data.tours} user={data.user} />
+      {/* Sección de Tours */}
+      {tours.length > 0 && (
+        <>
+          <h3 style={{ marginTop: '40px', color: '#d4af37' }}>Tours Disponibles</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px', margin: '20px 0' }}>
+            {tours.map(tour => (
+              <TourCard 
+                key={tour.id} 
+                tour={tour} 
+                modelInfo={modelo}
+              />
+            ))}
           </div>
-        )}
-        
-        {/* Sección de Rifas con ancla para el botón */}
-        {data.rifas.length > 0 && (
-          <div id="seccion-rifas" style={{ scrollMarginTop: '100px' }}>
-            <RifasDisponibles rifas={data.rifas} user={data.user} />
-          </div>
-        )}
+        </>
+      )}
 
-        {/* Estado vacío sutil */}
-        {data.tours.length === 0 && data.rifas.length === 0 && (
-          <div className="empty-profile-notice liquid-glass" style={styles.emptyNotice}>
-            <p>Próximamente más eventos disponibles.</p>
+      {/* Sección de Rifas */}
+      {rifas.length > 0 && (
+        <>
+          <h3 style={{ marginTop: '40px', color: '#d4af37' }}>Rifas Disponibles</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px', margin: '20px 0' }}>
+            {rifas.map(rifa => (
+              <RifaCard 
+                key={rifa.id} 
+                rifa={rifa} 
+                modelInfo={modelo}
+              />
+            ))}
           </div>
-        )}
-      </div>
+        </>
+      )}
+
+      {tours.length === 0 && rifas.length === 0 && (
+        <p style={{ marginTop: '40px', textAlign: 'center', color: '#888' }}>
+          Este modelo no tiene tours ni rifas disponibles en este momento.
+        </p>
+      )}
     </div>
   );
-}
-
-const styles: { [key: string]: React.CSSProperties } = {
-  blob1: {
-    position: 'absolute',
-    top: '-5%',
-    left: '-10%',
-    width: '70vw',
-    height: '70vw',
-    background: 'radial-gradient(circle, rgba(212, 175, 55, 0.07) 0%, transparent 70%)',
-    borderRadius: '50%',
-    filter: 'blur(120px)',
-    zIndex: 0,
-    pointerEvents: 'none',
-  },
-  blob2: {
-    position: 'absolute',
-    bottom: '10%',
-    right: '-5%',
-    width: '50vw',
-    height: '50vw',
-    background: 'radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 70%)',
-    borderRadius: '50%',
-    filter: 'blur(100px)',
-    zIndex: 0,
-    pointerEvents: 'none',
-  },
-  emptyNotice: {
-    padding: '30px',
-    textAlign: 'center',
-    marginTop: '40px',
-    borderRadius: '25px',
-    color: 'rgba(255,255,255,0.4)',
-    fontSize: '0.9rem'
-  }
 };
+
+export default ModeloDetail;

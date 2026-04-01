@@ -1,22 +1,11 @@
 // src/components/RifaCard.tsx
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/RifaCard.css';
 
 interface RifaCardProps {
-  rifa: {
-    idRifa: string;
-    titulo: string;
-    premio: string;
-    precio: number;
-    numerosTotales: number;
-    estado: boolean;
-    fechaSorteo: string;
-    numerosDisponibles?: number[];
-    cantidadLibre?: number; // Asegúrate de que este campo venga de Firebase
-    nombreModelo?: string;
-    userAlias?: string;
-    profile_pic?: string; // IMPORTANTE: Necesitamos la foto de la modelo aquí
-  };
+  rifa: any;
+  modelInfo?: any;
   nombreModelo?: string;
   userAlias?: string;
   isCompact?: boolean;
@@ -24,15 +13,18 @@ interface RifaCardProps {
 
 export default function RifaCard({ 
   rifa, 
+  modelInfo,
   nombreModelo, 
   userAlias,
   isCompact = false
 }: RifaCardProps) {
   const navigate = useNavigate();
+  const [numerosAbiertos, setNumerosAbiertos] = useState(false);
 
-  const modeloNombre = nombreModelo || rifa.nombreModelo || 'Modelo';
-  const modeloAlias = userAlias || rifa.userAlias || '';
-  const disponiblesCount = rifa.cantidadLibre || rifa.numerosDisponibles?.length || 0;
+  const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
+  const modeloAlias = userAlias || modelInfo?.user_alias || '';
+  const profilPic = modelInfo?.fotoPerfil || rifa.profile_pic;
+  const disponiblesCount = rifa.cantidadLibre || (rifa.numerosDisponibles?.length || 0);
 
   const handleVerDetalles = () => {
     if (modeloAlias) {
@@ -43,20 +35,23 @@ export default function RifaCard({
   // --- VISTA COMPACTA (Estilo Tinder Card para RifasPage) ---
   if (isCompact) {
     return (
-      <div className="rifa-card-visual animate-in" onClick={handleVerDetalles}>
+      <div 
+        className="rifa-card-visual animate-in" 
+        onClick={handleVerDetalles}
+        style={{ cursor: 'pointer' }}
+      >
         
-        {/* IMAGEN DE FONDO (Igual que Tinder Card) */}
+        {/* IMAGEN DE FONDO */}
         <div className="card-image-background">
-          {rifa.profile_pic ? (
-            <img src={rifa.profile_pic} alt={modeloNombre} className="modelo-bg-img" />
+          {profilPic ? (
+            <img src={profilPic} alt={modeloNombre} className="modelo-bg-img" />
           ) : (
             <div className="avatar-placeholder-bg">{modeloNombre[0]}</div>
           )}
-          {/* Degradado para oscurecer el fondo y asegurar legibilidad */}
           <div className="card-overlay-gradient"></div>
         </div>
 
-        {/* INFORMACIÓN DE LA RIFA (Encima de la imagen) */}
+        {/* INFORMACIÓN DE LA RIFA */}
         <div className="rifa-card-content-overlay">
           <div className="rifa-modelo-header">
             <h4 className="modelo-name">{modeloNombre}</h4>
@@ -77,29 +72,187 @@ export default function RifaCard({
             </div>
             <div className="stat-item separator">|</div>
             <div className="stat-item">
-              <span className="label">BOLETOS LIBRES</span>
-              <span className="value">{disponiblesCount} / {rifa.numerosTotales}</span>
+              <span className="label">DISPONIBLES</span>
+              <span className="value">{disponiblesCount}/{rifa.numerosTotales}</span>
             </div>
           </div>
           
           <div className="rifa-footer-action">
-            <span className="btn-glass-action">Participar Ahora →</span>
+            <span className="btn-glass-action">Ver Detalles →</span>
           </div>
         </div>
       </div>
     );
   }
 
-  // --- VISTA DETALLADA (Perfiles - Se mantiene similar o se adapta) ---
-  // [Aquí iría tu código de vista detallada si lo usas en perfiles, 
-  // pero para RifasPage solo necesitamos la compacta arriba]
+  // --- VISTA DETALLADA (Para perfil de la modelo) ---
   const disponibles = rifa.numerosDisponibles || [];
   const todos = Array.from({ length: rifa.numerosTotales }, (_, i) => i + 1);
 
   return (
-    <div className="rifa-card-liquid detailed">
-      {/* Tu código de vista detallada existente va aquí */}
-      {/* ... */}
+    <div style={{
+      background: 'rgba(15, 52, 96, 0.4)',
+      border: '1px solid rgba(212, 175, 55, 0.2)',
+      borderRadius: '15px',
+      padding: '20px',
+      backdropFilter: 'blur(10px)',
+      transition: 'all 0.3s ease'
+    }}>
+      <div style={{ marginBottom: '15px' }}>
+        <h3 style={{ 
+          margin: '0 0 8px 0', 
+          color: '#fff',
+          fontWeight: '800',
+          fontSize: '20px',
+          textTransform: 'uppercase'
+        }}>
+          {rifa.titulo}
+        </h3>
+        <p style={{ margin: 0, color: '#d4af37', fontWeight: '600', fontSize: '14px' }}>
+          🎁 {rifa.premio}
+        </p>
+      </div>
+
+      <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <div>
+            <p style={{ margin: '0 0 5px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
+              Precio por Boleto
+            </p>
+            <p style={{ margin: 0, color: '#d4af37', fontSize: '22px', fontWeight: '800' }}>
+              Q{rifa.precio}
+            </p>
+          </div>
+          <div>
+            <p style={{ margin: '0 0 5px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
+              Fecha del Sorteo
+            </p>
+            <p style={{ margin: 0, color: '#fff', fontSize: '14px' }}>
+              {rifa.fechaSorteo}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {rifa.terminos && rifa.terminos.length > 0 && (
+        <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
+          <p style={{ margin: '0 0 10px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
+            Términos y Condiciones
+          </p>
+          <ul style={{ margin: 0, paddingLeft: '20px', color: '#ccc', fontSize: '13px' }}>
+            {rifa.terminos.map((t: string, i: number) => (
+              <li key={i} style={{ marginBottom: '5px', lineHeight: '1.4' }}>{t}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+          <p style={{ margin: 0, color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
+            Distribución de Boletos
+          </p>
+          <button 
+            onClick={() => setNumerosAbiertos(!numerosAbiertos)}
+            style={{
+              background: 'rgba(212, 175, 55, 0.2)',
+              border: '1px solid rgba(212, 175, 55, 0.4)',
+              color: '#d4af37',
+              padding: '5px 15px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              fontWeight: '600',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.3)';
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.6)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+            }}
+          >
+            {numerosAbiertos ? '▼ Cerrar' : '► Expandir'}
+          </button>
+        </div>
+
+        {numerosAbiertos && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))',
+            gap: '6px',
+            marginTop: '12px'
+          }}>
+            {todos.map((numero) => {
+              const isDisponible = disponibles.includes(numero);
+              return (
+                <div key={numero} style={{
+                  padding: '8px',
+                  textAlign: 'center',
+                  borderRadius: '6px',
+                  background: isDisponible ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
+                  border: `1px solid ${isDisponible ? 'rgba(76, 175, 80, 0.4)' : 'rgba(244, 67, 54, 0.4)'}`,
+                  color: isDisponible ? '#4caf50' : '#f44336',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (isDisponible) {
+                    e.currentTarget.style.background = 'rgba(76, 175, 80, 0.3)';
+                    e.currentTarget.style.borderColor = 'rgba(76, 175, 80, 0.6)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isDisponible ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)';
+                  e.currentTarget.style.borderColor = isDisponible ? 'rgba(76, 175, 80, 0.4)' : 'rgba(244, 67, 54, 0.4)';
+                }}>
+                  {numero}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '10px',
+        marginTop: '20px'
+      }}>
+        <div style={{
+          padding: '12px',
+          background: 'rgba(76, 175, 80, 0.1)',
+          border: '1px solid rgba(76, 175, 80, 0.2)',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '5px', textTransform: 'uppercase', fontWeight: '600' }}>
+            Disponibles
+          </div>
+          <div style={{ fontSize: '18px', color: '#4caf50', fontWeight: '800' }}>
+            {disponiblesCount}
+          </div>
+        </div>
+        <div style={{
+          padding: '12px',
+          background: 'rgba(244, 67, 54, 0.1)',
+          border: '1px solid rgba(244, 67, 54, 0.2)',
+          borderRadius: '8px',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '5px', textTransform: 'uppercase', fontWeight: '600' }}>
+            Vendidos
+          </div>
+          <div style={{ fontSize: '18px', color: '#f44336', fontWeight: '800' }}>
+            {rifa.numerosTotales - disponiblesCount}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

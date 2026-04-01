@@ -3,7 +3,7 @@ import { getDatabase, ref, get, child } from "firebase/database";
 import { firebaseConfig } from "./firebase.config";
 import { mockData } from "./mockData";
 
-// 2. Inicializar Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dbRef = ref(db);
@@ -11,42 +11,61 @@ const dbRef = ref(db);
 export const API_FIREBASE = {
 
   /**
-   * Obtiene todos los usuarios que tengan 'disponible' en true.
+   * Obtiene todos los modelos que tengan 'disponible' en true.
+   * Nueva estructura: busca en 'models' en lugar de 'users'
    */
   getAllUsers: async () => {
     try {
-      const snapshot = await get(child(dbRef, `users`));
+      const snapshot = await get(child(dbRef, `models`));
       if (snapshot.exists()) {
         const data = snapshot.val();
         // Convertimos el objeto de objetos en un array y filtramos
         return Object.keys(data)
-          .map(key => ({ id: key, ...data[key] }))
-          .filter(user => user.disponible === true);
+          .map(key => ({ id: key, googleId: key, ...data[key] }))
+          .filter(user => user.disponible === true && user.user_alias); // Solo modelos con user_alias
       }
       return [];
     } catch (error) {
       console.warn("Firebase error - usando datos de prueba:", error);
       // Fallback a mock data para desarrollo
-      return mockData.users.filter(user => user.disponible === true);
+      return mockData.models.filter(user => user.disponible === true && user.user_alias);
     }
   },
 
   /**
-   * Obtiene la información de un usuario específico por su ID.
+   * Obtiene la información de un modelo específico por su ID o user_alias.
    */
-  getUserInfo: async (userId: string) => {
+  getUserInfo: async (userIdOrAlias: string) => {
     try {
-      const snapshot = await get(child(dbRef, `users/${userId}`));
-      return snapshot.exists() ? snapshot.val() : null;
+      // Primero intentar por googleId
+      let snapshot = await get(child(dbRef, `models/${userIdOrAlias}`));
+      if (snapshot.exists()) {
+        const modelData = snapshot.val();
+        return { id: userIdOrAlias, googleId: userIdOrAlias, ...modelData };
+      }
+
+      // Si no existe, buscar por user_alias
+      snapshot = await get(child(dbRef, `models`));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        for (const [googleId, model] of Object.entries(data) as [string, any][]) {
+          if (model.user_alias === userIdOrAlias) {
+            return { id: googleId, googleId, ...model };
+          }
+        }
+      }
+      
+      return null;
     } catch (error) {
       console.warn("Firebase error - usando datos de prueba:", error);
       // Fallback a mock data
-      return mockData.users.find(u => u.id === userId) || null;
+      return mockData.models.find(u => u.googleId === userIdOrAlias || u.user_alias === userIdOrAlias) || null;
     }
   },
 
   /**
    * Obtiene los tours activos de un usuario.
+   * Nueva estructura: disponibilidad es un objeto con horarios como keys
    */
   getTours: async (userId: string) => {
     try {
@@ -66,16 +85,20 @@ export const API_FIREBASE = {
   },
 
   /**
-   * Obtiene horarios disponibles de la rama agenda_tours.
+   * Obtiene horarios disponibles para un tour.
+   * Nueva estructura: disponibilidad es un objeto {"08:00": true, "10:00": false}
    */
   getHorarios: async (tourId: string) => {
     try {
-      const snapshot = await get(child(dbRef, `agenda_tours/${tourId}`));
+      const snapshot = await get(child(dbRef, `tours/${tourId}`));
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        return Object.keys(data)
-          .map(key => ({ idHora: key, ...data[key] }))
-          .filter(h => h.estado === true);
+        const tour = snapshot.val();
+        const disponibilidad = tour.disponibilidad || {};
+        
+        // Convertir objeto de disponibilidad en array de horarios disponibles
+        return Object.entries(disponibilidad)
+          .filter(([_, isAvailable]) => isAvailable === true)
+          .map(([hora]) => ({ hora, disponible: true }));
       }
       return [];
     } catch (error) {
@@ -86,57 +109,81 @@ export const API_FIREBASE = {
 
   /**
    * Obtiene TODOS los horarios (disponibles y ocupados) para un tour específico.
+   * Nueva estructura: obtiene datos de agendas[tourId]
    */
   getAllHorariosByTour: async (tourId: string) => {
     try {
-      const snapshot = await get(child(dbRef, `agenda_tours/${tourId}`));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        return Object.keys(data)
-          .map(key => ({ idHora: key, ...data[key] }))
-          .sort((a, b) => a.hora.localeCompare(b.hora));
-      }
-      return [];
+      const [tourSnap, agendaSnap] = await Promise.all([
+        get(child(dbRef, `tours/${tourId}`)),
+        get(child(dbRef, `agendas/${tourId}`))
+      ]);
+
+      if (!tourSnap.exists()) return [];
+
+      const tour = tourSnap.val();
+      const disponibilidad = tour.disponibilidad || {};
+      const agendas = agendaSnap.exists() ? agendaSnap.val() : {};
+
+      // Crear array de horarios basado en disponibilidad del tour
+      const horarios = Object.entries(disponibilidad)
+        .map(([hora, isAvailable]) => ({
+          hora,
+          disponible: isAvailable === true,
+          reserva: agendas[hora] || null
+        }))
+        .sort((a, b) => a.hora.localeCompare(b.hora));
+
+      return horarios;
     } catch (error) {
       console.warn("Firebase error - usando datos de prueba:", error);
       // Fallback a mock data
-      const mockHorarios = Object.entries((mockData.agendaTours as any)[tourId] || {})
-        .map(([key, value]: [string, any]) => ({ idHora: key, ...value }))
+      const tourData = mockData.tours.find(t => t.id === tourId);
+      if (!tourData) return [];
+      
+      const disponibilidad = (tourData as any).disponibilidad || {};
+      const agendas = (mockData.agendas as any)[tourId] || {};
+
+      return Object.entries(disponibilidad)
+        .map(([hora, isAvailable]: [string, any]) => ({
+          hora,
+          disponible: isAvailable === true,
+          reserva: agendas[hora] || null
+        }))
         .sort((a, b) => a.hora.localeCompare(b.hora));
-      return mockHorarios;
     }
   },
 
   /**
    * Obtiene rifas y calcula dinámicamente los números disponibles.
+   * Nueva estructura: disponibilidad es un objeto {"5": false, "22": true, ...}
    */
   getRifas: async (userId: string) => {
     try {
-      const [rifasSnap, comprasSnap] = await Promise.all([
-        get(child(dbRef, `rifas`)),
-        get(child(dbRef, `compras_rifas`))
-      ]);
+      const snapshot = await get(child(dbRef, `rifas`));
 
-      if (!rifasSnap.exists()) return [];
+      if (!snapshot.exists()) return [];
 
-      const rifasData = rifasSnap.val();
-      const comprasData = comprasSnap.exists() ? comprasSnap.val() : {};
+      const rifasData = snapshot.val();
 
       return Object.keys(rifasData)
         .map(idRifa => {
           const rifa = rifasData[idRifa];
           if (rifa.idUser !== userId || rifa.estado !== true) return null;
 
-          const ocupados = comprasData[idRifa]
-            ? Object.keys(comprasData[idRifa]).map(n => parseInt(n.replace('n', '')))
-            : [];
+          const disponibilidad = rifa.disponibilidad || {};
+          
+          // Convertir objeto de disponibilidad en array de números disponibles
+          const numerosDisponibles = Object.entries(disponibilidad)
+            .filter(([_, isAvailable]) => isAvailable === true)
+            .map(([numero]) => parseInt(numero))
+            .sort((a, b) => a - b);
 
-          let disponibles = [];
-          for (let i = 1; i <= rifa.numerosTotales; i++) {
-            if (!ocupados.includes(i)) disponibles.push(i);
-          }
-
-          return { idRifa, ...rifa, numerosDisponibles: disponibles, cantidadLibre: disponibles.length };
+          return { 
+            id: idRifa, 
+            ...rifa, 
+            numerosDisponibles, 
+            cantidadLibre: numerosDisponibles.length 
+          };
         })
         .filter(r => r !== null);
     } catch (error) {
@@ -144,15 +191,18 @@ export const API_FIREBASE = {
       return mockData.rifas
         .filter(rifa => rifa.idUser === userId && rifa.estado === true)
         .map(rifa => {
-          const compras = (mockData.comprasRifas as any)[rifa.idRifa] || {};
-          const ocupados = Object.keys(compras).map(n => parseInt(n.replace('n', '')));
+          const disponibilidad = (rifa as any).disponibilidad || {};
+          
+          const numerosDisponibles = Object.entries(disponibilidad)
+            .filter(([_, isAvailable]) => isAvailable === true)
+            .map(([numero]) => parseInt(numero))
+            .sort((a, b) => a - b);
 
-          let disponibles = [];
-          for (let i = 1; i <= rifa.numerosTotales; i++) {
-            if (!ocupados.includes(i)) disponibles.push(i);
-          }
-
-          return { ...rifa, numerosDisponibles: disponibles, cantidadLibre: disponibles.length };
+          return { 
+            ...rifa, 
+            numerosDisponibles, 
+            cantidadLibre: numerosDisponibles.length 
+          };
         });
     }
   }

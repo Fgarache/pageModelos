@@ -8,13 +8,13 @@ interface Tour {
   lugar: string;
   titulo: string;
   fecha: string;
-  deposito: number;
   estado: boolean;
   detalles: string;
-  lugarAtencion: string;
+  lugarDisponible: string;
   nombreModelo?: string;
   userAlias?: string;
   idUser?: string;
+  profile_pic?: string;
 }
 
 export default function ToursPage() {
@@ -38,6 +38,7 @@ export default function ToursPage() {
           nombreModelo: user.nombre,
           userAlias: user.user_alias,
           idUser: user.id,
+          profile_pic: user.fotoPerfil
         }));
         todosLosTours = [...todosLosTours, ...toursConDatos];
       }

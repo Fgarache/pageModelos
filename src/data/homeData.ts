@@ -30,11 +30,11 @@ export const HOME_CONFIG = {
   slider: {
     speed: "50s", // Cuánto tarda en dar una vuelta completa
     images: [
-      { id: 1, url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800' },
-      { id: 2, url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800' },
-      { id: 3, url: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=800' },
-      { id: 4, url: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=800' },
-      { id: 5, url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800' },
+      { id: 1, url: 'https://images.pexels.com/photos/15321479/pexels-photo-15321479.jpeg' },
+      { id: 2, url: 'https://images.pexel.com/photos/8780222/pexels-photo-8780222.jpeg' },
+      { id: 3, url: 'https://images.pexels.com/photos/5218957/pexels-photo-5218957.jpeg' },
+      { id: 4, url: 'https://images.pexels.com/photos/15674306/pexels-photo-15674306.jpeg' },
+      { id: 5, url: 'https://images.pexels.com/photos/12357725/pexels-photo-12357725.jpeg' },
     ]
   },
 

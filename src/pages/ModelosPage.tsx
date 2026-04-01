@@ -1,89 +1,220 @@
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { API_FIREBASE } from '../data';
-import LoadingSkeleton from '../components/LoadingSkeleton';
+import { Link } from 'react-router-dom';
 import '../styles/ModelosPage.css';
 
-interface User {
-  id: string;
-  user_alias: string;
-  nombre: string;
-  disponibleLugar?: string;
-  info?: string;
-  profile_pic?: string; // Añadimos campo para foto
-}
-
-export default function ModelosPage() {
-  const [users, setUsers] = useState<User[]>([]);
+const ModelosPage: React.FC = () => {
+  const [modelos, setModelos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchModelos = async () => {
       try {
         setLoading(true);
         const data = await API_FIREBASE.getAllUsers();
-        setUsers(Array.isArray(data) ? data : []);
-        setError(null);
-      } catch (err) {
-        setError('Error al cargar los modelos. Intenta de nuevo.');
+        setModelos(data);
+      } catch (error) {
+        console.error('Error cargando modelos:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchUsers();
+
+    fetchModelos();
   }, []);
 
-  if (loading) return <div className="modelos-page"><LoadingSkeleton /></div>;
+  if (loading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)'
+      }}>
+        <div style={{ color: '#d4af37', fontSize: '18px' }}>Cargando catálogo...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="modelos-page">
-      <div className="bg-glow"></div>
-      
-      <div className="modelos-container">
-        <header className="modelos-header">
-          <h1 className="title-glow">CATÁLOGO <span className="gold">EXCLUSIVO</span></h1>
-          <p className="subtitle">Descubre el talento verificado de PageModelos</p>
+    <div className="modelos-page" style={{ minHeight: '100vh', padding: '40px 20px', background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        <header style={{ textAlign: 'center', marginBottom: '60px' }}>
+          <span style={{ color: '#d4af37', fontSize: '14px', fontWeight: '800', letterSpacing: '3px', textTransform: 'uppercase' }}>
+            CATÁLOGO EXCLUSIVO
+          </span>
+          <h1 style={{ 
+            fontSize: '48px', 
+            fontWeight: '800', 
+            color: '#fff', 
+            marginTop: '10px',
+            letterSpacing: '2px',
+            textTransform: 'uppercase'
+          }}>
+            NUESTRAS <span style={{ color: '#d4af37' }}>MODELOS</span>
+          </h1>
+          <p style={{ color: '#aaa', fontSize: '16px', marginTop: '15px', maxWidth: '800px', margin: '15px auto 0' }}>
+            Descubre a nuestras modelos y sus servicios exclusivos
+          </p>
         </header>
 
-        <div className="modelos-grid">
-          {users.map((user) => (
-            <Link key={user.id} to={`/${user.user_alias}`} className="modelo-card-link">
-              <div className="modelo-card liquid-glass">
-                <div className="modelo-image-wrapper">
-                  {user.profile_pic ? (
-                    <img src={user.profile_pic} alt={user.nombre} className="modelo-img" />
-                  ) : (
-                    <div className="modelo-avatar-placeholder">
-                      {user.nombre?.charAt(0).toUpperCase()}
+        {modelos.length === 0 ? (
+          <div style={{
+            textAlign: 'center', 
+            padding: '60px 20px',
+            color: '#aaa',
+            fontSize: '18px'
+          }}>
+            <p>No hay modelos disponibles en este momento</p>
+          </div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '30px',
+            marginBottom: '40px'
+          }}>
+            {modelos.map((modelo) => (
+              <Link 
+                to={`/${modelo.user_alias}`} 
+                key={modelo.id}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div style={{
+                  position: 'relative',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  height: '380px',
+                  cursor: 'pointer',
+                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                  border: '1px solid rgba(212, 175, 55, 0.2)',
+                  backdropFilter: 'blur(10px)',
+                  background: 'rgba(15, 52, 96, 0.3)',
+                  boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)',
+                  _hover: {
+                    transform: 'translateY(-10px)',
+                    boxShadow: '0 20px 40px rgba(212, 175, 55, 0.2)',
+                    borderColor: 'rgba(212, 175, 55, 0.5)'
+                  }
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-10px)';
+                  e.currentTarget.style.boxShadow = '0 20px 40px rgba(212, 175, 55, 0.2)';
+                  e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(212, 175, 55, 0.1)';
+                  e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                }}>
+                  {/* Imagen de fondo */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    overflow: 'hidden'
+                  }}>
+                    <img 
+                      src={modelo.fotoPerfil} 
+                      alt={modelo.nombre}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.4s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)';
+                      }}
+                    />
+                  </div>
+
+                  {/* Gradiente overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(to top, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.4), transparent)',
+                    zIndex: 2
+                  }} />
+
+                  {/* Contenido */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: '30px 20px',
+                    zIndex: 3,
+                    color: '#fff'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '8px' }}>
+                      <h3 style={{ 
+                        fontSize: '22px', 
+                        fontWeight: '800', 
+                        margin: 0,
+                        letterSpacing: '1px',
+                        textTransform: 'uppercase'
+                      }}>
+                        {modelo.nombre}
+                      </h3>
+                      {modelo.verificado && (
+                        <span style={{ fontSize: '16px' }}>✅</span>
+                      )}
                     </div>
-                  )}
-                  <div className="status-badge">DISPONIBLE</div>
-                </div>
+                    
+                    <p style={{
+                      fontSize: '13px',
+                      color: '#d4af37',
+                      fontWeight: '600',
+                      margin: '0 0 10px 0',
+                      letterSpacing: '1px',
+                      textTransform: 'uppercase'
+                    }}>
+                      @{modelo.user_alias}
+                    </p>
 
-                <div className="modelo-info-glass">
-                  <h3 className="modelo-name">{user.nombre || user.user_alias}</h3>
-                  <div className="modelo-meta">
-                    <span className="location">📍 {user.disponibleLugar || 'Consultar'}</span>
-                  </div>
-                  <p className="modelo-bio-short">
-                    {user.info ? `${user.info.substring(0, 60)}...` : 'Sin descripción disponible.'}
-                  </p>
-                  <div className="modelo-card-footer">
-                    <span className="btn-details">VER PERFIL</span>
+                    {modelo.info && (
+                      <p style={{
+                        fontSize: '13px',
+                        color: '#ccc',
+                        margin: 0,
+                        lineHeight: '1.4'
+                      }}>
+                        {modelo.info.substring(0, 60)}...
+                      </p>
+                    )}
+
+                    <div style={{
+                      marginTop: '15px',
+                      paddingTop: '15px',
+                      borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+                      fontSize: '12px',
+                      color: '#aaa',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <span>Ver Perfil Completo</span>
+                      <span style={{ color: '#d4af37', fontSize: '16px' }}>→</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {users.length === 0 && (
-          <div className="empty-state liquid-glass">
-            <p>No hay modelos disponibles en este momento.</p>
+              </Link>
+            ))}
           </div>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default ModelosPage;
