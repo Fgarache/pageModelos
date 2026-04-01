@@ -1,0 +1,155 @@
+/* Rifa Card Simple - Like Model Cards */
+.rifa-card-simple {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.320, 1);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rifa-card-simple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #d4af37 0%, #ffed4e 100%);
+}
+
+.rifa-card-simple:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 15px 50px rgba(212, 175, 55, 0.2);
+  border-color: #d4af37;
+}
+
+/* Avatar */
+.rifa-card-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4af37 0%, #ffed4e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 2rem;
+  color: #1a1a2e;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+}
+
+/* Body */
+.rifa-card-body {
+  width: 100%;
+}
+
+.rifa-card-modelo {
+  margin: 0;
+  color: #1a1a2e;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.rifa-card-alias {
+  margin: 0.3rem 0 1rem;
+  color: #d4af37;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.rifa-card-details-mini {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.rifa-card-title {
+  margin: 0 0 0.5rem;
+  color: #1a1a2e;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.rifa-card-prize {
+  margin: 0 0 0.8rem;
+  color: #d4af37;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.rifa-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.rifa-meta-item {
+  color: #666;
+  font-weight: 600;
+}
+
+/* Botón */
+.btn-ver-detalles {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #ffed4e 100%);
+  color: #1a1a2e;
+  border: 2px solid #d4af37;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+}
+
+.btn-ver-detalles:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
+}
+
+.btn-ver-detalles:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .rifa-card-simple {
+    max-width: 100%;
+    padding: 1.2rem;
+  }
+
+  .rifa-card-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.6rem;
+  }
+
+  .rifa-card-modelo {
+    font-size: 1rem;
+  }
+
+  .rifa-card-title {
+    font-size: 0.9rem;
+  }
+
+  .rifa-card-prize {
+    font-size: 0.85rem;
+  }
+}

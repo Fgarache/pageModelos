@@ -1,0 +1,192 @@
+/* Modelos Page Styles */
+.modelos-page {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 3rem 1rem;
+}
+
+.modelos-page.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  color: white;
+  font-size: 1.1rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 400px;
+}
+
+.retry-button {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modelos-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.modelos-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.modelos-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2.5rem;
+}
+
+.modelos-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.modelos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.modelo-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.modelo-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+}
+
+.modelo-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.modelo-avatar-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modelo-avatar {
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+}
+
+.online-badge {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: #4ade80;
+  filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.6));
+}
+
+.modelo-card-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modelo-name {
+  margin: 0 0 0.3rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.modelo-username {
+  margin: 0 0 0.8rem;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.modelo-location {
+  margin: 0 0 0.8rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.modelo-bio {
+  margin: 0 0 auto;
+  color: #999;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.modelo-card-footer {
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  color: #667eea;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.view-details {
+  display: inline-block;
+}
+
+.modelo-card:hover .view-details {
+  color: #764ba2;
+}
+
+.empty-state {
+  text-align: center;
+  color: white;
+  padding: 3rem;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .modelos-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .modelos-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .modelo-card-content {
+    padding: 1rem;
+  }
+}
