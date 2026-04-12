@@ -235,8 +235,8 @@ export default function TourCard({
         {horariosAbiertos && (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
-            gap: '8px',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '6px',
             marginTop: '12px'
           }}>
             {cargando ? (
@@ -250,13 +250,13 @@ export default function TourCard({
 
                 return href ? (
                   <a key={h.hora} href={href} target="_blank" rel="noreferrer" style={{
-                    padding: '10px',
+                    padding: '8px',
                     textAlign: 'center',
                     borderRadius: '8px',
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: '13px',
+                    fontSize: '11px',
                     fontWeight: '700',
                     textDecoration: 'none'
                   }}>
@@ -264,13 +264,13 @@ export default function TourCard({
                   </a>
                 ) : (
                   <div key={h.hora} style={{
-                    padding: '10px',
+                    padding: '8px',
                     textAlign: 'center',
                     borderRadius: '8px',
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: '13px',
+                    fontSize: '11px',
                     fontWeight: '700'
                   }}>
                     <div>{formatHour12(h.hora)}</div>
