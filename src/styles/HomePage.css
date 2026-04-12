@@ -223,24 +223,149 @@
 
 /* --- RESPONSIVO --- */
 @media (max-width: 950px) {
+  .home-page {
+    padding-top: 100px;
+    padding-bottom: 20px;
+  }
+
+  .home-overlay-content {
+    padding: 12px;
+  }
+
   .floating-nav-grid {
     grid-template-columns: 1fr;
     max-width: 380px;
-    gap: 15px;
+    gap: 12px;
   }
 
-  .hero-title { font-size: 3rem; }
-  .hero-title-brand { gap: 14px; }
-  .hero-title-icon {
-    width: clamp(84px, 22vw, 150px);
-    height: clamp(84px, 22vw, 150px);
+  .hero-text {
+    margin-bottom: 35px;
   }
-  .hero-tagline { font-size: 0.7rem; letter-spacing: 4px; }
+
+  .hero-title { font-size: 2.2rem; }
+  .hero-title-brand { gap: 12px; }
+  .hero-title-icon {
+    width: clamp(60px, 18vw, 120px);
+    height: clamp(60px, 18vw, 120px);
+  }
+  .hero-tagline { font-size: 0.6rem; letter-spacing: 3px; }
+  .hero-description {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+    margin: 0 auto;
+    border-radius: 15px;
+  }
   
   .slide { width: 300px; }
   
+  .liquid-card {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 24px;
+  }
+
+  .liquid-card .icon {
+    font-size: 1.8rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+  }
+
+  .info h3 {
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+  }
+
+  .info p {
+    font-size: 0.65rem;
+    margin: 3px 0;
+  }
+
+  .info small {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-page {
+    padding-top: 85px;
+    padding-bottom: 15px;
+  }
+
+  .home-overlay-content {
+    padding: 8px;
+  }
+
+  .hero-text {
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+    letter-spacing: -1px;
+  }
+
+  .hero-title-brand {
+    gap: 0;
+    position: relative;
+    display: inline-flex;
+  }
+
+  .hero-title-icon {
+    width: clamp(48px, 16vw, 90px);
+    height: clamp(48px, 16vw, 90px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.15;
+    z-index: 0;
+  }
+
+  .hero-title-brand > span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tagline {
+    font-size: 0.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
   .hero-description {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    border-radius: 12px;
+  }
+
+  .floating-nav-grid {
+    gap: 10px;
+  }
+
+  .liquid-card {
+    padding: 12px;
+    gap: 10px;
     border-radius: 20px;
+  }
+
+  .liquid-card .icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
+
+  .info h3 {
+    font-size: 0.85rem;
+  }
+
+  .info p {
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+  }
+
+  .info small {
+    font-size: 0.65rem;
   }
 }

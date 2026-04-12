@@ -172,6 +172,115 @@
 }
 
 @media (max-width: 768px) {
-  .title-glow { font-size: 2rem; }
-  .modelos-grid { grid-template-columns: 1fr; }
+  .modelos-page {
+    padding: 100px 12px 40px;
+  }
+
+  .modelos-header {
+    margin-bottom: 35px;
+  }
+
+  .title-glow {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+  }
+
+  .modelos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+
+  .modelo-card {
+    height: 340px;
+    border-radius: 20px;
+  }
+
+  .modelo-info-glass {
+    padding: 15px;
+  }
+
+  .modelo-name {
+    font-size: 1rem;
+    margin-bottom: 3px;
+  }
+
+  .modelo-meta {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+  }
+
+  .modelo-bio-short {
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .btn-details {
+    padding: 6px 14px;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modelos-page {
+    padding: 85px 10px 30px;
+  }
+
+  .modelos-header {
+    margin-bottom: 25px;
+  }
+
+  .title-glow {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+
+  .modelos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .modelo-card {
+    height: 300px;
+    border-radius: 16px;
+  }
+
+  .modelo-info-glass {
+    padding: 12px;
+  }
+
+  .modelo-name {
+    font-size: 0.9rem;
+  }
+
+  .modelo-meta {
+    font-size: 0.65rem;
+  }
+
+  .modelo-bio-short {
+    font-size: 0.7rem;
+    margin-bottom: 8px;
+  }
+
+  .btn-details {
+    padding: 5px 12px;
+    font-size: 0.6rem;
+  }
+
+  .status-badge {
+    top: 12px;
+    right: 12px;
+    padding: 4px 8px;
+    font-size: 0.6rem;
+  }
 }

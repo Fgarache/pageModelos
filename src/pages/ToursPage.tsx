@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API_FIREBASE } from '../data';
 import TourCard from '../components/TourCard';
+import TourModal from '../components/TourModal';
 import '../styles/ToursPage.css';
 
 const DEPARTAMENTOS_GUATEMALA = [
@@ -45,6 +46,8 @@ interface Tour {
 export default function ToursPage() {
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
+  const [modelInfo, setModelInfo] = useState<any>(null);
 
   useEffect(() => {
     fetchTours();
@@ -72,6 +75,21 @@ export default function ToursPage() {
       console.error('Error cargando tours:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleShowTourModal = async (tour: Tour) => {
+    setSelectedTour(tour);
+    if (tour.idUser) {
+      try {
+        const allUsers = await API_FIREBASE.getAllUsers();
+        const model = allUsers.find((u: any) => u.id === tour.idUser);
+        if (model) {
+          setModelInfo(model);
+        }
+      } catch (error) {
+        console.error('Error loading model info:', error);
+      }
     }
   };
 
@@ -114,11 +132,22 @@ export default function ToursPage() {
                   nombreModelo={tour.nombreModelo}
                   userAlias={tour.userAlias}
                   isCompact={true}
+                  onShowModal={handleShowTourModal}
                 />
               </div>
             ))}
           </div>
         )}
+
+        <TourModal
+          isOpen={!!selectedTour}
+          tour={selectedTour}
+          modelInfo={modelInfo}
+          onClose={() => {
+            setSelectedTour(null);
+            setModelInfo(null);
+          }}
+        />
       </div>
     </div>
   );

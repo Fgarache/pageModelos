@@ -9,6 +9,7 @@ interface TourCardProps {
   nombreModelo?: string;
   userAlias?: string;
   isCompact?: boolean;
+  onShowModal?: (tour: any) => void;
 }
 
 const formatHour12 = (time: string) => {

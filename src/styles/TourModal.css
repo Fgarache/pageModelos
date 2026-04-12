@@ -1,0 +1,392 @@
+/* ============================================================
+   TOUR MODAL STYLES
+   ============================================================ */
+
+.tour-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.tour-modal-content {
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 30px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.tour-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #d4af37;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.tour-modal-close:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: #d4af37;
+}
+
+/* HEADER */
+.tour-modal-header {
+  padding: 30px 25px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%);
+}
+
+.tour-modal-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  margin: 0 0 10px;
+  letter-spacing: -0.5px;
+}
+
+.tour-modal-model {
+  font-size: 0.95rem;
+  color: #d4af37;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+/* BODY */
+.tour-modal-body {
+  flex: 1;
+  padding: 30px 25px;
+  overflow-y: auto;
+}
+
+.tour-modal-section {
+  margin-bottom: 30px;
+}
+
+.tour-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.tour-modal-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 10px;
+}
+
+/* INFO GRID */
+.tour-modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.tour-modal-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tour-modal-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #d4af37;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.tour-modal-value {
+  font-size: 0.95rem;
+  color: white;
+  font-weight: 600;
+}
+
+.tour-modal-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  width: fit-content;
+}
+
+.tour-modal-badge.active {
+  background: rgba(0, 200, 0, 0.2);
+  border: 1px solid rgba(0, 200, 0, 0.5);
+  color: #00c800;
+}
+
+.tour-modal-badge.inactive {
+  background: rgba(200, 0, 0, 0.2);
+  border: 1px solid rgba(200, 0, 0, 0.5);
+  color: #c80000;
+}
+
+/* DESCRIPTION */
+.tour-modal-description {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 15px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tour-modal-description p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+/* LOCATIONS */
+.tour-modal-locations {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tour-modal-location-item {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tour-modal-location-link,
+.tour-modal-location-text {
+  color: #d4af37;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.tour-modal-location-link:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* HORARIOS GRID */
+.tour-modal-horarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.tour-modal-horario-card {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, transparent 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+
+.tour-modal-horario-time {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #d4af37;
+  margin-bottom: 5px;
+}
+
+.tour-modal-horario-location {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: capitalize;
+}
+
+/* LOADING */
+.tour-modal-loading {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* FOOTER */
+.tour-modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid rgba(212, 175, 55, 0.1);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tour-modal-cta-button,
+.tour-modal-close-button {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.tour-modal-cta-button {
+  background: linear-gradient(135deg, #d4af37 0%, #f3d77c 100%);
+  color: black;
+  font-size: 0.9rem;
+}
+
+.tour-modal-cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+}
+
+.tour-modal-close-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.9rem;
+}
+
+.tour-modal-close-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* SCROLLBAR STYLING */
+.tour-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tour-modal-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.tour-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+}
+
+.tour-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.5);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .tour-modal-content {
+    border-radius: 20px;
+    max-height: 90vh;
+  }
+
+  .tour-modal-close {
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .tour-modal-header {
+    padding: 20px 18px;
+  }
+
+  .tour-modal-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .tour-modal-body {
+    padding: 20px 18px;
+  }
+
+  .tour-modal-footer {
+    padding: 15px 18px;
+    gap: 10px;
+  }
+
+  .tour-modal-horarios-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tour-modal-overlay {
+    padding: 10px;
+  }
+
+  .tour-modal-content {
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  .tour-modal-header {
+    padding: 16px 14px;
+  }
+
+  .tour-modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .tour-modal-model {
+    font-size: 0.85rem;
+  }
+
+  .tour-modal-body {
+    padding: 16px 14px;
+  }
+
+  .tour-modal-section {
+    margin-bottom: 20px;
+  }
+
+  .tour-modal-footer {
+    flex-direction: column;
+  }
+
+  .tour-modal-cta-button,
+  .tour-modal-close-button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .tour-modal-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tour-modal-horarios-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .tour-modal-section-title {
+    font-size: 0.9rem;
+  }
+
+  .tour-modal-header h2 {
+    margin-bottom: 8px;
+  }
+}

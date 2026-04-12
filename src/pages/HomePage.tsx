@@ -7,6 +7,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { style, content, slider, features } = HOME_CONFIG;
   const [sliderReady, setSliderReady] = useState(false);
+  const [validImages, setValidImages] = useState<any[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -14,25 +15,31 @@ export default function HomePage() {
     const preloadImages = async () => {
       const uniqueUrls = Array.from(new Set(slider.images.map((img) => img.url).filter(Boolean)));
 
-      await Promise.all(
+      const loadResults = await Promise.all(
         uniqueUrls.map(
           (url) =>
-            new Promise<void>((resolve) => {
+            new Promise<{ url: string; loaded: boolean }>((resolve) => {
               const image = new Image();
               image.src = url;
-              image.onload = () => resolve();
-              image.onerror = () => resolve();
+              image.onload = () => resolve({ url, loaded: true });
+              image.onerror = () => resolve({ url, loaded: false });
             }),
         ),
       );
 
+      // Filtrar solo las imágenes que cargaron correctamente
+      const loadedUrls = new Set(loadResults.filter((r) => r.loaded).map((r) => r.url));
+      const filtered = slider.images.filter((img) => loadedUrls.has(img.url));
+
       if (isMounted) {
+        setValidImages(filtered.length > 0 ? filtered : slider.images);
         setSliderReady(true);
       }
     };
 
     const fallback = window.setTimeout(() => {
       if (isMounted) {
+        setValidImages(slider.images);
         setSliderReady(true);
       }
     }, 2500);
@@ -51,7 +58,7 @@ export default function HomePage() {
       <div className={`infinite-slider ${sliderReady ? 'is-ready' : 'is-loading'}`}>
         {!sliderReady && <div className="slider-loading-overlay" aria-hidden="true" />}
         <div className="slider-track" style={{ animationDuration: slider.speed }}>
-          {[...slider.images, ...slider.images].map((img, i) => (
+          {validImages.length > 0 && [...validImages, ...validImages].map((img, i) => (
             <div key={i} className="slide">
               <img 
                 src={img.url} 
