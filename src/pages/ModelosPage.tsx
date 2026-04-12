@@ -55,7 +55,7 @@ const ModelosPage: React.FC = () => {
             NUESTRAS <span style={{ color: '#d4af37' }}>MODELOS</span>
           </h1>
           <p style={{ color: '#aaa', fontSize: '16px', marginTop: '15px', maxWidth: '800px', margin: '15px auto 0' }}>
-            Descubre a nuestras modelos y sus servicios exclusivos
+            Modelos ejecutivas escort premium en Guatemala, con atención exclusiva y discreta.
           </p>
         </header>
 
@@ -91,12 +91,7 @@ const ModelosPage: React.FC = () => {
                   border: '1px solid rgba(212, 175, 55, 0.2)',
                   backdropFilter: 'blur(10px)',
                   background: 'rgba(15, 52, 96, 0.3)',
-                  boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)',
-                  _hover: {
-                    transform: 'translateY(-10px)',
-                    boxShadow: '0 20px 40px rgba(212, 175, 55, 0.2)',
-                    borderColor: 'rgba(212, 175, 55, 0.5)'
-                  }
+                  boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)'
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-10px)';
@@ -145,6 +140,25 @@ const ModelosPage: React.FC = () => {
                     background: 'linear-gradient(to top, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.4), transparent)',
                     zIndex: 2
                   }} />
+
+                  <div style={{
+                    position: 'absolute',
+                    top: '14px',
+                    left: '14px',
+                    zIndex: 3,
+                    padding: '6px 12px',
+                    borderRadius: '999px',
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: '#f3d77c',
+                    background: 'rgba(8, 8, 8, 0.58)',
+                    border: '1px solid rgba(212, 175, 55, 0.34)',
+                    backdropFilter: 'blur(6px)'
+                  }}>
+                    {modelo.disponibleLugar || 'Guatemala'}
+                  </div>
 
                   {/* Contenido */}
                   <div style={{

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HOME_CONFIG } from '../data/homeData'; // Importas el nuevo archivo
 import '../styles/HomePage.css';
@@ -5,16 +6,58 @@ import '../styles/HomePage.css';
 export default function HomePage() {
   const navigate = useNavigate();
   const { style, content, slider, features } = HOME_CONFIG;
+  const [sliderReady, setSliderReady] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const preloadImages = async () => {
+      const uniqueUrls = Array.from(new Set(slider.images.map((img) => img.url).filter(Boolean)));
+
+      await Promise.all(
+        uniqueUrls.map(
+          (url) =>
+            new Promise<void>((resolve) => {
+              const image = new Image();
+              image.src = url;
+              image.onload = () => resolve();
+              image.onerror = () => resolve();
+            }),
+        ),
+      );
+
+      if (isMounted) {
+        setSliderReady(true);
+      }
+    };
+
+    const fallback = window.setTimeout(() => {
+      if (isMounted) {
+        setSliderReady(true);
+      }
+    }, 2500);
+
+    preloadImages();
+
+    return () => {
+      isMounted = false;
+      window.clearTimeout(fallback);
+    };
+  }, [slider.images]);
 
   return (
     <div className="home-page">
       {/* Aplicamos claridad y contraste desde el archivo DATA */}
-      <div className="infinite-slider">
+      <div className={`infinite-slider ${sliderReady ? 'is-ready' : 'is-loading'}`}>
+        {!sliderReady && <div className="slider-loading-overlay" aria-hidden="true" />}
         <div className="slider-track" style={{ animationDuration: slider.speed }}>
           {[...slider.images, ...slider.images].map((img, i) => (
             <div key={i} className="slide">
               <img 
                 src={img.url} 
+                alt=""
+                loading="eager"
+                decoding="async"
                 style={{ 
                   filter: `brightness(${style.backgroundBrightness}) contrast(${style.backgroundContrast})` 
                 }} 
@@ -27,7 +70,12 @@ export default function HomePage() {
       <div className="home-overlay-content">
         <header className="hero-text">
           <h1 className="hero-title" style={{ fontSize: style.heroTitleSize }}>
-            {content.titlePart1}<span className="gold-glow">{content.titlePart2}</span>
+            <span className="hero-title-brand">
+              <img src="/icons/logo.png" alt="LindasGT.com" className="hero-title-icon" />
+              <span>
+                {content.titlePart1}<span className="gold-glow">{content.titlePart2}</span>
+              </span>
+            </span>
           </h1>
           <p className="hero-tagline" style={{ letterSpacing: style.heroTaglineSpacing }}>
             {content.tagline}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { API_FIREBASE } from '../data';
 import RifaCard from '../components/RifaCard';
 import '../styles/RifasPage.css';
@@ -15,7 +15,7 @@ interface Rifa {
   nombreModelo?: string;
   userAlias?: string;
   idUser?: string;
-  profile_pic?: string;
+  fotoPerfil?: string;
 }
 
 export default function RifasPage() {
@@ -39,7 +39,7 @@ export default function RifasPage() {
           nombreModelo: user.nombre,
           userAlias: user.user_alias,
           idUser: user.id,
-          profile_pic: user.fotoPerfil
+          fotoPerfil: user.fotoPerfil
         }));
         todasLasRifas = [...todasLasRifas, ...rifasConDatos];
       }

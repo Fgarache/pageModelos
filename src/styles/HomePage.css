@@ -29,6 +29,25 @@
   pointer-events: none;
 }
 
+.infinite-slider.is-loading .slider-track {
+  opacity: 0;
+}
+
+.infinite-slider.is-ready .slider-track {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.slider-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.14), transparent 48%),
+    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.1), transparent 42%),
+    linear-gradient(160deg, #070707 0%, #111111 45%, #060606 100%);
+  z-index: 1;
+}
+
 .slider-track {
   display: flex;
   width: calc(400px * 15); 
@@ -36,6 +55,7 @@
   animation: scrollInfinite 50s linear infinite;
   will-change: transform; 
   transform: translateZ(0); 
+  transition: opacity 0.4s ease;
 }
 
 @keyframes scrollInfinite {
@@ -90,6 +110,19 @@
   line-height: 0.9;
   margin-bottom: 15px;
   text-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+}
+
+.hero-title-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.hero-title-icon {
+  width: clamp(120px, 16vw, 220px);
+  height: clamp(120px, 16vw, 220px);
+  object-fit: contain;
+  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.78));
 }
 
 .gold-glow {
@@ -197,6 +230,11 @@
   }
 
   .hero-title { font-size: 3rem; }
+  .hero-title-brand { gap: 14px; }
+  .hero-title-icon {
+    width: clamp(84px, 22vw, 150px);
+    height: clamp(84px, 22vw, 150px);
+  }
   .hero-tagline { font-size: 0.7rem; letter-spacing: 4px; }
   
   .slide { width: 300px; }

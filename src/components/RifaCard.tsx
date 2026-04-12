@@ -11,6 +11,19 @@ interface RifaCardProps {
   isCompact?: boolean;
 }
 
+const getWhatsAppLink = (whatsAppUrl: string | undefined, message: string) => {
+  if (!whatsAppUrl) return '';
+
+  const encodedMessage = encodeURIComponent(message);
+
+  if (whatsAppUrl.includes('wa.me/')) {
+    return `${whatsAppUrl}${whatsAppUrl.includes('?') ? '&' : '?'}text=${encodedMessage}`;
+  }
+
+  const phone = whatsAppUrl.replace(/\D/g, '');
+  return phone ? `https://wa.me/${phone}?text=${encodedMessage}` : '';
+};
+
 export default function RifaCard({ 
   rifa, 
   modelInfo,
@@ -23,8 +36,16 @@ export default function RifaCard({
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
-  const profilPic = modelInfo?.fotoPerfil || rifa.profile_pic;
+  const profilPic = modelInfo?.fotoPerfil || rifa.fotoPerfil;
   const disponiblesCount = rifa.cantidadLibre || (rifa.numerosDisponibles?.length || 0);
+  const availableCta = getWhatsAppLink(
+    modelInfo?.redes?.whatsapp,
+    `Hola quiero comprar un número para la rifa ${rifa.titulo}`,
+  );
+  const getNumberPurchaseLink = (numero: number) => getWhatsAppLink(
+    modelInfo?.redes?.whatsapp,
+    `Hola quiero comprar el número ${numero} de la rifa ${rifa.titulo}`,
+  );
 
   const handleVerDetalles = () => {
     if (modeloAlias) {
@@ -187,31 +208,57 @@ export default function RifaCard({
           }}>
             {todos.map((numero) => {
               const isDisponible = disponibles.includes(numero);
+              const purchaseLink = isDisponible ? getNumberPurchaseLink(numero) : '';
               return (
-                <div key={numero} style={{
-                  padding: '8px',
-                  textAlign: 'center',
-                  borderRadius: '6px',
-                  background: isDisponible ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)',
-                  border: `1px solid ${isDisponible ? 'rgba(76, 175, 80, 0.4)' : 'rgba(244, 67, 54, 0.4)'}`,
-                  color: isDisponible ? '#4caf50' : '#f44336',
-                  fontSize: '12px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (isDisponible) {
-                    e.currentTarget.style.background = 'rgba(76, 175, 80, 0.3)';
-                    e.currentTarget.style.borderColor = 'rgba(76, 175, 80, 0.6)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isDisponible ? 'rgba(76, 175, 80, 0.2)' : 'rgba(244, 67, 54, 0.2)';
-                  e.currentTarget.style.borderColor = isDisponible ? 'rgba(76, 175, 80, 0.4)' : 'rgba(244, 67, 54, 0.4)';
-                }}>
-                  {numero}
-                </div>
+                purchaseLink ? (
+                  <a
+                    key={numero}
+                    href={purchaseLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      padding: '8px',
+                      textAlign: 'center',
+                      borderRadius: '6px',
+                      background: 'rgba(76, 175, 80, 0.2)',
+                      border: '1px solid rgba(76, 175, 80, 0.4)',
+                      color: '#4caf50',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      textDecoration: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(76, 175, 80, 0.3)';
+                      e.currentTarget.style.borderColor = 'rgba(76, 175, 80, 0.6)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(76, 175, 80, 0.2)';
+                      e.currentTarget.style.borderColor = 'rgba(76, 175, 80, 0.4)';
+                    }}
+                  >
+                    {numero}
+                  </a>
+                ) : (
+                  <div
+                    key={numero}
+                    style={{
+                      padding: '8px',
+                      textAlign: 'center',
+                      borderRadius: '6px',
+                      background: 'rgba(244, 67, 54, 0.14)',
+                      border: '1px solid rgba(244, 67, 54, 0.4)',
+                      color: '#ff6b6b',
+                      fontSize: '12px',
+                      fontWeight: '800',
+                      cursor: 'not-allowed',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    X
+                  </div>
+                )
               );
             })}
           </div>
@@ -253,6 +300,32 @@ export default function RifaCard({
           </div>
         </div>
       </div>
+
+      {availableCta && disponiblesCount > 0 && (
+        <a
+          href={availableCta}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '18px',
+            width: '100%',
+            padding: '12px 16px',
+            borderRadius: '10px',
+            textDecoration: 'none',
+            fontWeight: '800',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            background: 'rgba(76, 175, 80, 0.16)',
+            border: '1px solid rgba(76, 175, 80, 0.35)',
+            color: '#8af0b0'
+          }}
+        >
+          Comprar número
+        </a>
+      )}
     </div>
   );
 }

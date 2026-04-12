@@ -3,6 +3,30 @@
   background-color: #242424;
 }
 
+img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.capture-shield {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: clamp(2rem, 7vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 215, 124, 0.3);
+  background: rgba(0, 0, 0, 0.55);
+  text-shadow: 0 8px 20px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+}
+
 a {
   font-weight: 500;
   color: #646cff;

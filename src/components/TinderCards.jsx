@@ -56,8 +56,8 @@ export default function TinderCards() {
               {users.slice(currentIndex, currentIndex + 1).map((user) => (
                 <div key={user.id} className="tinder-card liquid-glass animate-in">
                   <div className="card-image-section">
-                    {user.profile_pic ? (
-                      <img src={user.profile_pic} alt={user.nombre} />
+                    {user.fotoPerfil ? (
+                      <img src={user.fotoPerfil} alt={user.nombre} />
                     ) : (
                       <div className="avatar-placeholder">{user.nombre?.charAt(0)}</div>
                     )}
@@ -68,7 +68,7 @@ export default function TinderCards() {
                     <h3 className="card-name">{user.nombre || user.user} <span className="age">24</span></h3>
                     <p className="card-alias">@{user.user_alias || user.user}</p>
                     <div className="card-meta">
-                      <span>📍 {user.disponibleLugar || 'Cerca de ti'}</span>
+                      <span>📍 {user.disponibleLugar || 'Disponible por confirmar'}</span>
                     </div>
                     <p className="card-bio">{user.info?.substring(0, 120) || "Sin descripción disponible."}</p>
                   </div>

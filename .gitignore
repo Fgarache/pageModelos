@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.vite
 dist
 dist-ssr
 *.local
@@ -15,6 +16,34 @@ dist-ssr
 # Environment variables
 .env
 .env.local
+.env.*
+!.env.example
+
+# Sensitive config and secrets
+*.pem
+*.key
+*.p12
+*.crt
+*.cer
+*.jks
+*.keystore
+serviceAccount*.json
+firebase-admin*.json
+google-services.json
+GoogleService-Info.plist
+
+# Local data dumps / backups
+*.bak
+*.backup
+*.dump
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+data/
+/src/data/data.json
+tmp/
+temp/
 
 # Editor directories and files
 .vscode/*

@@ -3,6 +3,31 @@ import { API_FIREBASE } from '../data';
 import TourCard from '../components/TourCard';
 import '../styles/ToursPage.css';
 
+const DEPARTAMENTOS_GUATEMALA = [
+  'Guatemala',
+  'Sacatepequez',
+  'Escuintla',
+  'Chimaltenango',
+  'Santa Rosa',
+  'Solola',
+  'Totonicapan',
+  'Quetzaltenango',
+  'Suchitepequez',
+  'Retalhuleu',
+  'San Marcos',
+  'Huehuetenango',
+  'Quiche',
+  'Baja Verapaz',
+  'Alta Verapaz',
+  'Peten',
+  'Izabal',
+  'Zacapa',
+  'Chiquimula',
+  'Jalapa',
+  'Jutiapa',
+  'El Progreso',
+];
+
 interface Tour {
   id: string;
   lugar: string;
@@ -14,7 +39,7 @@ interface Tour {
   nombreModelo?: string;
   userAlias?: string;
   idUser?: string;
-  profile_pic?: string;
+  fotoPerfil?: string;
 }
 
 export default function ToursPage() {
@@ -38,7 +63,7 @@ export default function ToursPage() {
           nombreModelo: user.nombre,
           userAlias: user.user_alias,
           idUser: user.id,
-          profile_pic: user.fotoPerfil
+          fotoPerfil: user.fotoPerfil
         }));
         todosLosTours = [...todosLosTours, ...toursConDatos];
       }
@@ -60,8 +85,15 @@ export default function ToursPage() {
           <span className="tours-badge">DESTINOS EXCLUSIVOS</span>
           <h1 className="tours-title">TOURS & <span className="gold-text">EXPERIENCIAS</span></h1>
           <p className="tours-subtitle">
-            Acompaña a nuestras modelos en sus próximas paradas internacionales.
+            Tours VIP en Guatemala: Ciudad de Guatemala, Antigua, Quetzaltenango, Escuintla,
+            San Marcos, Peten, Izabal y mas departamentos del pais.
           </p>
+          <details className="tours-seo-departments">
+            <summary>Ver todos los departamentos de cobertura</summary>
+            <p>
+              Cobertura en {DEPARTAMENTOS_GUATEMALA.join(', ')}.
+            </p>
+          </details>
         </header>
 
         {loading ? (

@@ -1,6 +1,5 @@
 // src/components/ToursDisponibles.tsx
 import { useState } from 'react';
-import TourCard from './TourCard'; 
 
 interface Props {
   tours: any[];
@@ -183,7 +182,7 @@ function TourItem({ tour, user }: { tour: any, user: any }) {
   return (
     <div className="tour-vertical-card">
       <div className="tour-img-container">
-        <img src={user.profile_pic || 'https://via.placeholder.com/300'} alt={tour.titulo} />
+        <img src={user.fotoPerfil || 'https://via.placeholder.com/300'} alt={tour.titulo} />
         <div className="tour-price-tag">Q{tour.deposito}</div>
       </div>
 

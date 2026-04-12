@@ -103,6 +103,27 @@
   color: #fff;
 }
 
+.tour-location-link {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.tour-location-link:hover {
+  text-decoration: underline;
+}
+
+.tour-location-link-inline {
+  color: #d4af37;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.tour-location-link-inline:hover {
+  text-decoration: underline;
+}
+
 /* STATS ROW */
 .tour-stats-liquid {
   display: flex;

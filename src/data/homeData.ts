@@ -12,15 +12,15 @@ export const HOME_CONFIG = {
 
   // CONTENIDO DE TEXTO
   content: {
-    titlePart1: "PAGE",
-    titlePart2: "MODELOS",
+    titlePart1: "LindasGT",
+    titlePart2: ".com",
     tagline: "EXCLUSIVIDAD EN CADA DETALLE",
-    description: "La plataforma premium que redefine la conexión con el talento más selecto de la región, bajo un estándar de elegancia y privacidad.",
+    description: "Chicas verificadas en Guatemala, con atención discreta, elegante y de alto nivel para experiencias exclusivas.",
   },
 
   // ETIQUETAS SEO (Para Helmet o Meta tags)
   seo: {
-    title: "PageModelos | Agencia de Modelos Premium & Tours VIP",
+    title: "LindasGT.com | Agencia de Modelos Premium & Tours VIP",
     description: "Descubre las mejores modelos profesionales, tours exclusivos y eventos de gala. Seguridad, exclusividad y talento verificado.",
     keywords: "modelos, tours VIP, rifas exclusivas, agencia de modelos, eventos premium",
     ogImage: "https://tu-dominio.com/preview-image.jpg",
@@ -44,16 +44,16 @@ export const HOME_CONFIG = {
       id: 'modelos',
       icon: '💎',
       title: 'MODELOS',
-      subtitle: 'PERFILES VERIFICADOS',
-      desc: 'Explora galerías exclusivas de alto nivel profesional.',
+      subtitle: 'EJECUTIVAS ESCORT PREMIUM',
+      desc: 'Modelos ejecutivas premium en Guatemala, con atención discreta y exclusiva.',
       path: '/modelos'
     },
     {
       id: 'tours',
       icon: '✈️',
       title: 'TOURS',
-      subtitle: 'AGENDAS VIP',
-      desc: 'Reserva encuentros internacionales en las sedes más exclusivas.',
+      subtitle: 'TOURS VIP EN GUATEMALA',
+      desc: 'Disponibles en Ciudad de Guatemala, Antigua, Quetzaltenango, Escuintla, Peten, Izabal y mas departamentos.',
       path: '/tours'
     },
     {
@@ -61,7 +61,7 @@ export const HOME_CONFIG = {
       icon: '🎰',
       title: 'RIFAS',
       subtitle: 'GANA EXPERIENCIAS',
-      desc: 'Participa por premios premium y cenas de gala inolvidables.',
+      desc: 'Rifas activas de nuestras modelos.',
       path: '/rifas'
     }
   ]

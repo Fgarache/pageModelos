@@ -177,7 +177,7 @@ function RifaItem({ rifa, user }: { rifa: any, user: any }) {
   return (
     <div className="rifa-full-card">
       <div className="rifa-visual-bg">
-        <img src={user.profile_pic || 'https://via.placeholder.com/800'} alt="bg" className="rifa-img" />
+        <img src={user.fotoPerfil || 'https://via.placeholder.com/800'} alt="bg" className="rifa-img" />
         <div className="rifa-overlay"></div>
       </div>
 
