@@ -69,10 +69,7 @@ const ModelosPage: React.FC = () => {
             <p>No hay modelos disponibles en este momento</p>
           </div>
         ) : (
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '30px',
+          <div className="modelos-grid" style={{
             marginBottom: '40px'
           }}>
             {modelos.map((modelo) => (

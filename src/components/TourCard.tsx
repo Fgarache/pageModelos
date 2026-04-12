@@ -184,11 +184,6 @@ export default function TourCard({
         display: 'flex',
         flexDirection: 'column'
       }}>
-      <div style={{ marginBottom: '15px' }}>
-        <div style={{ display: 'grid', gap: '2px', marginBottom: '10px' }}>
-          <strong style={{ color: '#fff', fontSize: '0.92rem' }}>{modeloNombre}</strong>
-          {modeloAlias && <span style={{ color: '#d4af37', fontSize: '0.78rem' }}>@{modeloAlias}</span>}
-        </div>
         <h3 style={{ 
           margin: '0 0 8px 0', 
           color: '#fff',
@@ -198,33 +193,15 @@ export default function TourCard({
         }}>
           {tour.titulo}
         </h3>
-      </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <p style={{ margin: 0, color: '#ccc', fontSize: '13px', lineHeight: '1.6' }}>
-          {tour.detalles}
-        </p>
-      </div>
-
-      <div style={{ marginBottom: '15px', paddingBottom: '15px', borderBottom: '1px solid rgba(212, 175, 55, 0.14)' }}>
-        <p style={{ margin: '0 0 8px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
-          Ubicaciones
-        </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-          {locationsToShow.map((location: any, index: number) => (
-            <span key={`${location.label}-${index}`} style={{ margin: 0, color: '#fff', fontSize: '14px' }}>
-              {location.href ? (
-                <a href={location.href} target="_blank" rel="noreferrer" className="tour-location-link-inline" title={location.label}>
-                  {`Ubicacion ${index + 1}`}
-                </a>
-              ) : <span title={location.label}>{`Ubicacion ${index + 1}`}</span>}
-            </span>
-          ))}
+        <div style={{ marginBottom: '15px' }}>
+          <p style={{ margin: 0, color: '#ccc', fontSize: '13px', lineHeight: '1.6' }}>
+            {tour.detalles}
+          </p>
         </div>
-      </div>
 
-      <div style={{ marginTop: 'auto' }}>
-      <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginTop: 'auto' }}>
+          <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <p style={{ margin: 0, color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
             Horarios
@@ -305,8 +282,8 @@ export default function TourCard({
             )}
           </div>
         )}
-      </div>
-      </div>
+          </div>
+        </div>
       </div>
 
     </div>
