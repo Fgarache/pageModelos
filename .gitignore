@@ -40,7 +40,7 @@ GoogleService-Info.plist
 *.sqlite
 *.sqlite3
 *.db
-data/
+/data/
 /src/data/data.json
 tmp/
 temp/
