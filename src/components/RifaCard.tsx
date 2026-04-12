@@ -24,6 +24,14 @@ const getWhatsAppLink = (whatsAppUrl: string | undefined, message: string) => {
   return phone ? `https://wa.me/${phone}?text=${encodedMessage}` : '';
 };
 
+const getTextListItems = (text: string | undefined) =>
+  (text || '')
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => item.replace(/^[\-•*\d.)\s]+/, '').trim())
+    .filter(Boolean);
+
 export default function RifaCard({ 
   rifa, 
   modelInfo,
@@ -109,6 +117,10 @@ export default function RifaCard({
   // --- VISTA DETALLADA (Para perfil de la modelo) ---
   const disponibles = rifa.numerosDisponibles || [];
   const todos = Array.from({ length: rifa.numerosTotales }, (_, i) => i + 1);
+  const rifaDetailItems = getTextListItems(rifa.detalles || rifa.descripcion);
+  const rifaTerms = Array.isArray(rifa.terminos)
+    ? rifa.terminos.flatMap((term: string) => getTextListItems(term))
+    : [];
 
   return (
     <div style={{
@@ -155,14 +167,27 @@ export default function RifaCard({
         </div>
       </div>
 
-      {rifa.terminos && rifa.terminos.length > 0 && (
+      {rifaDetailItems.length > 0 && (
+        <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
+          <p style={{ margin: '0 0 10px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
+            Detalles
+          </p>
+          <ul style={{ margin: 0, paddingLeft: '20px', color: '#ccc', fontSize: '13px', display: 'grid', gap: '6px' }}>
+            {rifaDetailItems.map((item: string, index: number) => (
+              <li key={`${item}-${index}`} style={{ marginBottom: 0, lineHeight: '1.45' }}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {rifaTerms.length > 0 && (
         <div style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
           <p style={{ margin: '0 0 10px 0', color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
             Términos y Condiciones
           </p>
           <ul style={{ margin: 0, paddingLeft: '20px', color: '#ccc', fontSize: '13px' }}>
-            {rifa.terminos.map((t: string, i: number) => (
-              <li key={i} style={{ marginBottom: '5px', lineHeight: '1.4' }}>{t}</li>
+            {rifaTerms.map((t: string, i: number) => (
+              <li key={`${t}-${i}`} style={{ marginBottom: '5px', lineHeight: '1.4' }}>{t}</li>
             ))}
           </ul>
         </div>

@@ -8,6 +8,21 @@ export default function HomePage() {
   const { style, content, slider, features } = HOME_CONFIG;
   const [sliderReady, setSliderReady] = useState(false);
   const [validImages, setValidImages] = useState<any[]>([]);
+  const [logoReady, setLogoReady] = useState(false);
+
+  useEffect(() => {
+    if (document.readyState === 'complete') {
+      setLogoReady(true);
+      return;
+    }
+
+    const handleWindowLoad = () => setLogoReady(true);
+    window.addEventListener('load', handleWindowLoad, { once: true });
+
+    return () => {
+      window.removeEventListener('load', handleWindowLoad);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,8 +93,17 @@ export default function HomePage() {
         <header className="hero-text">
           <h1 className="hero-title" style={{ fontSize: style.heroTitleSize }}>
             <span className="hero-title-brand">
-              <img src="/icons/logo.png" alt="LindasGT.com" className="hero-title-icon" />
-              <span>
+              {logoReady && (
+                <img
+                  src="/icons/logo.png"
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                  className="hero-title-icon"
+                />
+              )}
+              <span className="hero-title-text">
                 {content.titlePart1}<span className="gold-glow">{content.titlePart2}</span>
               </span>
             </span>

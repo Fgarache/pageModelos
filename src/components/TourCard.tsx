@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import '../styles/TourCard.css';
@@ -36,6 +36,14 @@ const getWhatsAppLink = (whatsAppUrl: string | undefined, message: string) => {
   return phone ? `https://wa.me/${phone}?text=${encodedMessage}` : '';
 };
 
+const getTextListItems = (text: string | undefined) =>
+  (text || '')
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .map((item) => item.replace(/^[\-•*\d.)\s]+/, '').trim())
+    .filter(Boolean);
+
 export default function TourCard({ 
   tour, 
   modelInfo,
@@ -44,7 +52,6 @@ export default function TourCard({
   isCompact = false
 }: TourCardProps) {
   const navigate = useNavigate();
-  const [horariosAbiertos, setHorariosAbiertos] = useState(false);
   const [horarios, setHorarios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(false);
 
@@ -62,25 +69,33 @@ export default function TourCard({
   const primaryLocation = locationsToShow[0];
   const primaryLocationText = 'Ubicacion 1';
 
-  const handleToggleHorarios = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (horariosAbiertos) {
-      setHorariosAbiertos(false);
-      return;
-    }
-    if (horarios.length === 0) {
+  useEffect(() => {
+    if (isCompact || !tour?.id) return;
+
+    let isActive = true;
+
+    const loadHorarios = async () => {
       setCargando(true);
       try {
         const datos = await API_FIREBASE.getAllHorariosByTour(tour.id);
-        setHorarios(datos);
+        if (isActive) {
+          setHorarios(datos);
+        }
       } catch (error) {
         console.error(error);
       } finally {
-        setCargando(false);
+        if (isActive) {
+          setCargando(false);
+        }
       }
-    }
-    setHorariosAbiertos(true);
-  };
+    };
+
+    loadHorarios();
+
+    return () => {
+      isActive = false;
+    };
+  }, [isCompact, tour?.id]);
 
   // --- VISTA COMPACTA (Para listados en ToursPage) ---
   if (isCompact) {
@@ -143,6 +158,7 @@ export default function TourCard({
 
   const horariosDisponiblesDetalle = (horarios.length > 0 ? horarios : horariosDisponibles.map((hora) => ({ hora, disponible: true })))
     .filter((item: any) => item.disponible);
+  const tourDetailItems = getTextListItems(tour.detalles);
 
   return (
     <div className="tour-card-liquid detailed" style={{
@@ -150,9 +166,10 @@ export default function TourCard({
       overflow: 'hidden',
       border: '1px solid rgba(212, 175, 55, 0.2)',
       borderRadius: '18px',
-      minHeight: '420px',
+      minHeight: 'clamp(320px, 62vw, 420px)',
       background: '#0d1117',
-      transition: 'all 0.3s ease'
+      transition: 'all 0.3s ease',
+      alignSelf: 'start'
     }}>
       {profilPic ? (
         <>
@@ -179,8 +196,8 @@ export default function TourCard({
       <div style={{
         position: 'relative',
         zIndex: 1,
-        padding: '20px',
-        minHeight: '420px',
+        padding: 'clamp(10px, 2.8vw, 16px)',
+        minHeight: 'clamp(320px, 62vw, 420px)',
         display: 'flex',
         flexDirection: 'column'
       }}>
@@ -188,51 +205,50 @@ export default function TourCard({
           margin: '0 0 8px 0', 
           color: '#fff',
           fontWeight: '800',
-          fontSize: '20px',
+          fontSize: 'clamp(0.88rem, 3.2vw, 1.08rem)',
+          lineHeight: '1.02',
           textTransform: 'uppercase'
         }}>
           {tour.titulo}
         </h3>
 
         <div style={{ marginBottom: '15px' }}>
-          <p style={{ margin: 0, color: '#ccc', fontSize: '13px', lineHeight: '1.6' }}>
-            {tour.detalles}
+          {tourDetailItems.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: '16px', color: '#ccc', fontSize: 'clamp(0.68rem, 2.35vw, 0.8rem)', lineHeight: '1.35', display: 'grid', gap: '4px' }}>
+              {tourDetailItems.map((item, index) => (
+                <li key={`${item}-${index}`} style={{ margin: 0 }}>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        <div style={{ marginBottom: '12px' }}>
+          <p style={{ margin: '0 0 6px 0', color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
+            Ubicaciones
           </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {locationsToShow.map((location: any, index: number) => (
+              <span key={`${location.label}-${index}`} style={{ margin: 0, color: '#fff', fontSize: 'clamp(0.58rem, 2vw, 0.68rem)' }}>
+                {location.href ? (
+                  <a href={location.href} target="_blank" rel="noreferrer" className="tour-location-link-inline" title={location.label}>
+                    {`Ubicacion ${index + 1}`}
+                  </a>
+                ) : <span title={location.label}>{`Ubicacion ${index + 1}`}</span>}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div style={{ marginTop: 'auto' }}>
           <div style={{ marginBottom: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <p style={{ margin: 0, color: '#aaa', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>
-            Horarios
-          </p>
-          <button 
-            onClick={handleToggleHorarios}
-            style={{
-              background: 'rgba(212, 175, 55, 0.2)',
-              border: '1px solid rgba(212, 175, 55, 0.4)',
-              color: '#d4af37',
-              padding: '5px 15px',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: '600',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.3)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.6)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(212, 175, 55, 0.2)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
-            }}
-          >
-            {horariosAbiertos ? '▼ Cerrar' : '► Ver horarios'}
-          </button>
-        </div>
+            <div style={{ marginBottom: '12px' }}>
+              <p style={{ margin: 0, color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
+                Horarios
+              </p>
+            </div>
 
-        {horariosAbiertos && (
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
@@ -240,7 +256,7 @@ export default function TourCard({
             marginTop: '12px'
           }}>
             {cargando ? (
-              <p style={{ color: '#aaa' }}>Cargando horarios...</p>
+              <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>Cargando horarios...</p>
             ) : horariosDisponiblesDetalle.length > 0 ? (
               horariosDisponiblesDetalle.map((h: any) => {
                 const href = getWhatsAppLink(
@@ -250,13 +266,13 @@ export default function TourCard({
 
                 return href ? (
                   <a key={h.hora} href={href} target="_blank" rel="noreferrer" style={{
-                    padding: '8px',
+                    padding: '6px 5px',
                     textAlign: 'center',
                     borderRadius: '8px',
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: '11px',
+                    fontSize: 'clamp(0.56rem, 2vw, 0.64rem)',
                     fontWeight: '700',
                     textDecoration: 'none'
                   }}>
@@ -264,13 +280,13 @@ export default function TourCard({
                   </a>
                 ) : (
                   <div key={h.hora} style={{
-                    padding: '8px',
+                    padding: '6px 5px',
                     textAlign: 'center',
                     borderRadius: '8px',
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: '11px',
+                    fontSize: 'clamp(0.56rem, 2vw, 0.64rem)',
                     fontWeight: '700'
                   }}>
                     <div>{formatHour12(h.hora)}</div>
@@ -278,10 +294,9 @@ export default function TourCard({
                 );
               })
             ) : (
-              <p style={{ color: '#aaa' }}>No hay horarios visibles.</p>
+              <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>No hay horarios visibles.</p>
             )}
           </div>
-        )}
           </div>
         </div>
       </div>

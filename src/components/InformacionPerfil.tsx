@@ -186,18 +186,6 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
                       ›
                     </button>
                   </div>
-
-                  <div className="profile-carousel-pagination" aria-label="Selector de fotos">
-                    {slides.map((slide, index) => (
-                      <button
-                        key={`${slide.link}-${index}`}
-                        type="button"
-                        className={`profile-carousel-dot ${index === activeSlide ? 'is-active' : ''}`}
-                        onClick={() => setActiveSlide(index)}
-                        aria-label={`Ver foto ${index + 1}`}
-                      />
-                    ))}
-                  </div>
                 </>
               )}
 
@@ -257,8 +245,10 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
 
           <div className="profile-meta-grid">
             <article className="profile-meta-card profile-location-card">
-              <span className="profile-meta-label">Hoy disponible en</span>
-              <strong>{user.disponibleLugar || 'Guatemala'}</strong>
+              <div className="profile-location-current">
+                <span className="profile-meta-label">Hoy disponible en</span>
+                <strong>{user.disponibleLugar || 'Guatemala'}</strong>
+              </div>
 
               {ubicaciones.length > 0 && (
                 <div className="profile-location-extra">

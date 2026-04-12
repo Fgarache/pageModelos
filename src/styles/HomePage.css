@@ -110,19 +110,70 @@
   line-height: 0.9;
   margin-bottom: 15px;
   text-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title-brand {
   display: inline-flex;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  position: relative;
+  gap: 0;
+  isolation: isolate;
 }
 
 .hero-title-icon {
-  width: clamp(120px, 16vw, 220px);
-  height: clamp(120px, 16vw, 220px);
+  width: clamp(170px, 20vw, 290px);
+  height: clamp(170px, 20vw, 290px);
   object-fit: contain;
-  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.78));
+  filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.72));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -52%);
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+  animation: heroHeartBeat 2.2s ease-in-out infinite;
+}
+
+.hero-title-text {
+  position: relative;
+  z-index: 1;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.95),
+    0 6px 14px rgba(0, 0, 0, 0.92),
+    0 12px 28px rgba(0, 0, 0, 0.85);
+  -webkit-text-stroke: 0.4px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes heroHeartBeat {
+  0%,
+  100% {
+    transform: translate(-50%, -52%) scale(1);
+    opacity: 1;
+  }
+
+  14% {
+    transform: translate(-50%, -52%) scale(1.06);
+    opacity: 1;
+  }
+
+  28% {
+    transform: translate(-50%, -52%) scale(1);
+    opacity: 1;
+  }
+
+  42% {
+    transform: translate(-50%, -52%) scale(1.04);
+    opacity: 1;
+  }
+
+  70% {
+    transform: translate(-50%, -52%) scale(1);
+    opacity: 1;
+  }
 }
 
 .gold-glow {
@@ -140,6 +191,8 @@
   text-transform: uppercase;
   margin-bottom: 20px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 1), 0 0 5px rgba(212, 175, 55, 0.5);
+  position: relative;
+  z-index: 3;
 }
 
 .hero-description {
@@ -153,6 +206,8 @@
   border-radius: 100px;
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 3;
 }
 
 /* --- BOTONES LIQUID GLASS (GRID) --- */
@@ -243,10 +298,10 @@
   }
 
   .hero-title { font-size: 2.2rem; }
-  .hero-title-brand { gap: 12px; }
   .hero-title-icon {
-    width: clamp(60px, 18vw, 120px);
-    height: clamp(60px, 18vw, 120px);
+    width: clamp(130px, 24vw, 200px);
+    height: clamp(130px, 24vw, 200px);
+    opacity: 1;
   }
   .hero-tagline { font-size: 0.6rem; letter-spacing: 3px; }
   .hero-description {
@@ -288,49 +343,46 @@
 
 @media (max-width: 480px) {
   .home-page {
-    padding-top: 85px;
+    padding-top: 136px;
     padding-bottom: 15px;
   }
 
   .home-overlay-content {
     padding: 8px;
+    margin-top: 20px;
   }
 
   .hero-text {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     position: relative;
+    margin-top: 18px;
   }
 
   .hero-title {
-    font-size: 1.6rem;
+    font-size: 1.38rem !important;
     letter-spacing: -1px;
+    line-height: 0.82;
+    margin-top: 48px;
+    margin-bottom: 122px;
   }
 
   .hero-title-brand {
-    gap: 0;
-    position: relative;
     display: inline-flex;
+    position: relative;
+    justify-content: center;
   }
 
   .hero-title-icon {
-    width: clamp(48px, 16vw, 90px);
-    height: clamp(48px, 16vw, 90px);
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.15;
-    z-index: 0;
-  }
-
-  .hero-title-brand > span {
-    position: relative;
-    z-index: 1;
+    width: clamp(260px, 78vw, 420px);
+    height: clamp(260px, 78vw, 420px);
+    opacity: 1;
+    top: 90%;
   }
 
   .hero-tagline {
     font-size: 0.5rem;
     letter-spacing: 2px;
+    margin-top: 16px;
     margin-bottom: 12px;
   }
 
@@ -338,6 +390,7 @@
     font-size: 0.75rem;
     padding: 6px 12px;
     border-radius: 12px;
+    margin-top: 16px;
   }
 
   .floating-nav-grid {

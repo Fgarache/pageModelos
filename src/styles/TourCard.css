@@ -277,6 +277,60 @@
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .tour-card-visual.animate-in {
+    height: 400px;
+    border-radius: 22px;
+  }
+
+  .tour-card-content-overlay {
+    padding: 18px;
+  }
+
+  .tour-modelo-header .modelo-name {
+    font-size: 1.2rem;
+  }
+
+  .tour-modelo-header .modelo-alias {
+    font-size: 0.72rem;
+  }
+
+  .tour-main-title {
+    font-size: 1rem;
+    margin: 8px 0;
+    line-height: 1.15;
+  }
+
+  .tour-info-badge {
+    gap: 6px;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+  }
+
+  .tour-info-badge .info-text,
+  .tour-location-link {
+    font-size: 0.72rem;
+  }
+
+  .tour-stats-liquid {
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+  }
+
+  .tour-stats-liquid .label {
+    font-size: 0.58rem;
+  }
+
+  .tour-stats-liquid .value {
+    font-size: 0.78rem;
+  }
+
+  .btn-glass-action {
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+  }
+
   .tour-card-compact {
     border-radius: 16px;
   }
@@ -305,6 +359,70 @@
 }
 
 @media (max-width: 480px) {
+  .tour-card-visual.animate-in {
+    height: 340px;
+    border-radius: 18px;
+  }
+
+  .card-overlay-gradient {
+    height: 72%;
+  }
+
+  .tour-card-content-overlay {
+    padding: 12px;
+  }
+
+  .tour-modelo-header .modelo-name {
+    font-size: 0.98rem;
+    line-height: 1.05;
+  }
+
+  .tour-modelo-header .modelo-alias {
+    font-size: 0.62rem;
+  }
+
+  .tour-main-title {
+    font-size: 0.82rem;
+    margin: 6px 0;
+    line-height: 1.08;
+  }
+
+  .tour-info-badge {
+    gap: 5px;
+    padding: 5px 8px;
+    margin-bottom: 8px;
+  }
+
+  .tour-info-badge .icon {
+    font-size: 0.72rem;
+  }
+
+  .tour-info-badge .info-text,
+  .tour-location-link {
+    font-size: 0.62rem;
+  }
+
+  .tour-stats-liquid {
+    gap: 8px;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    border-radius: 10px;
+  }
+
+  .tour-stats-liquid .label {
+    font-size: 0.5rem;
+    letter-spacing: 0.6px;
+  }
+
+  .tour-stats-liquid .value {
+    font-size: 0.68rem;
+  }
+
+  .btn-glass-action {
+    font-size: 0.62rem;
+    letter-spacing: 0.6px;
+  }
+
   .tour-card-compact {
     border-radius: 14px;
   }
