@@ -87,6 +87,10 @@
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
 }
 
+.logo-white {
+  color: #ffffff;
+}
+
 @media screen and (max-width: 768px) {
   .navbar-logo-icon {
     width: 46px;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import '../styles/TourCard.css';
@@ -49,11 +49,13 @@ export default function TourCard({
   modelInfo,
   nombreModelo, 
   userAlias,
-  isCompact = false
+  isCompact = false,
+  onShowModal,
 }: TourCardProps) {
   const navigate = useNavigate();
   const [horarios, setHorarios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
@@ -96,6 +98,23 @@ export default function TourCard({
       isActive = false;
     };
   }, [isCompact, tour?.id]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const syncViewport = () => setIsMobileViewport(mediaQuery.matches);
+
+    syncViewport();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', syncViewport);
+      return () => mediaQuery.removeEventListener('change', syncViewport);
+    }
+
+    mediaQuery.addListener(syncViewport);
+    return () => mediaQuery.removeListener(syncViewport);
+  }, []);
 
   // --- VISTA COMPACTA (Para listados en ToursPage) ---
   if (isCompact) {
@@ -160,6 +179,26 @@ export default function TourCard({
     .filter((item: any) => item.disponible);
   const tourDetailItems = getTextListItems(tour.detalles);
 
+  const shouldIgnoreMobileExpand = (target: EventTarget | null) => {
+    if (!(target instanceof HTMLElement)) return false;
+    return Boolean(target.closest('[data-ignore-mobile-expand="true"]'));
+  };
+
+  const openMobileCard = () => {
+    if (!onShowModal || !isMobileViewport) return;
+    onShowModal(tour);
+  };
+
+  const handleOpenMobileCard = (event: MouseEvent<HTMLDivElement>) => {
+    if (!onShowModal || !isMobileViewport) return;
+
+    if (shouldIgnoreMobileExpand(event.target)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    openMobileCard();
+  };
+
   return (
     <div className="tour-card-liquid detailed" style={{
       position: 'relative',
@@ -169,8 +208,9 @@ export default function TourCard({
       minHeight: 'clamp(320px, 62vw, 420px)',
       background: '#0d1117',
       transition: 'all 0.3s ease',
-      alignSelf: 'start'
-    }}>
+      alignSelf: 'start',
+      cursor: isMobileViewport ? 'pointer' : 'default'
+    }} onClick={handleOpenMobileCard}>
       {profilPic ? (
         <>
           <img
@@ -224,7 +264,7 @@ export default function TourCard({
           ) : null}
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
+        <div style={{ marginBottom: '12px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
           <p style={{ margin: '0 0 6px 0', color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
             Ubicaciones
           </p>
@@ -242,7 +282,7 @@ export default function TourCard({
         </div>
 
         <div style={{ marginTop: 'auto' }}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '20px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
             <div style={{ marginBottom: '12px' }}>
               <p style={{ margin: 0, color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
                 Horarios

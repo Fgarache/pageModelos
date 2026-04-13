@@ -27,8 +27,8 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-glass-container">
         <Link to="/" className="navbar-logo" onClick={() => setIsOpen(false)}>
-          <img src="/icons/logo.png" alt="LindasGT.com" className="navbar-logo-icon" />
-          LindasGT<span className="logo-gold">.com</span>
+          <img src="/icons/logo.png" alt="LindasGT" className="navbar-logo-icon" />
+          <span className="logo-white">Lindas</span><span className="logo-gold">GT</span>
         </Link>
 
         {/* Icono Hamburguesa */}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { API_FIREBASE } from '../data';
+import PageSectionHeader from '../components/PageSectionHeader';
 import TourCard from '../components/TourCard';
 import TourModal from '../components/TourModal';
 import '../styles/ToursPage.css';
@@ -100,12 +101,11 @@ export default function ToursPage() {
 
       <div className="tours-page-container">
         <header className="tours-page-header">
-          <span className="tours-badge">DESTINOS EXCLUSIVOS</span>
-          <h1 className="tours-title">TOURS & <span className="gold-text">EXPERIENCIAS</span></h1>
-          <p className="tours-subtitle">
-            Tours VIP en Guatemala: Ciudad de Guatemala, Antigua, Quetzaltenango, Escuintla,
-            San Marcos, Peten, Izabal y mas departamentos del pais.
-          </p>
+          <PageSectionHeader
+            title="TOURS &"
+            accent="EXPERIENCIAS"
+            description="Tours VIP en Guatemala: Ciudad de Guatemala, Antigua, Quetzaltenango, Escuintla, San Marcos, Peten, Izabal y más departamentos del país."
+          />
           <details className="tours-seo-departments">
             <summary>Ver todos los departamentos de cobertura</summary>
             <p>

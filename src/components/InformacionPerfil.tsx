@@ -62,6 +62,7 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
   const [showFullBio, setShowFullBio] = useState(false);
   const [showGroupsModal, setShowGroupsModal] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
   if (!user) return null;
 
@@ -108,6 +109,7 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
     if (slides.length <= 1) return undefined;
 
     const intervalId = window.setInterval(() => {
+      setSlideDirection('next');
       setActiveSlide((current) => (current + 1) % slides.length);
     }, 7000);
 
@@ -121,11 +123,14 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
   }, [activeSlide, slides.length]);
 
   const currentSlide = slides[activeSlide];
+  const profileWatermark = user.user_alias ? `LindasGT.com/${user.user_alias}` : 'LindasGT.com';
   const goToPreviousSlide = () => {
+    setSlideDirection('prev');
     setActiveSlide((current) => (current - 1 + slides.length) % slides.length);
   };
 
   const goToNextSlide = () => {
+    setSlideDirection('next');
     setActiveSlide((current) => (current + 1) % slides.length);
   };
 
@@ -168,13 +173,13 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
                 key={currentSlide.link}
                 src={currentSlide.link}
                 alt={currentSlide.titulo || user.nombre}
-                className="profile-main-image profile-main-image--animated"
+                className={`profile-main-image profile-main-image--animated ${slideDirection === 'prev' ? 'profile-main-image--from-prev' : 'profile-main-image--from-next'}`}
                 draggable={false}
                 onDragStart={preventImageActions}
                 onContextMenu={preventImageActions}
               />
               <div className="profile-main-image-guard" aria-hidden="true" />
-              <div className="profile-watermark">LindasGT.com</div>
+              <div className="profile-watermark">{profileWatermark}</div>
 
               {slides.length > 1 && (
                 <>

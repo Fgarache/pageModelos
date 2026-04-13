@@ -1,0 +1,61 @@
+.page-section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.page-section-title {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1.05;
+}
+
+.page-section-title-accent {
+  color: #d4af37;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.28);
+}
+
+.page-section-description {
+  margin: 14px auto 0;
+  max-width: 860px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(0.92rem, 2.5vw, 1.06rem);
+  line-height: 1.5;
+}
+
+.page-section-header.is-compact {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.page-section-header.is-compact .page-section-title {
+  font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+  letter-spacing: 0.02em;
+}
+
+.page-section-header.is-compact .page-section-description {
+  margin: 8px 0 0;
+  max-width: none;
+  font-size: clamp(0.78rem, 2.2vw, 0.9rem);
+}
+
+@media (max-width: 768px) {
+  .page-section-header {
+    margin-bottom: 34px;
+  }
+
+  .page-section-header.is-compact {
+    margin-bottom: 12px;
+  }
+
+  .page-section-header.is-compact .page-section-title {
+    text-align: center;
+  }
+
+  .page-section-header.is-compact .page-section-description {
+    text-align: center;
+  }
+}

@@ -155,13 +155,23 @@
   object-fit: cover;
   display: block;
   object-position: center top;
-  transition: opacity 0.45s ease;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   user-select: none;
   -webkit-user-drag: none;
 }
 
 .profile-main-image--animated {
-  animation: profileImageReveal 0.7s ease;
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+
+.profile-main-image--from-next {
+  animation-name: profileImageSlideFromRight;
+}
+
+.profile-main-image--from-prev {
+  animation-name: profileImageSlideFromLeft;
 }
 
 .profile-main-image-guard {
@@ -173,18 +183,22 @@
 
 .profile-watermark {
   position: absolute;
-  top: auto;
-  bottom: 80px;
-  right: 16px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
-  font-size: 1.2rem;
+  width: calc(100% - 20px);
+  text-align: center;
+  font-size: clamp(0.66rem, 2.6vw, 1rem);
   font-weight: 700;
   letter-spacing: 0.05em;
-    color: rgba(243, 215, 124, 0.85);
-    text-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.4),
-      0 4px 8px rgba(0, 0, 0, 0.3),
-      0 8px 16px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  color: rgba(243, 215, 124, 0.42);
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.2);
   pointer-events: none;
   user-select: none;
   font-family: 'Courier New', monospace;
@@ -330,17 +344,23 @@
   backdrop-filter: blur(12px);
 }
 
-@keyframes profileImageReveal {
+@keyframes profileImageSlideFromRight {
   0% {
-    opacity: 0;
-    transform: scale(1.035);
-    filter: blur(10px);
+    transform: translateX(14%);
   }
 
   100% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0);
+    transform: translateX(0);
+  }
+}
+
+@keyframes profileImageSlideFromLeft {
+  0% {
+    transform: translateX(-14%);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }
 
@@ -367,20 +387,6 @@
   max-width: min(100%, 560px);
   text-align: center;
   position: relative;
-  animation: statusPulse 2.2s ease-in-out infinite;
-}
-
-@keyframes statusPulse {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    box-shadow: 0 0 0 rgba(212, 175, 55, 0);
-  }
-
-  50% {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
-  }
 }
 
 .profile-copy-panel {

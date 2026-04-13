@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { API_FIREBASE } from '../data';
+import PageSectionHeader from '../components/PageSectionHeader';
 import RifaCard from '../components/RifaCard';
 import '../styles/RifasPage.css';
 
@@ -57,13 +58,11 @@ export default function RifasPage() {
       <div className="rifas-bg-blob"></div>
 
       <div className="rifas-page-container">
-        <header className="rifas-page-header">
-          <span className="rifas-badge">OPORTUNIDADES EXCLUSIVAS</span>
-          <h1 className="rifas-title">RIFAS & <span className="gold-text">SORTEOS</span></h1>
-          <p className="rifas-subtitle">
-            Gana experiencias inolvidables con nuestras modelos
-          </p>
-        </header>
+        <PageSectionHeader
+          title="RIFAS &"
+          accent="SORTEOS"
+          description="Gana experiencias inolvidables con nuestras modelos."
+        />
 
         {loading ? (
           <div className="rifas-loading-container">

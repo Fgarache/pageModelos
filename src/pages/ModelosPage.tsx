@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_FIREBASE } from '../data';
 import { Link } from 'react-router-dom';
+import PageSectionHeader from '../components/PageSectionHeader';
 import '../styles/ModelosPage.css';
 
 const ModelosPage: React.FC = () => {
@@ -38,26 +39,13 @@ const ModelosPage: React.FC = () => {
   }
 
   return (
-    <div className="modelos-page" style={{ minHeight: '100vh', padding: '40px 20px', background: 'linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%)' }}>
+    <div className="modelos-page">
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <header style={{ textAlign: 'center', marginBottom: '60px' }}>
-          <span style={{ color: '#d4af37', fontSize: '14px', fontWeight: '800', letterSpacing: '3px', textTransform: 'uppercase' }}>
-            CATÁLOGO EXCLUSIVO
-          </span>
-          <h1 style={{ 
-            fontSize: '48px', 
-            fontWeight: '800', 
-            color: '#fff', 
-            marginTop: '10px',
-            letterSpacing: '2px',
-            textTransform: 'uppercase'
-          }}>
-            NUESTRAS <span style={{ color: '#d4af37' }}>MODELOS</span>
-          </h1>
-          <p style={{ color: '#aaa', fontSize: '16px', marginTop: '15px', maxWidth: '800px', margin: '15px auto 0' }}>
-            Modelos ejecutivas escort premium en Guatemala, con atención exclusiva y discreta.
-          </p>
-        </header>
+        <PageSectionHeader
+          title="CHICAS"
+          accent="DISPONIBLES"
+          description="Modelos ejecutivas escort premium en Guatemala, con atención exclusiva y discreta."
+        />
 
         {modelos.length === 0 ? (
           <div style={{
@@ -73,6 +61,11 @@ const ModelosPage: React.FC = () => {
             marginBottom: '40px'
           }}>
             {modelos.map((modelo) => (
+              (() => {
+                const displayName = modelo.nombre || modelo.user_alias || 'Perfil';
+                const previewInfo = modelo.info || 'Perfil público activo en la plataforma.';
+
+                return (
               <Link 
                 to={`/${modelo.user_alias}`} 
                 key={modelo.id}
@@ -175,34 +168,21 @@ const ModelosPage: React.FC = () => {
                         letterSpacing: '1px',
                         textTransform: 'uppercase'
                       }}>
-                        {modelo.nombre}
+                        {displayName}
                       </h3>
                       {modelo.verificado && (
                         <span style={{ fontSize: '16px' }}>✅</span>
                       )}
                     </div>
-                    
+
                     <p style={{
                       fontSize: '13px',
-                      color: '#d4af37',
-                      fontWeight: '600',
-                      margin: '0 0 10px 0',
-                      letterSpacing: '1px',
-                      textTransform: 'uppercase'
+                      color: '#ccc',
+                      margin: 0,
+                      lineHeight: '1.4'
                     }}>
-                      @{modelo.user_alias}
+                      {previewInfo.length > 60 ? `${previewInfo.substring(0, 60)}...` : previewInfo}
                     </p>
-
-                    {modelo.info && (
-                      <p style={{
-                        fontSize: '13px',
-                        color: '#ccc',
-                        margin: 0,
-                        lineHeight: '1.4'
-                      }}>
-                        {modelo.info.substring(0, 60)}...
-                      </p>
-                    )}
 
                     <div style={{
                       marginTop: '15px',
@@ -220,6 +200,8 @@ const ModelosPage: React.FC = () => {
                   </div>
                 </div>
               </Link>
+                );
+              })()
             ))}
           </div>
         )}

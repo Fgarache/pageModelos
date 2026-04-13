@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import InformacionPerfil from '../components/InformacionPerfil';
+import PageSectionHeader from '../components/PageSectionHeader';
 import TourCard from '../components/TourCard';
+import TourModal from '../components/TourModal';
 import RifaCard from '../components/RifaCard';
 import '../styles/ModeloDetail.css';
 
@@ -11,6 +13,7 @@ const ModeloDetail = () => {
   const [modelo, setModelo] = useState<any>(null);
   const [tours, setTours] = useState<any[]>([]);
   const [rifas, setRifas] = useState<any[]>([]);
+  const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,12 +87,15 @@ const ModeloDetail = () => {
 
         {tours.length > 0 && (
           <section className="detail-section" id="detail-tours">
-            <div className="section-header-inline">
-              <h2 className="section-heading">Tours <span className="gold-span">Disponibles</span></h2>
-            </div>
+            <PageSectionHeader
+              title="TOURS"
+              accent="DISPONIBLES"
+              description="Explora las fechas, ubicaciones y horarios activos de esta modelo."
+              compact
+            />
             <div className="detail-card-grid detail-card-grid--tours">
               {tours.map((tour) => (
-                <TourCard key={tour.id} tour={tour} modelInfo={modelo} />
+                <TourCard key={tour.id} tour={tour} modelInfo={modelo} onShowModal={setSelectedTour} />
               ))}
             </div>
           </section>
@@ -97,10 +103,12 @@ const ModeloDetail = () => {
 
         {rifas.length > 0 && (
           <section className="detail-section" id="detail-rifas">
-            <div className="section-header-inline">
-              <span className="section-eyebrow">Sorteos Activos</span>
-              <h2 className="section-heading">Rifas <span className="gold-span">Abiertas</span></h2>
-            </div>
+            <PageSectionHeader
+              title="RIFAS"
+              accent="ABIERTAS"
+              description="Participa en sorteos activos y revisa cada premio disponible."
+              compact
+            />
             <div className="detail-card-grid detail-card-grid--rifas">
               {rifas.map((rifa) => (
                 <RifaCard key={rifa.id} rifa={rifa} modelInfo={modelo} />
@@ -114,6 +122,13 @@ const ModeloDetail = () => {
             Este perfil todavía no tiene tours ni rifas públicas activas.
           </div>
         )}
+
+        <TourModal
+          isOpen={!!selectedTour}
+          tour={selectedTour}
+          modelInfo={modelo}
+          onClose={() => setSelectedTour(null)}
+        />
       </div>
     </div>
   );
