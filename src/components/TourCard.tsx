@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import '../styles/TourCard.css';
@@ -56,6 +56,7 @@ export default function TourCard({
   const [horarios, setHorarios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const lastTouchOpenAt = useRef(0);
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
@@ -192,10 +193,24 @@ export default function TourCard({
   const handleOpenMobileCard = (event: MouseEvent<HTMLDivElement>) => {
     if (!onShowModal || !isMobileViewport) return;
 
+    // Ignore synthetic click fired right after a touch open.
+    if (Date.now() - lastTouchOpenAt.current < 700) return;
+
     if (shouldIgnoreMobileExpand(event.target)) return;
 
     event.preventDefault();
     event.stopPropagation();
+    openMobileCard();
+  };
+
+  const handleTouchOpenMobileCard = (event: TouchEvent<HTMLDivElement>) => {
+    if (!onShowModal || !isMobileViewport) return;
+
+    if (shouldIgnoreMobileExpand(event.target)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    lastTouchOpenAt.current = Date.now();
     openMobileCard();
   };
 
@@ -210,7 +225,7 @@ export default function TourCard({
       transition: 'all 0.3s ease',
       alignSelf: 'start',
       cursor: isMobileViewport ? 'pointer' : 'default'
-    }} onClick={handleOpenMobileCard}>
+    }} onClick={handleOpenMobileCard} onTouchEnd={handleTouchOpenMobileCard}>
       {profilPic ? (
         <>
           <img

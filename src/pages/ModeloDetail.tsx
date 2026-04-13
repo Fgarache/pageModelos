@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import InformacionPerfil from '../components/InformacionPerfil';
@@ -16,6 +16,21 @@ const ModeloDetail = () => {
   const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const closeTourModal = useCallback(() => {
+    if (typeof window === 'undefined') {
+      setSelectedTour(null);
+      return;
+    }
+
+    const state = window.history.state as Record<string, unknown> | null;
+    if (state?.__tourModalOpen) {
+      window.history.back();
+      return;
+    }
+
+    setSelectedTour(null);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -47,6 +62,26 @@ const ModeloDetail = () => {
 
     loadData();
   }, [userAlias]);
+
+  useEffect(() => {
+    if (!selectedTour || typeof window === 'undefined') return undefined;
+
+    const currentState = (window.history.state && typeof window.history.state === 'object')
+      ? window.history.state
+      : {};
+
+    window.history.pushState({ ...currentState, __tourModalOpen: true }, '');
+
+    const handlePopState = () => {
+      setSelectedTour(null);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [selectedTour]);
 
   if (loading) {
     return (
@@ -127,7 +162,7 @@ const ModeloDetail = () => {
           isOpen={!!selectedTour}
           tour={selectedTour}
           modelInfo={modelo}
-          onClose={() => setSelectedTour(null)}
+          onClose={closeTourModal}
         />
       </div>
     </div>
