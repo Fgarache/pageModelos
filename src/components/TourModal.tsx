@@ -219,7 +219,7 @@ export default function TourModal({ isOpen, tour, modelInfo, onClose }: TourModa
     }
   };
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleTouchEnd = () => {
     if (!touchMoved) {
       onClose();
     }
