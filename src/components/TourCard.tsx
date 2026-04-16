@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from 'react';
+import { useEffect, useRef, useState, useRef as useRefReact, type MouseEvent, type TouchEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import '../styles/TourCard.css';
@@ -185,6 +185,10 @@ export default function TourCard({
     return Boolean(target.closest('[data-ignore-mobile-expand="true"]'));
   };
 
+
+  // --- Tap detection for mobile ---
+  const touchStartRef = useRefReact<{ x: number; y: number } | null>(null);
+
   const openMobileCard = () => {
     if (!onShowModal || !isMobileViewport) return;
     onShowModal(tour);
@@ -203,15 +207,32 @@ export default function TourCard({
     openMobileCard();
   };
 
-  const handleTouchOpenMobileCard = (event: TouchEvent<HTMLDivElement>) => {
-    if (!onShowModal || !isMobileViewport) return;
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    if (!isMobileViewport) return;
+    if (event.touches.length === 1) {
+      touchStartRef.current = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      };
+    }
+  };
 
+  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    if (!onShowModal || !isMobileViewport) return;
     if (shouldIgnoreMobileExpand(event.target)) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    lastTouchOpenAt.current = Date.now();
-    openMobileCard();
+    if (!touchStartRef.current) return;
+    const touch = event.changedTouches[0];
+    const dx = Math.abs(touch.clientX - touchStartRef.current.x);
+    const dy = Math.abs(touch.clientY - touchStartRef.current.y);
+    // Solo abrir si el movimiento fue pequeño (tap)
+    if (dx < 10 && dy < 10) {
+      event.preventDefault();
+      event.stopPropagation();
+      lastTouchOpenAt.current = Date.now();
+      openMobileCard();
+    }
+    touchStartRef.current = null;
   };
 
   return (
@@ -225,7 +246,7 @@ export default function TourCard({
       transition: 'all 0.3s ease',
       alignSelf: 'start',
       cursor: isMobileViewport ? 'pointer' : 'default'
-    }} onClick={handleOpenMobileCard} onTouchEnd={handleTouchOpenMobileCard}>
+    }} onClick={handleOpenMobileCard} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {profilPic ? (
         <>
           <img
