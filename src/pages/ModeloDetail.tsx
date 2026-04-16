@@ -125,7 +125,7 @@ const ModeloDetail = () => {
             <PageSectionHeader
               title="TOURS"
               accent="DISPONIBLES"
-              description="Explora las fechas, ubicaciones y horarios activos de esta modelo."
+              description="Ubicaciones y horarios activos."
               compact
             />
             <div className="detail-card-grid detail-card-grid--tours">
@@ -141,7 +141,7 @@ const ModeloDetail = () => {
             <PageSectionHeader
               title="RIFAS"
               accent="ABIERTAS"
-              description="Participa en sorteos activos y revisa cada premio disponible."
+              description="Participa en sorteos activos."
               compact
             />
             <div className="detail-card-grid detail-card-grid--rifas">

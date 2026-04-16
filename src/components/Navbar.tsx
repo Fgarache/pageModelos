@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-glass-container">
-        <Link to="/" className="navbar-logo" onClick={() => setIsOpen(false)}>
+        <Link to="/home" className="navbar-logo" onClick={() => setIsOpen(false)}>
           <img src="/icons/logo.png" alt="LindasGT" className="navbar-logo-icon" />
           <span className="logo-white">Lindas</span><span className="logo-gold">GT</span>
         </Link>
@@ -39,7 +39,7 @@ export default function Navbar() {
         {/* Menú de Navegación */}
         <ul className={`nav-menu ${isOpen ? 'active' : ''}`}>
           <li className="nav-item">
-            <Link to="/" className={`nav-link ${isActive('/') ? 'active' : ''}`} onClick={() => setIsOpen(false)}>
+            <Link to="/home" className={`nav-link ${isActive('/home') ? 'active' : ''}`} onClick={() => setIsOpen(false)}>
               Inicio
             </Link>
           </li>

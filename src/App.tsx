@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HOME_REDIRECT_PATH } from './homeconfig';
 import Navbar from './components/Navbar';
 import MetadataManager from './components/MetadataManager';
 import ContentProtection from './components/ContentProtection';
@@ -17,7 +18,10 @@ function App() {
       <ContentProtection />
       <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Redirige la raíz a la ruta configurada */}
+        <Route path="/" element={<Navigate to={HOME_REDIRECT_PATH} replace />} />
+        {/* HomePage accesible en /home */}
+        <Route path="/home" element={<HomePage />} />
         <Route path="/modelos" element={<ModelosPage />} />
         <Route path="/:user" element={<ModeloDetail />} />
         <Route path="/tours" element={<ToursPage />} />

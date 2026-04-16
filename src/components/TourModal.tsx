@@ -196,8 +196,50 @@ export default function TourModal({ isOpen, tour, modelInfo, onClose }: TourModa
   };
   const locationsToShow = normalizedLocations.length > 0 ? normalizedLocations : [fallbackPrimary];
 
+  // --- Touch logic to prevent accidental close on swipe ---
+  let touchStartY = 0;
+  let touchStartX = 0;
+  let touchMoved = false;
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      touchMoved = false;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 1) {
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+      if (deltaY > 10 || deltaX > 10) {
+        touchMoved = true;
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchMoved) {
+      onClose();
+    }
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only close if click is directly on overlay (not children)
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="tour-modal-overlay" onClick={onClose}>
+    <div
+      className="tour-modal-overlay"
+      onClick={handleOverlayClick}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className="tour-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="tour-modal-body tour-modal-body-card">
           <div className="tour-modal-image-shell">

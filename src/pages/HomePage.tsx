@@ -1,12 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HOME_CONFIG } from '../data/homeData';
+import { HOME_REDIRECT_PATH } from '../homeconfig';
 import '../styles/HomePage.css';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { style, content, features } = HOME_CONFIG;
   const [logoReady, setLogoReady] = useState(false);
+
+  // Redirigir automáticamente a la ruta configurada solo la primera vez en la sesión
+  useEffect(() => {
+    const alreadyRedirected = sessionStorage.getItem('redirectedToLinda');
+    if (!alreadyRedirected) {
+      sessionStorage.setItem('redirectedToLinda', 'true');
+      navigate(HOME_REDIRECT_PATH, { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     if (document.readyState === 'complete') {
