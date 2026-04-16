@@ -18,17 +18,6 @@ const ModeloDetail = () => {
   const [error, setError] = useState<string | null>(null);
 
   const closeTourModal = useCallback(() => {
-    if (typeof window === 'undefined') {
-      setSelectedTour(null);
-      return;
-    }
-
-    const state = window.history.state as Record<string, unknown> | null;
-    if (state?.__tourModalOpen) {
-      window.history.back();
-      return;
-    }
-
     setSelectedTour(null);
   }, []);
 
