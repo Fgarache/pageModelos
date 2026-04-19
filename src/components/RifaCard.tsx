@@ -40,7 +40,7 @@ export default function RifaCard({
   isCompact = false
 }: RifaCardProps) {
   const navigate = useNavigate();
-  const [numerosAbiertos, setNumerosAbiertos] = useState(false);
+  const [numerosAbiertos, setNumerosAbiertos] = useState(true);
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
