@@ -87,7 +87,7 @@
 /* --- ESPACIADO ENTRE SECCIONES --- */
 /* Esto separa InformacionPerfil, ToursDisponibles y RifasDisponibles automáticamente */
 .modelo-detail-page > .detail-container > * {
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .modelo-detail-page > .detail-container > *:last-child {
@@ -1005,7 +1005,7 @@
 }
 
 .section-header-inline {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .detail-card-grid {
@@ -1067,7 +1067,7 @@
   }
 
   .modelo-detail-page > .detail-container > * {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
   }
 
   .profile-hero-card {
@@ -1209,7 +1209,7 @@
   }
 
   .section-header-inline {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .floating-contact-cta {
