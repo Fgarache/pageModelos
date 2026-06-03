@@ -96,6 +96,43 @@ const normalizeGroups = (grupos: any) => {
     .filter((grupo) => grupo.link);
 };
 
+const normalizeServices = (servicios: any) => {
+  if (!servicios) {
+    return [] as Array<{ nombre: string; detalles: string; precio: string; link: string }>;
+  }
+
+  return toArray<any>(servicios)
+    .map((servicio) => {
+      if (typeof servicio === 'string') {
+        const nombre = servicio.trim();
+        return {
+          nombre,
+          detalles: '',
+          precio: '',
+          link: '',
+        };
+      }
+
+      if (typeof servicio === 'object' && servicio !== null) {
+        const nombre = getFirstString(servicio.nombre, servicio.titulo, servicio.servicio, servicio.name);
+        return {
+          nombre,
+          detalles: getFirstString(servicio.detalles, servicio.descripcion, servicio.info),
+          precio: getFirstString(servicio.precio, servicio.costo, servicio.valor),
+          link: getFirstString(servicio.link, servicio.url),
+        };
+      }
+
+      return {
+        nombre: '',
+        detalles: '',
+        precio: '',
+        link: '',
+      };
+    })
+    .filter((servicio) => servicio.nombre);
+};
+
 const getFirstString = (...values: any[]) => {
   const match = values.find((value) => typeof value === 'string' && value.trim() !== '');
   return typeof match === 'string' ? match.trim() : '';
@@ -168,7 +205,7 @@ const normalizeProfile = (id: string, raw: any) => {
     estadoTexto,
     estadoActualizadoAt,
     ubicaciones: toArray<string>(raw.ubicaciones),
-    servicios: toArray<string>(raw.servicios),
+    servicios: normalizeServices(raw.servicios),
     grupos: normalizeGroups(raw.grupos),
     fotos: normalizeFotos(raw.fotos),
     redes: {

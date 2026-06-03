@@ -9,6 +9,13 @@ interface InformacionPerfilProps {
   gallery?: Array<{ link?: string; titulo?: string; fecha?: string }>;
 }
 
+interface ProfileService {
+  nombre: string;
+  detalles?: string;
+  precio?: string;
+  link?: string;
+}
+
 const getWhatsAppLink = (whatsAppUrl: string | undefined, message: string) => {
   if (!whatsAppUrl) return '';
 
@@ -22,6 +29,14 @@ const getWhatsAppLink = (whatsAppUrl: string | undefined, message: string) => {
   return phone ? `https://wa.me/${phone}?text=${encodedMessage}` : '';
 };
 
+const normalizeExternalLink = (value: string | undefined) => {
+  const trimmedValue = String(value || '').trim();
+  if (!trimmedValue) return '';
+
+  if (/^https?:\/\//i.test(trimmedValue)) return trimmedValue;
+  return `https://${trimmedValue}`;
+};
+
 const renderFormattedBio = (text: string) => {
   return text.split('\n').map((line, index) => {
     const parts = line.split(/(\*[^*]+\*)/g).filter(Boolean);
@@ -32,6 +47,28 @@ const renderFormattedBio = (text: string) => {
           if (part.startsWith('*') && part.endsWith('*')) {
             return (
               <strong key={`${part}-${partIndex}`} className="profile-bio-emphasis">
+                {part.slice(1, -1)}
+              </strong>
+            );
+          }
+
+          return <span key={`${part}-${partIndex}`}>{part}</span>;
+        }) : <span>&nbsp;</span>}
+      </span>
+    );
+  });
+};
+
+const renderFormattedServiceDetails = (text: string) => {
+  return text.split('\n').map((line, index) => {
+    const parts = line.split(/(\*[^*]+\*)/g).filter(Boolean);
+
+    return (
+      <span key={`${line}-${index}`} className="profile-service-modal-line">
+        {parts.length > 0 ? parts.map((part, partIndex) => {
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return (
+              <strong key={`${part}-${partIndex}`} className="profile-service-modal-emphasis">
                 {part.slice(1, -1)}
               </strong>
             );
@@ -130,7 +167,9 @@ const getContactExtraLabel = (tipo: string, href: string) => {
 export default function InformacionPerfil({ user, hasTours = false, hasRifas = false, gallery = [] }: InformacionPerfilProps) {
   const [showFullBio, setShowFullBio] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
+  const [selectedService, setSelectedService] = useState<ProfileService | null>(null);
   const [visibleFloatingMessages, setVisibleFloatingMessages] = useState<string[]>([]);
+  const [floatingMessagesDismissed, setFloatingMessagesDismissed] = useState(false);
   const [isTypingIcon, setIsTypingIcon] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
@@ -138,7 +177,7 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
   if (!user) return null;
 
   const ubicaciones = user.ubicaciones || [];
-  const servicios = user.servicios || [];
+  const servicios: ProfileService[] = user.servicios || [];
   const grupos = user.grupos || [];
   const bioLines = (user.info || 'Perfil público activo en la plataforma.').split('\n');
   const visibleBio = showFullBio || bioLines.length <= 10
@@ -163,11 +202,15 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
     .filter((item: { href: string }) => item.href && item.href.trim());
 
   const contactLinks = [...socialLinks, ...groupLinks];
-
-  const serviceLinks = servicios.map((servicio: string) => ({
-    servicio,
-    href: getWhatsAppLink(user.redes?.whatsapp, `Hola, ${user.nombre} quieroo mas informacion sobre ${servicio}`),
-  }));
+  const defaultContactHref = getWhatsAppLink(user.redes?.whatsapp, 'Hola, me gustaria contactar contigo.') || contactLinks[0]?.href || '';
+  const availableLocation = String(user.disponibleLugar || 'Guatemala').trim();
+  const normalizedLocation = availableLocation
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  const availabilityFloatingMessage = normalizedLocation.includes('capital')
+    ? 'Hoy estoy disponible en la capital'
+    : `Solo por hoy estoy disponible en ${availableLocation}`;
   const recentStatusLabel = getRecentStatusLabel(user.estadoTexto, user.estadoActualizadoAt);
   const footerChipLabel = `Disponible hoy en ${user.disponibleLugar || 'Guatemala'}`;
 
@@ -205,45 +248,49 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
 
   useEffect(() => {
     if (contactLinks.length === 0) return undefined;
+    if (floatingMessagesDismissed) {
+      setVisibleFloatingMessages([]);
+      setIsTypingIcon(false);
+      return undefined;
+    }
 
     setVisibleFloatingMessages([]);
     setIsTypingIcon(true);
 
-    const messageOne = 'Hola 👋';
-    const messageTwo = 'Escribeme por WhatsApp 💚';
+    const messageOne = 'Hola 😄';
+    const messageTwo = availabilityFloatingMessage;
     const messageThree = 'Tambien aca esta mi Telegram 📩';
     const messageFour = 'Y mi canal de fotos 🔥';
 
-    const showFirstTimeout = window.setTimeout(() => {
-      setVisibleFloatingMessages([messageOne]);
-    }, 3200);
+    const chatMessages = [
+      messageOne,
+      messageTwo,
+      messageThree,
+      messageFour,
+      ...(hasTours ? ['Tengo viaje a los departamentos programados, mira si voy a tu lugar 😊'] : []),
+      ...(hasRifas ? ['Tambien tengo una rifa disponible 🎟️'] : []),
+      'Hablame bye',
+    ];
 
-    const showSecondTimeout = window.setTimeout(() => {
-      setIsTypingIcon(false);
-      setVisibleFloatingMessages([messageOne, messageTwo]);
-    }, 6200);
-
-    const showThirdTimeout = window.setTimeout(() => {
-      setVisibleFloatingMessages([messageOne, messageTwo, messageThree]);
-    }, 9200);
-
-    const showFourthTimeout = window.setTimeout(() => {
-      setVisibleFloatingMessages([messageOne, messageTwo, messageThree, messageFour]);
-    }, 12200);
+    const revealStartMs = 3200;
+    const revealStepMs = 3000;
+    const revealTimeouts = chatMessages.map((_, index) => window.setTimeout(() => {
+      if (index >= 1) {
+        setIsTypingIcon(false);
+      }
+      setVisibleFloatingMessages(chatMessages.slice(0, index + 1));
+    }, revealStartMs + (index * revealStepMs)));
 
     const hideTimeout = window.setTimeout(() => {
       setVisibleFloatingMessages([]);
       setIsTypingIcon(false);
-    }, 19000);
+    }, revealStartMs + (chatMessages.length * revealStepMs) + 3800);
 
     return () => {
-      window.clearTimeout(showFirstTimeout);
-      window.clearTimeout(showSecondTimeout);
-      window.clearTimeout(showThirdTimeout);
-      window.clearTimeout(showFourthTimeout);
+      revealTimeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
       window.clearTimeout(hideTimeout);
     };
-  }, [contactLinks.length]);
+  }, [availabilityFloatingMessage, contactLinks.length, floatingMessagesDismissed, hasRifas, hasTours]);
 
   const currentSlide = slides[activeSlide];
   const profileWatermark = user.user_alias ? `LindasGT.com/${user.user_alias}` : 'LindasGT.com';
@@ -260,6 +307,33 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
   const handleScrollToServices = () => {
     const servicesSection = document.getElementById('detail-services');
     servicesSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const getServiceAction = (service: ProfileService) => {
+    const directServiceLink = normalizeExternalLink(service.link);
+    if (directServiceLink) {
+      return {
+        href: directServiceLink,
+        label: 'Link',
+      };
+    }
+
+    const fallbackWhatsAppLink = getWhatsAppLink(
+      user.redes?.whatsapp,
+      `Hola, me gustaria contactar el servicio ${service.nombre}.`,
+    );
+
+    if (fallbackWhatsAppLink) {
+      return {
+        href: fallbackWhatsAppLink,
+        label: 'Contactar por WhatsApp',
+      };
+    }
+
+    return {
+      href: defaultContactHref,
+      label: defaultContactHref ? 'Contactar' : 'Sin enlace disponible',
+    };
   };
 
   const preventImageActions = (event: React.SyntheticEvent) => {
@@ -380,20 +454,19 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
             </article>
           </div>
 
-          {serviceLinks.length > 0 && (
+          {servicios.length > 0 && (
             <div className="profile-services-block" id="detail-services">
               <span className="profile-meta-label">Servicios</span>
               <div className="profile-services-row">
-                {serviceLinks.map(({ servicio, href }: { servicio: string; href: string }) => (
-                  href ? (
-                    <a key={servicio} href={href} target="_blank" rel="noreferrer" className="profile-service-button">
-                      {servicio}
-                    </a>
-                  ) : (
-                    <span key={servicio} className="profile-service-button is-disabled">
-                      {servicio}
-                    </span>
-                  )
+                {servicios.map((servicio, index) => (
+                  <button
+                    key={`${servicio.nombre}-${index}`}
+                    type="button"
+                    className="profile-service-button"
+                    onClick={() => setSelectedService(servicio)}
+                  >
+                    {servicio.nombre}
+                  </button>
                 ))}
               </div>
             </div>
@@ -405,6 +478,19 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
         <div className="floating-contact-cta" aria-label="Contacto">
           {visibleFloatingMessages.length > 0 && (
             <div className="floating-contact-messages" aria-hidden="false">
+              <button
+                type="button"
+                className="floating-contact-close"
+                onClick={() => {
+                  setFloatingMessagesDismissed(true);
+                  setVisibleFloatingMessages([]);
+                  setIsTypingIcon(false);
+                }}
+                aria-label="Cerrar mensajes"
+                title="Cerrar mensajes"
+              >
+                Cerrar
+              </button>
               {visibleFloatingMessages.map((message, index) => (
                 <button
                   key={`${message}-${index}`}
@@ -468,6 +554,51 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
                 </a>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedService && (
+        <div className="profile-groups-modal-backdrop" onClick={() => setSelectedService(null)}>
+          <div className="profile-groups-modal liquid-glass" onClick={(event) => event.stopPropagation()}>
+            <div className="profile-groups-modal-header">
+              <div>
+                <span className="profile-meta-label">Servicio</span>
+                <h3>{selectedService.nombre}</h3>
+              </div>
+              <button type="button" className="profile-groups-close" onClick={() => setSelectedService(null)}>
+                Cerrar
+              </button>
+            </div>
+
+            <div className="profile-service-modal-body">
+              {selectedService.detalles && (
+                <p className="profile-service-modal-copy">{renderFormattedServiceDetails(selectedService.detalles)}</p>
+              )}
+
+              {selectedService.precio && (
+                <p className="profile-service-modal-price">Precio: Q{selectedService.precio}</p>
+              )}
+
+              {(() => {
+                const serviceAction = getServiceAction(selectedService);
+
+                return serviceAction.href ? (
+                  <a
+                    href={serviceAction.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="profile-service-cta"
+                  >
+                    {serviceAction.label}
+                  </a>
+                ) : (
+                  <button type="button" className="profile-service-cta is-disabled" disabled>
+                    {serviceAction.label}
+                  </button>
+                );
+              })()}
             </div>
           </div>
         </div>
