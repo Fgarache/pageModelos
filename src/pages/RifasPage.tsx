@@ -59,8 +59,8 @@ export default function RifasPage() {
 
       <div className="rifas-page-container">
         <PageSectionHeader
-          title="RIFAS &"
-          accent="SORTEOS"
+          title="Rifas"
+          accent="Disponibles"
           description="Gana experiencias inolvidables con nuestras modelos."
         />
 

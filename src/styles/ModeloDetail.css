@@ -10,7 +10,7 @@
     radial-gradient(circle at bottom right, rgba(0, 119, 182, 0.14), transparent 28%),
     #050505;
   min-height: 100vh;
-  padding: 126px 16px 64px;
+  padding: 126px 16px 156px;
   position: relative;
   overflow-x: hidden;
   color: white;
@@ -792,6 +792,119 @@
   gap: 12px;
 }
 
+.floating-contact-cta {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 45;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.floating-contact-messages {
+  display: grid;
+  gap: 9px;
+  justify-items: end;
+}
+
+.floating-contact-message {
+  max-width: min(330px, 72vw);
+  padding: 12px 16px;
+  border: 1px solid rgba(37, 211, 102, 0.5);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(18, 43, 29, 0.95), rgba(12, 26, 17, 0.94));
+  color: #ecfff3;
+  font-size: 0.94rem;
+  line-height: 1.25;
+  font-weight: 700;
+  text-align: left;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.36);
+  cursor: pointer;
+  transform-origin: right bottom;
+  animation: whatsappMessageIn 0.35s ease-out;
+}
+
+.floating-contact-message:nth-child(2) {
+  margin-right: 10px;
+}
+
+.floating-contact-message:nth-child(3) {
+  margin-right: 20px;
+}
+
+.floating-contact-message:nth-child(4) {
+  margin-right: 30px;
+}
+
+.floating-contact-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 84px;
+  min-height: 84px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 0.54rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease;
+  animation: floatingContact 2.8s ease-in-out infinite;
+}
+
+.floating-contact-button:hover {
+  transform: translateY(-2px);
+}
+
+.floating-contact-button-icon {
+  font-size: 3.75rem;
+  line-height: 1;
+  color: #ffffff;
+  background: #25d366;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  padding: 8px;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45));
+}
+
+.floating-contact-button span {
+  display: block;
+  text-align: center;
+  line-height: 1.05;
+}
+
+@keyframes floatingContact {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes whatsappMessageIn {
+  0% {
+    opacity: 0;
+    transform: translateX(12px) scale(0.92);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 .profile-group-item {
   display: grid;
   gap: 6px;
@@ -806,6 +919,51 @@
 .profile-group-item span {
   color: rgba(255, 255, 255, 0.58);
   word-break: break-all;
+}
+
+.profile-contact-item strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-contact-item-subtle {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.62);
+  letter-spacing: 0.02em;
+}
+
+.profile-contact-item-icon {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.profile-contact-item-icon.is-whatsapp {
+  color: #25d366;
+}
+
+.profile-contact-item-icon.is-telegram {
+  color: #229ed9;
+}
+
+.profile-contact-item-icon.is-instagram {
+  color: #e1306c;
+}
+
+.profile-contact-item-icon.is-facebook {
+  color: #1877f2;
+}
+
+.profile-contact-item-icon.is-x {
+  color: #ffffff;
+}
+
+.profile-contact-item-icon.is-group {
+  color: #f3d77c;
+}
+
+.profile-contact-item-icon.is-default {
+  color: #f3d77c;
 }
 
 .profile-action-link {
@@ -905,7 +1063,7 @@
 /* --- RESPONSIVE GENERAL --- */
 @media (max-width: 768px) {
   .modelo-detail-page {
-    padding: 92px 12px 36px;
+    padding: 92px 12px 132px;
   }
 
   .modelo-detail-page > .detail-container > * {
@@ -1052,5 +1210,45 @@
 
   .section-header-inline {
     margin-bottom: 12px;
+  }
+
+  .floating-contact-cta {
+    right: 12px;
+    bottom: 12px;
+    gap: 8px;
+  }
+
+  .floating-contact-messages {
+    gap: 6px;
+  }
+
+  .floating-contact-message {
+    max-width: min(250px, 72vw);
+    padding: 9px 11px;
+    font-size: 0.79rem;
+  }
+
+  .floating-contact-message:nth-child(2) {
+    margin-right: 7px;
+  }
+
+  .floating-contact-message:nth-child(3) {
+    margin-right: 14px;
+  }
+
+  .floating-contact-message:nth-child(4) {
+    margin-right: 21px;
+  }
+
+  .floating-contact-button {
+    width: 74px;
+    min-height: 74px;
+    padding: 0;
+    font-size: 0.5rem;
+  }
+
+  .floating-contact-button-icon {
+    font-size: 3rem;
+    padding: 6px;
   }
 }

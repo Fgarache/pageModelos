@@ -290,7 +290,7 @@ export default function TourCard({
 
         <div style={{ marginBottom: '15px' }}>
           {tourDetailItems.length > 0 ? (
-            <ul style={{ margin: 0, paddingLeft: '16px', color: '#ccc', fontSize: 'clamp(0.68rem, 2.35vw, 0.8rem)', lineHeight: '1.35', display: 'grid', gap: '4px' }}>
+            <ul style={{ margin: 0, paddingLeft: '14px', color: '#ccc', fontSize: 'clamp(0.64rem, 2.2vw, 0.76rem)', lineHeight: '1.15', display: 'grid', gap: '2px' }}>
               {tourDetailItems.map((item, index) => (
                 <li key={`${item}-${index}`} style={{ margin: 0 }}>
                   {item}

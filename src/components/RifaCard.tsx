@@ -96,13 +96,8 @@ export default function RifaCard({
 
           <div className="rifa-stats-liquid">
             <div className="stat-item">
-              <span className="label">PRECIO</span>
+              <span className="label">PRECIO POR NUMERO</span>
               <span className="value gold">Q{rifa.precio}</span>
-            </div>
-            <div className="stat-item separator">|</div>
-            <div className="stat-item">
-              <span className="label">DISPONIBLES</span>
-              <span className="value">{disponiblesCount}/{rifa.numerosTotales}</span>
             </div>
           </div>
           
@@ -150,7 +145,7 @@ export default function RifaCard({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div>
             <p style={{ margin: '0 0 4px 0', color: '#aaa', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase' }}>
-              Precio por Boleto
+              Precio por numero
             </p>
             <p style={{ margin: 0, color: '#d4af37', fontSize: '18px', fontWeight: '800' }}>
               Q{rifa.precio}
@@ -172,9 +167,9 @@ export default function RifaCard({
           <p style={{ margin: '0 0 8px 0', color: '#aaa', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase' }}>
             Detalles
           </p>
-          <ul style={{ margin: 0, paddingLeft: '16px', color: '#ccc', fontSize: '11px', display: 'grid', gap: '4px' }}>
+          <ul style={{ margin: 0, paddingLeft: '14px', color: '#ccc', fontSize: '10px', display: 'grid', gap: '2px', lineHeight: 1.15 }}>
             {rifaDetailItems.map((item: string, index: number) => (
-              <li key={`${item}-${index}`} style={{ marginBottom: 0, lineHeight: '1.35' }}>{item}</li>
+              <li key={`${item}-${index}`} style={{ marginBottom: 0, lineHeight: '1.15' }}>{item}</li>
             ))}
           </ul>
         </div>
@@ -185,9 +180,9 @@ export default function RifaCard({
           <p style={{ margin: '0 0 8px 0', color: '#aaa', fontSize: '10px', fontWeight: '600', textTransform: 'uppercase' }}>
             Términos y Condiciones
           </p>
-          <ul style={{ margin: 0, paddingLeft: '16px', color: '#ccc', fontSize: '11px' }}>
+          <ul style={{ margin: 0, paddingLeft: '14px', color: '#ccc', fontSize: '10px', lineHeight: 1.15 }}>
             {rifaTerms.map((t: string, i: number) => (
-              <li key={`${t}-${i}`} style={{ marginBottom: '4px', lineHeight: '1.35' }}>{t}</li>
+              <li key={`${t}-${i}`} style={{ marginBottom: '2px', lineHeight: '1.15' }}>{t}</li>
             ))}
           </ul>
         </div>
@@ -288,42 +283,6 @@ export default function RifaCard({
             })}
           </div>
         )}
-      </div>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '8px',
-        marginTop: '14px'
-      }}>
-        <div style={{
-          padding: '10px',
-          background: 'rgba(76, 175, 80, 0.1)',
-          border: '1px solid rgba(76, 175, 80, 0.2)',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '10px', color: '#aaa', marginBottom: '4px', textTransform: 'uppercase', fontWeight: '600' }}>
-            Disponibles
-          </div>
-          <div style={{ fontSize: '15px', color: '#4caf50', fontWeight: '800' }}>
-            {disponiblesCount}
-          </div>
-        </div>
-        <div style={{
-          padding: '10px',
-          background: 'rgba(244, 67, 54, 0.1)',
-          border: '1px solid rgba(244, 67, 54, 0.2)',
-          borderRadius: '8px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '10px', color: '#aaa', marginBottom: '4px', textTransform: 'uppercase', fontWeight: '600' }}>
-            Vendidos
-          </div>
-          <div style={{ fontSize: '15px', color: '#f44336', fontWeight: '800' }}>
-            {rifa.numerosTotales - disponiblesCount}
-          </div>
-        </div>
       </div>
 
       {availableCta && disponiblesCount > 0 && (

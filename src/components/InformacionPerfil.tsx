@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FaUsers } from 'react-icons/fa';
-import SocialLinksRow from './SocialLinksRow';
+import { FaFacebookF, FaInstagram, FaLink, FaTelegramPlane, FaUsers, FaWhatsapp } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 interface InformacionPerfilProps {
   user: any;
@@ -58,9 +58,80 @@ const getRecentStatusLabel = (statusText: string | undefined, statusTimestamp: n
   return `${statusText} · ${relativeLabel}`;
 };
 
+const getContactIcon = (tipo: string) => {
+  const lowerTipo = (tipo || '').toLowerCase().trim();
+
+  const iconMap: Record<string, typeof FaWhatsapp> = {
+    whatsapp: FaWhatsapp,
+    wa: FaWhatsapp,
+    telegram: FaTelegramPlane,
+    tg: FaTelegramPlane,
+    instagram: FaInstagram,
+    ig: FaInstagram,
+    facebook: FaFacebookF,
+    fb: FaFacebookF,
+    x: FaXTwitter,
+    twitter: FaXTwitter,
+    grupos: FaUsers,
+    grupo: FaUsers,
+  };
+
+  if (iconMap[lowerTipo]) return iconMap[lowerTipo];
+
+  for (const [key, icon] of Object.entries(iconMap)) {
+    if (lowerTipo.includes(key) || key.includes(lowerTipo)) {
+      return icon;
+    }
+  }
+
+  return FaLink;
+};
+
+const getContactIconToneClass = (tipo: string) => {
+  const lowerTipo = (tipo || '').toLowerCase().trim();
+
+  if (lowerTipo.includes('whatsapp') || lowerTipo === 'wa') return 'is-whatsapp';
+  if (lowerTipo.includes('telegram') || lowerTipo === 'tg') return 'is-telegram';
+  if (lowerTipo.includes('instagram') || lowerTipo === 'ig') return 'is-instagram';
+  if (lowerTipo.includes('facebook') || lowerTipo === 'fb') return 'is-facebook';
+  if (lowerTipo === 'x' || lowerTipo.includes('twitter')) return 'is-x';
+  if (lowerTipo.includes('grupo')) return 'is-group';
+
+  return 'is-default';
+};
+
+const getContactExtraLabel = (tipo: string, href: string) => {
+  const lowerTipo = (tipo || '').toLowerCase().trim();
+
+  if (!href) return '';
+
+  try {
+    const url = new URL(href);
+    const host = url.hostname.toLowerCase();
+
+    if (lowerTipo.includes('whatsapp') || lowerTipo === 'wa' || host.includes('wa.me') || host.includes('whatsapp')) {
+      const waPath = url.pathname.split('/').filter(Boolean)[0] || '';
+      const waPhone = host.includes('wa.me') ? waPath : (url.searchParams.get('phone') || '');
+      const number = waPhone.replace(/\D/g, '');
+      return number || '';
+    }
+
+    if (lowerTipo.includes('telegram') || lowerTipo === 'tg' || host.includes('t.me') || host.includes('telegram')) {
+      const tgUser = url.pathname.split('/').filter(Boolean)[0] || '';
+      return tgUser ? `@${tgUser.replace(/^@+/, '')}` : '';
+    }
+  } catch {
+    // Ignore malformed URLs and skip extra label.
+  }
+
+  return '';
+};
+
 export default function InformacionPerfil({ user, hasTours = false, hasRifas = false, gallery = [] }: InformacionPerfilProps) {
   const [showFullBio, setShowFullBio] = useState(false);
-  const [showGroupsModal, setShowGroupsModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [visibleFloatingMessages, setVisibleFloatingMessages] = useState<string[]>([]);
+  const [isTypingIcon, setIsTypingIcon] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
@@ -74,7 +145,7 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
     ? bioLines.join('\n')
     : bioLines.slice(0, 10).join('\n');
 
-  // Preparar redes sociales para el componente SocialLinksRow
+  // Preparar redes y grupos para el modal flotante de contacto
   const socialLinks = (user.redesArray || [])
     .map((red: any) => ({
       label: red.titulo || red.tipo,
@@ -82,6 +153,16 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
       tipo: red.tipo,
     }))
     .filter((item: any) => item.href && item.href.trim());
+
+  const groupLinks = grupos
+    .map((grupo: { titulo: string; link: string }) => ({
+      label: grupo.titulo || 'Grupo',
+      href: grupo.link,
+      tipo: 'grupos',
+    }))
+    .filter((item: { href: string }) => item.href && item.href.trim());
+
+  const contactLinks = [...socialLinks, ...groupLinks];
 
   const serviceLinks = servicios.map((servicio: string) => ({
     servicio,
@@ -121,6 +202,48 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
       setActiveSlide(0);
     }
   }, [activeSlide, slides.length]);
+
+  useEffect(() => {
+    if (contactLinks.length === 0) return undefined;
+
+    setVisibleFloatingMessages([]);
+    setIsTypingIcon(true);
+
+    const messageOne = 'Hola 👋';
+    const messageTwo = 'Escribeme por WhatsApp 💚';
+    const messageThree = 'Tambien aca esta mi Telegram 📩';
+    const messageFour = 'Y mi canal de fotos 🔥';
+
+    const showFirstTimeout = window.setTimeout(() => {
+      setVisibleFloatingMessages([messageOne]);
+    }, 3200);
+
+    const showSecondTimeout = window.setTimeout(() => {
+      setIsTypingIcon(false);
+      setVisibleFloatingMessages([messageOne, messageTwo]);
+    }, 6200);
+
+    const showThirdTimeout = window.setTimeout(() => {
+      setVisibleFloatingMessages([messageOne, messageTwo, messageThree]);
+    }, 9200);
+
+    const showFourthTimeout = window.setTimeout(() => {
+      setVisibleFloatingMessages([messageOne, messageTwo, messageThree, messageFour]);
+    }, 12200);
+
+    const hideTimeout = window.setTimeout(() => {
+      setVisibleFloatingMessages([]);
+      setIsTypingIcon(false);
+    }, 19000);
+
+    return () => {
+      window.clearTimeout(showFirstTimeout);
+      window.clearTimeout(showSecondTimeout);
+      window.clearTimeout(showThirdTimeout);
+      window.clearTimeout(showFourthTimeout);
+      window.clearTimeout(hideTimeout);
+    };
+  }, [contactLinks.length]);
 
   const currentSlide = slides[activeSlide];
   const profileWatermark = user.user_alias ? `LindasGT.com/${user.user_alias}` : 'LindasGT.com';
@@ -228,17 +351,6 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
                 </h1>
                 {recentStatusLabel && <span className="profile-name-status">{recentStatusLabel}</span>}
               </div>
-
-              <div className="profile-name-icons">
-                {socialLinks.length > 0 && <SocialLinksRow links={socialLinks} />}
-
-                {grupos.length > 0 && (
-                  <button type="button" className="profile-social-link profile-groups-trigger" onClick={() => setShowGroupsModal(true)} aria-label="Grupos" title="Grupos">
-                    <FaUsers className="profile-social-icon" />
-                    <span className="profile-social-label">Grupos</span>
-                  </button>
-                )}
-              </div>
             </div>
             <div className="profile-bio-copy">{renderFormattedBio(visibleBio)}</div>
             {bioLines.length > 10 && (
@@ -289,26 +401,73 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
         </div>
       </section>
 
-      {showGroupsModal && (
-        <div className="profile-groups-modal-backdrop" onClick={() => setShowGroupsModal(false)}>
+      {contactLinks.length > 0 && (
+        <div className="floating-contact-cta" aria-label="Contacto">
+          {visibleFloatingMessages.length > 0 && (
+            <div className="floating-contact-messages" aria-hidden="false">
+              {visibleFloatingMessages.map((message, index) => (
+                <button
+                  key={`${message}-${index}`}
+                  type="button"
+                  className="floating-contact-message"
+                  onClick={() => setShowContactModal(true)}
+                  aria-label={message}
+                  title="Abrir redes disponibles"
+                >
+                  {message}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="floating-contact-button"
+            onClick={() => setShowContactModal(true)}
+            aria-label="Contactame"
+            title="Contactame"
+          >
+            <FaWhatsapp className={`floating-contact-button-icon ${isTypingIcon ? 'is-typing' : ''}`} />
+            {isTypingIcon && (
+              <span className="floating-contact-typing-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            )}
+            <span>Contactame</span>
+          </button>
+        </div>
+      )}
+
+      {showContactModal && (
+        <div className="profile-groups-modal-backdrop" onClick={() => setShowContactModal(false)}>
           <div className="profile-groups-modal liquid-glass" onClick={(event) => event.stopPropagation()}>
             <div className="profile-groups-modal-header">
               <div>
-                <span className="profile-meta-label">Grupos</span>
-                <h3>Canales y grupos</h3>
+                <span className="profile-meta-label">Contacto</span>
+                <h3>Redes disponibles</h3>
               </div>
-              <button type="button" className="profile-groups-close" onClick={() => setShowGroupsModal(false)}>
+              <button type="button" className="profile-groups-close" onClick={() => setShowContactModal(false)}>
                 Cerrar
               </button>
             </div>
 
             <div className="profile-groups-list">
-              {grupos.map((grupo: { titulo: string; link: string }) => (
-                <a key={`${grupo.titulo}-${grupo.link}`} href={grupo.link} target="_blank" rel="noreferrer" className="profile-group-item">
-                  <strong>{grupo.titulo}</strong>
-                  <span>{grupo.link}</span>
+              {contactLinks.map((item) => {
+                const Icon = getContactIcon(item.tipo);
+                const extraLabel = getContactExtraLabel(item.tipo, item.href);
+
+                return (
+                  <a key={`${item.tipo}-${item.href}`} href={item.href} target="_blank" rel="noreferrer" className="profile-group-item profile-contact-item">
+                    <strong>
+                      <Icon className={`profile-contact-item-icon ${getContactIconToneClass(item.tipo)}`} />
+                      {item.label}
+                    </strong>
+                    {extraLabel && <span className="profile-contact-item-subtle">{extraLabel}</span>}
                 </a>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

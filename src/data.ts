@@ -538,6 +538,41 @@ const normalizeRifa = (id: string, raw: any) => {
 const sortByDate = (items: any[], field: string) =>
   [...items].sort((a, b) => String(a[field] || '').localeCompare(String(b[field] || '')));
 
+const parseTourDate = (value: string | undefined) => {
+  const rawValue = String(value || '').trim();
+  if (!rawValue) return null;
+
+  const normalized = rawValue.split('T')[0];
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    const date = new Date(`${normalized}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  const match = normalized.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
+  if (match) {
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  const parsed = new Date(rawValue);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const isPastTourDate = (value: string | undefined) => {
+  const parsedDate = parseTourDate(value);
+  if (!parsedDate) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  parsedDate.setHours(0, 0, 0, 0);
+
+  return parsedDate.getTime() < today.getTime();
+};
+
 const readFirstExistingPath = async (paths: string[]) => {
   for (const path of paths) {
     const snapshot = await get(child(dbRef, path));
@@ -622,6 +657,27 @@ export const API_FIREBASE = {
     }
   },
 
+  getToursPastOrDisabled: async (userId: string) => {
+    try {
+      const snapshot = await readFirstExistingPath(['tour', 'tours']);
+      if (!snapshot) return [];
+
+      const tours = Object.entries(snapshot.val() || {})
+        .map(([id, raw]) => normalizeTour(id, raw))
+        .filter((tour) => tour.idUser === userId)
+        .filter((tour) => !tour.estado || isPastTourDate(tour.fecha));
+
+      return [...tours].sort((a, b) => {
+        const timeA = parseTourDate(a.fecha)?.getTime() || 0;
+        const timeB = parseTourDate(b.fecha)?.getTime() || 0;
+        return timeB - timeA;
+      });
+    } catch (error) {
+      console.warn('Firebase error al leer tours pasados/desactivados:', error);
+      return [];
+    }
+  },
+
   getHorarios: async (tourId: string) => {
     const horarios = await API_FIREBASE.getAllHorariosByTour(tourId);
     return horarios.filter((slot) => slot.disponible);
@@ -649,11 +705,33 @@ export const API_FIREBASE = {
 
       const rifas = Object.entries(snapshot.val() || {})
         .map(([id, raw]) => normalizeRifa(id, raw))
-        .filter((rifa) => rifa.idUser === userId && rifa.estado);
+        .filter((rifa) => rifa.idUser === userId && rifa.estado)
+        .filter((rifa) => !isPastTourDate(rifa.fechaSorteo));
 
       return sortByDate(rifas, 'fechaSorteo');
     } catch (error) {
       console.warn('Firebase error al leer rifas públicas:', error);
+      return [];
+    }
+  },
+
+  getRifasPastOrDisabled: async (userId: string) => {
+    try {
+      const snapshot = await readFirstExistingPath(['rifa', 'rifas']);
+      if (!snapshot) return [];
+
+      const rifas = Object.entries(snapshot.val() || {})
+        .map(([id, raw]) => normalizeRifa(id, raw))
+        .filter((rifa) => rifa.idUser === userId)
+        .filter((rifa) => !rifa.estado || isPastTourDate(rifa.fechaSorteo));
+
+      return [...rifas].sort((a, b) => {
+        const timeA = parseTourDate(a.fechaSorteo)?.getTime() || 0;
+        const timeB = parseTourDate(b.fechaSorteo)?.getTime() || 0;
+        return timeB - timeA;
+      });
+    } catch (error) {
+      console.warn('Firebase error al leer rifas pasadas/desactivadas:', error);
       return [];
     }
   },
