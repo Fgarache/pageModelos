@@ -1,6 +1,16 @@
 :root {
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0b0f19;
+}
+
+@keyframes skeletonPulse {
+  0% { background-color: rgba(255, 255, 255, 0.05); }
+  50% { background-color: rgba(255, 255, 255, 0.12); }
+  100% { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+.skeleton-pulse {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 
 img {

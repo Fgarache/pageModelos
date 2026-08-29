@@ -71,16 +71,13 @@ const ModelosPage: React.FC = () => {
                 key={modelo.id}
                 style={{ textDecoration: 'none', color: 'inherit' }}
               >
-                <div style={{
+                <div className="liquid-glass" style={{
                   position: 'relative',
                   borderRadius: '20px',
                   overflow: 'hidden',
                   height: '380px',
                   cursor: 'pointer',
                   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  border: '1px solid rgba(212, 175, 55, 0.2)',
-                  backdropFilter: 'blur(10px)',
-                  background: 'rgba(15, 52, 96, 0.3)',
                   boxShadow: '0 8px 32px rgba(212, 175, 55, 0.1)'
                 }}
                 onMouseEnter={(e) => {

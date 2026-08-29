@@ -148,8 +148,20 @@ const ModeloDetail = () => {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="error-card liquid-glass">Cargando perfil...</div>
+      <div className="modelo-detail-page">
+        <div className="detail-bg-orb orb-left"></div>
+        <div className="detail-bg-orb orb-right"></div>
+        <div className="detail-container">
+          <div className="skeleton-container liquid-glass" style={{ borderRadius: '18px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', minHeight: '500px' }}>
+            <div className="skeleton-pulse" style={{ width: '100%', height: '300px', borderRadius: '12px' }}></div>
+            <div className="skeleton-pulse" style={{ width: '60%', height: '24px', borderRadius: '4px' }}></div>
+            <div className="skeleton-pulse" style={{ width: '40%', height: '16px', borderRadius: '4px' }}></div>
+            <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+              <div className="skeleton-pulse" style={{ width: '80px', height: '30px', borderRadius: '20px' }}></div>
+              <div className="skeleton-pulse" style={{ width: '80px', height: '30px', borderRadius: '20px' }}></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -174,8 +186,8 @@ const ModeloDetail = () => {
   }
 
   const gallery = Object.values(modelo.fotos || {});
-  const visiblePastTours = showAllPastTours ? pastOrDisabledTours : pastOrDisabledTours.slice(0, 3);
-  const visiblePastRifas = showAllPastRifas ? pastOrDisabledRifas : pastOrDisabledRifas.slice(0, 3);
+  const visiblePastTours = showAllPastTours ? pastOrDisabledTours : pastOrDisabledTours.slice(0, 1);
+  const visiblePastRifas = showAllPastRifas ? pastOrDisabledRifas : pastOrDisabledRifas.slice(0, 1);
 
   return (
     <div className="modelo-detail-page">
@@ -188,7 +200,7 @@ const ModeloDetail = () => {
         {tours.length > 0 && (
           <section className="detail-section" id="detail-tours">
             <PageSectionHeader
-              title="Viaje a"
+              title="Viajes a"
               accent="departamentos"
               description=""
               compact
@@ -213,7 +225,7 @@ const ModeloDetail = () => {
                   ))}
                 </div>
 
-                {pastOrDisabledTours.length > 3 && (
+                {pastOrDisabledTours.length > 1 && (
                   <button
                     type="button"
                     onClick={() => setShowAllPastTours((current) => !current)}
@@ -281,7 +293,7 @@ const ModeloDetail = () => {
                   })}
                 </div>
 
-                {pastOrDisabledRifas.length > 3 && (
+                {pastOrDisabledRifas.length > 1 && (
                   <button
                     type="button"
                     onClick={() => setShowAllPastRifas((current) => !current)}

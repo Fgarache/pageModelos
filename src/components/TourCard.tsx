@@ -275,12 +275,11 @@ export default function TourCard({
       overflow: 'hidden',
       border: '1px solid rgba(212, 175, 55, 0.2)',
       borderRadius: '18px',
-      minHeight: 'clamp(220px, 45vw, 320px)',
       background: '#0d1117',
       transition: 'all 0.3s ease',
       alignSelf: 'start',
-      cursor: isMobileViewport ? 'pointer' : 'default'
-    }} onClick={handleOpenMobileCard} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      cursor: 'default'
+    }}>
       {profilPic ? (
         <>
           <img
@@ -308,8 +307,7 @@ export default function TourCard({
       <div style={{
         position: 'relative',
         zIndex: 1,
-        padding: 'clamp(12px, 2.8vw, 16px)',
-        minHeight: 'clamp(220px, 45vw, 320px)',
+        padding: '6px clamp(12px, 2.8vw, 16px) 10px',
         display: 'flex',
         flexDirection: 'column'
       }}>
@@ -407,7 +405,7 @@ export default function TourCard({
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: 'clamp(0.56rem, 2vw, 0.64rem)',
+                    fontSize: 'clamp(0.5rem, 1.8vw, 0.58rem)',
                     fontWeight: '700',
                     textDecoration: 'none'
                   }}>
@@ -421,7 +419,7 @@ export default function TourCard({
                     background: 'rgba(76, 175, 80, 0.2)',
                     border: '1px solid rgba(76, 175, 80, 0.4)',
                     color: '#7af0a5',
-                    fontSize: 'clamp(0.56rem, 2vw, 0.64rem)',
+                    fontSize: 'clamp(0.5rem, 1.8vw, 0.58rem)',
                     fontWeight: '700'
                   }}>
                     <div>{formatHour12(h.hora)}</div>
@@ -432,6 +430,9 @@ export default function TourCard({
               <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>No hay horarios visibles.</p>
             )}
           </div>
+          <p style={{ marginTop: '10px', color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.62rem', textAlign: 'center', fontWeight: '500' }}>
+            Toca un horario para agendar
+          </p>
           </div>
         </div>
       </div>

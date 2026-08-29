@@ -66,7 +66,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
   const normalizedLocation = String(availableLocation).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const availabilityFloatingMessage = normalizedLocation.includes('capital') ? 'Hoy estoy disponible en la capital' : `Solo por hoy estoy disponible en ${availableLocation}`;
   const recentStatusLabel = getRecentStatusLabel(user.estadoTexto, user.estadoActualizadoAt);
-  const footerChipLabel = isAvailableToday ? `Disponible hoy en ${availableLocation}` : 'No disponible';
+  const footerChipLabel = isAvailableToday ? `Hoy disponible en: ${availableLocation}` : 'No disponible';
 
   const handleScrollToServices = () => {
     document.getElementById('detail-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });

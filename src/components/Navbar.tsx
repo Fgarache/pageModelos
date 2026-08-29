@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import '../styles/Navbar.css';
@@ -6,25 +6,41 @@ import '../styles/Navbar.css';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
   const location = useLocation();
+  const lastScrollY = useRef(0);
 
   const isActive = (path: string) => location.pathname === path;
   const toggleMenu = () => setIsOpen(!isOpen);
   const publishWhatsAppLink =
     'https://wa.me/50243391342?text=Hola%20Linda%2C%20quiero%20publicarme%20en%20LindasGT.com';
 
-  // Efecto para cambiar opacidad al hacer scroll
+  // Efecto para cambiar opacidad al hacer scroll y ocultar el navbar
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      setScrolled(currentScrollY > 20);
+
+      // Si el menú está abierto, no ocultamos el navbar
+      if (!isOpen) {
+        if (currentScrollY > lastScrollY.current && currentScrollY > 80) {
+          setHidden(true);
+        } else {
+          setHidden(false);
+        }
+      }
+      
+      lastScrollY.current = currentScrollY;
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isOpen]);
 
   return (
-    <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+    <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}>
       <div className="navbar-glass-container">
         <Link to="/home" className="navbar-logo" onClick={() => setIsOpen(false)}>
           <img src="/icons/logo.png" alt="LindasGT" className="navbar-logo-icon" />
