@@ -60,17 +60,25 @@ export default function TourCard({
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
-  const profilPic = modelInfo?.fotoPerfil || tour.fotoPerfil;
+  const [profilPic] = useState<string>(() => {
+    const fallbackPic = modelInfo?.fotoPerfil || tour.fotoPerfil || '';
+    const fotosArray = Object.values(modelInfo?.fotos || {}) as any[];
+    const fotosLinks = fotosArray.map(f => f?.link).filter(Boolean);
+    
+    if (fotosLinks.length > 0) {
+      const randomIndex = Math.floor(Math.random() * fotosLinks.length);
+      return fotosLinks[randomIndex];
+    }
+    return fallbackPic;
+  });
   const whatsAppLink = modelInfo?.redes?.whatsapp || '';
-  const normalizedLocations = (Array.isArray(tour.ubicacionesTour) ? tour.ubicacionesTour : [])
-    .filter((item: any) => item?.label);
-  const fallbackPrimary = {
-    label: tour.lugar || tour.lugarDisponible || 'Ubicacion por confirmar',
-    href: tour.lugarLink || '',
-  };
-  const locationsToShow = normalizedLocations.length > 0 ? normalizedLocations : [fallbackPrimary];
+  const places = [tour.lugar, tour.lugarDisponible].filter(Boolean);
+  const uniquePlaces = Array.from(new Set(places.map((p: any) => p.trim())));
+  const fallbackLabel = uniquePlaces.join(' / ');
+  const locationsToShow = (Array.isArray(tour.ubicacionesTour) ? tour.ubicacionesTour : [])
+    .filter((item: any) => item?.label && item?.href);
   const primaryLocation = locationsToShow[0];
-  const primaryLocationText = 'Ubicacion 1';
+  const primaryLocationText = 'Ver ubicación';
 
   useEffect(() => {
     if (isCompact || !tour?.id) return;
@@ -132,6 +140,30 @@ export default function TourCard({
             <div className="avatar-placeholder-bg">{modeloNombre[0]}</div>
           )}
           <div className="card-overlay-gradient"></div>
+          {fallbackLabel && (
+            <div style={{
+              position: 'absolute',
+              top: '8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 2,
+              background: 'rgba(0, 0, 0, 0.75)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(212, 175, 55, 0.4)',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              color: '#d4af37',
+              fontWeight: '800',
+              fontSize: 'clamp(0.65rem, 2.5vw, 0.75rem)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.02em',
+              textAlign: 'center',
+              maxWidth: '85%',
+              lineHeight: '1.2'
+            }}>
+              {fallbackLabel}
+            </div>
+          )}
         </div>
 
         <div className="tour-card-content-overlay">
@@ -142,16 +174,18 @@ export default function TourCard({
 
           <h3 className="tour-main-title">{tour.titulo}</h3>
           
-          <div className="tour-info-badge">
-            <span className="icon">📍</span>
-            {primaryLocation.href ? (
-              <a href={primaryLocation.href} target="_blank" rel="noreferrer" className="tour-location-link" title={primaryLocation.label}>
-                {primaryLocationText}
-              </a>
-            ) : (
-              <span className="info-text" title={primaryLocation.label}>{primaryLocationText}</span>
-            )}
-          </div>
+          {locationsToShow.length > 0 && (
+            <div className="tour-info-badge">
+              <span className="icon">📍</span>
+              {primaryLocation.href ? (
+                <a href={primaryLocation.href} target="_blank" rel="noreferrer" className="tour-location-link" title={primaryLocation.label}>
+                  {primaryLocationText}
+                </a>
+              ) : (
+                <span className="info-text" title={primaryLocation.label}>{primaryLocationText}</span>
+              )}
+            </div>
+          )}
 
           <div className="tour-stats-liquid">
             <div className="stat-item">
@@ -241,7 +275,7 @@ export default function TourCard({
       overflow: 'hidden',
       border: '1px solid rgba(212, 175, 55, 0.2)',
       borderRadius: '18px',
-      minHeight: 'clamp(320px, 62vw, 420px)',
+      minHeight: 'clamp(220px, 45vw, 320px)',
       background: '#0d1117',
       transition: 'all 0.3s ease',
       alignSelf: 'start',
@@ -269,19 +303,42 @@ export default function TourCard({
         </>
       ) : null}
 
+
+
       <div style={{
         position: 'relative',
         zIndex: 1,
-        padding: 'clamp(10px, 2.8vw, 16px)',
-        minHeight: 'clamp(320px, 62vw, 420px)',
+        padding: 'clamp(12px, 2.8vw, 16px)',
+        minHeight: 'clamp(220px, 45vw, 320px)',
         display: 'flex',
         flexDirection: 'column'
       }}>
+        {fallbackLabel && (
+          <div style={{
+            alignSelf: 'center',
+            marginBottom: '10px',
+            background: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(212, 175, 55, 0.4)',
+            borderRadius: '6px',
+            padding: '4px 10px',
+            color: '#d4af37',
+            fontWeight: '800',
+            fontSize: 'clamp(0.7rem, 2.5vw, 0.85rem)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.02em',
+            textAlign: 'center',
+            lineHeight: '1.2'
+          }}>
+            {fallbackLabel}
+          </div>
+        )}
+
         <h3 style={{ 
           margin: '0 0 8px 0', 
           color: '#fff',
           fontWeight: '800',
-          fontSize: 'clamp(0.88rem, 3.2vw, 1.08rem)',
+          fontSize: 'clamp(0.6rem, 2vw, 0.75rem)',
           lineHeight: '1.02',
           textTransform: 'uppercase'
         }}>
@@ -300,22 +357,24 @@ export default function TourCard({
           ) : null}
         </div>
 
-        <div style={{ marginBottom: '12px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
-          <p style={{ margin: '0 0 6px 0', color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
-            Ubicaciones
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            {locationsToShow.map((location: any, index: number) => (
-              <span key={`${location.label}-${index}`} style={{ margin: 0, color: '#fff', fontSize: 'clamp(0.58rem, 2vw, 0.68rem)' }}>
-                {location.href ? (
-                  <a href={location.href} target="_blank" rel="noreferrer" className="tour-location-link-inline" title={location.label}>
-                    {`Ubicacion ${index + 1}`}
-                  </a>
-                ) : <span title={location.label}>{`Ubicacion ${index + 1}`}</span>}
-              </span>
-            ))}
+        {locationsToShow.length > 0 && (
+          <div style={{ marginBottom: '12px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
+            <p style={{ margin: '0 0 6px 0', color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
+              Ubicaciones
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {locationsToShow.map((location: any, index: number) => (
+                <span key={`${location.label}-${index}`} style={{ margin: 0, color: '#fff', fontSize: 'clamp(0.58rem, 2vw, 0.68rem)' }}>
+                  {location.href ? (
+                    <a href={location.href} target="_blank" rel="noreferrer" className="tour-location-link-inline" title={location.label}>
+                      {locationsToShow.length > 1 ? `Ver ubicación ${index + 1}` : 'Ver ubicación'}
+                    </a>
+                  ) : <span title={location.label}>{locationsToShow.length > 1 ? `Ver ubicación ${index + 1}` : 'Ver ubicación'}</span>}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div style={{ marginTop: 'auto' }}>
           <div style={{ marginBottom: '20px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
@@ -327,7 +386,7 @@ export default function TourCard({
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '6px',
             marginTop: '12px'
           }}>

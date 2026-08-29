@@ -163,7 +163,7 @@ export default function ToursDisponibles({ tours, user }: Props) {
       </style>
 
       <h2 className="section-heading">
-        TOURS <span className="gold-span">DISPONIBLES</span>
+        Viaje a <span className="gold-span">departamentos</span>
       </h2>
 
       <div className="tours-grid-4-cols">

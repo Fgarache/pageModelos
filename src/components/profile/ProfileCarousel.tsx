@@ -3,10 +3,11 @@ import { useState, useEffect, useMemo } from 'react';
 interface ProfileCarouselProps {
   user: any;
   gallery: Array<{ link?: string; titulo?: string; fecha?: string }>;
-  hasTours: boolean;
-  hasRifas: boolean;
+  hasTours?: boolean;
+  hasRifas?: boolean;
   onScrollToServices: () => void;
-  footerChipLabel: string;
+  footerChipLabel?: string;
+  isAvailableToday?: boolean;
 }
 
 // 1. FUNCIÓN PARA AHORRAR COSTOS (CDN)
@@ -21,7 +22,7 @@ const getOptimizedImage = (url: string | undefined) => {
   return url; 
 };
 
-export default function ProfileCarousel({ user, gallery, hasTours, hasRifas, onScrollToServices, footerChipLabel }: ProfileCarouselProps) {
+export default function ProfileCarousel({ user, gallery, hasTours, hasRifas, onScrollToServices, footerChipLabel = '', isAvailableToday }: ProfileCarouselProps) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
   const servicios = user.servicios || [];
@@ -125,8 +126,8 @@ export default function ProfileCarousel({ user, gallery, hasTours, hasRifas, onS
 
       <div className="profile-visual-footer">
         <div className="profile-visual-overlay">
-          <span className={`profile-status-chip ${user.disponible ? 'is-available' : 'is-busy'}`}>
-            {user.disponible ? footerChipLabel : 'Agenda cerrada'}
+          <span className={`profile-status-chip ${(isAvailableToday ?? user.disponible) ? 'is-available' : 'is-busy'}`}>
+            {footerChipLabel || ((isAvailableToday ?? user.disponible) ? 'Disponible' : 'No disponible')}
           </span>
         </div>
       </div>

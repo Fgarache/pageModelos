@@ -183,13 +183,13 @@ const ModeloDetail = () => {
       <div className="detail-bg-orb orb-right"></div>
 
       <div className="detail-container">
-        <InformacionPerfil user={modelo} hasTours={tours.length > 0} hasRifas={rifas.length > 0} gallery={gallery as Array<{ link?: string; titulo?: string; fecha?: string }>} />
+        <InformacionPerfil user={modelo} hasTours={tours.length > 0} activeTours={tours} hasRifas={rifas.length > 0} gallery={gallery as Array<{ link?: string; titulo?: string; fecha?: string }>} />
 
         {tours.length > 0 && (
           <section className="detail-section" id="detail-tours">
             <PageSectionHeader
-              title="TOURS"
-              accent="DISPONIBLES"
+              title="Viaje a"
+              accent="departamentos"
               description=""
               compact
             />

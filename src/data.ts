@@ -199,7 +199,7 @@ const normalizeProfile = (id: string, raw: any) => {
     rol: raw.rol || 'user',
     verificado: raw.verificado === true,
     perfilActivo: raw.perfil_activo !== false,
-    disponible: raw.disponible !== false,
+    disponible: normalizeBooleanFlag(raw.disponible, true),
     info: raw.info || raw.descripcion || '',
     disponibleLugar: raw.disponibleLugar || raw.disponible_hoy_en || '',
     estadoTexto,
@@ -417,6 +417,92 @@ const collectTourLocations = (value: any, fallbackLabel = ''): Array<{ label: st
   return [];
 };
 
+const parseTourDate = (value: string | undefined) => {
+  const rawValue = String(value || '').trim();
+  if (!rawValue) return null;
+
+  const normalized = rawValue.split('T')[0];
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    const date = new Date(`${normalized}T00:00:00`);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  const match = normalized.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
+  if (match) {
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  const parsed = new Date(rawValue);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const isPastTourDate = (value: string | undefined) => {
+  const parsedDate = parseTourDate(value);
+  if (!parsedDate) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  parsedDate.setHours(0, 0, 0, 0);
+
+  return parsedDate.getTime() < today.getTime();
+};
+
+const parseHour = (hourStr: string) => {
+  const match = hourStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM|am|pm)?/i);
+  if (!match) return null;
+  let hours = parseInt(match[1], 10);
+  const minutes = parseInt(match[2], 10);
+  const ampm = match[3]?.toUpperCase();
+
+  if (ampm === 'PM' && hours < 12) hours += 12;
+  if (ampm === 'AM' && hours === 12) hours = 0;
+
+  return { hours, minutes };
+};
+
+const getValidAvailableHours = (fecha: string | undefined, disponibilidad: Record<string, boolean>) => {
+  const tourDate = parseTourDate(fecha);
+  if (!tourDate) return disponibilidad; 
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tourDay = new Date(tourDate.getFullYear(), tourDate.getMonth(), tourDate.getDate());
+
+  if (tourDay.getTime() < today.getTime()) return {};
+
+  const isToday = tourDay.getTime() === today.getTime();
+  
+  const validDisponibilidad: Record<string, boolean> = {};
+  
+  for (const [hourStr, isAvailable] of Object.entries(disponibilidad)) {
+    if (!isAvailable) {
+      validDisponibilidad[hourStr] = false;
+      continue;
+    }
+
+    if (isToday) {
+      const parsedTime = parseHour(hourStr);
+      if (parsedTime) {
+        const tourTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parsedTime.hours, parsedTime.minutes, 0, 0);
+        
+        if (tourTime.getTime() <= now.getTime()) {
+           validDisponibilidad[hourStr] = false;
+           continue;
+        }
+      }
+    }
+
+    validDisponibilidad[hourStr] = true;
+  }
+
+  return validDisponibilidad;
+};
+
 const uniqueLocations = (items: Array<{ label: string; href: string }>) => {
   const seen = new Set<string>();
 
@@ -481,6 +567,9 @@ const normalizeTour = (id: string, raw: any) => {
     ...collectTourLocations(raw.lugar_disponible_link, lugarDisponible.label),
   ]);
 
+  const disponibilidadOriginal = normalizeTourAvailability(raw);
+  const disponibilidad = getValidAvailableHours(raw.fecha, disponibilidadOriginal);
+
   const parsedPrimaryLocations = uniqueLocations([
     ...collectTourLocations(lugarRaw, lugar.label),
     ...collectTourLocations(lugarDisponibleRaw, lugarDisponible.label),
@@ -509,7 +598,8 @@ const normalizeTour = (id: string, raw: any) => {
     lugarDisponibleLink: secondaryLocation.href,
     ubicacionesTour: finalLocations,
     estado: normalizeBooleanFlag(raw.estado ?? raw.activo, false),
-    disponibilidad: normalizeTourAvailability(raw),
+    disponibilidadOriginal,
+    disponibilidad,
   };
 };
 
@@ -575,40 +665,7 @@ const normalizeRifa = (id: string, raw: any) => {
 const sortByDate = (items: any[], field: string) =>
   [...items].sort((a, b) => String(a[field] || '').localeCompare(String(b[field] || '')));
 
-const parseTourDate = (value: string | undefined) => {
-  const rawValue = String(value || '').trim();
-  if (!rawValue) return null;
 
-  const normalized = rawValue.split('T')[0];
-
-  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
-    const date = new Date(`${normalized}T00:00:00`);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  const match = normalized.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
-  if (match) {
-    const day = Number(match[1]);
-    const month = Number(match[2]);
-    const year = Number(match[3]);
-    const date = new Date(year, month - 1, day);
-    return Number.isNaN(date.getTime()) ? null : date;
-  }
-
-  const parsed = new Date(rawValue);
-  return Number.isNaN(parsed.getTime()) ? null : parsed;
-};
-
-const isPastTourDate = (value: string | undefined) => {
-  const parsedDate = parseTourDate(value);
-  if (!parsedDate) return false;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  parsedDate.setHours(0, 0, 0, 0);
-
-  return parsedDate.getTime() < today.getTime();
-};
 
 const readFirstExistingPath = async (paths: string[]) => {
   for (const path of paths) {
@@ -687,7 +744,19 @@ export const API_FIREBASE = {
         .map(([id, raw]) => normalizeTour(id, raw))
         .filter((tour) => tour.idUser === userId && tour.estado);
 
-      return sortByDate(tours, 'fecha');
+      const activeTours = tours.filter((tour) => {
+         if (isPastTourDate(tour.fecha)) return false;
+         
+         const definedHoursCount = Object.keys(tour.disponibilidadOriginal || {}).length;
+         if (definedHoursCount > 0) {
+             const hasAvailableHours = Object.values(tour.disponibilidad).some((v: any) => v === true);
+             if (!hasAvailableHours) return false;
+         }
+
+         return true;
+      });
+
+      return sortByDate(activeTours, 'fecha');
     } catch (error) {
       console.warn('Firebase error al leer tours públicos:', error);
       return [];
@@ -701,10 +770,21 @@ export const API_FIREBASE = {
 
       const tours = Object.entries(snapshot.val() || {})
         .map(([id, raw]) => normalizeTour(id, raw))
-        .filter((tour) => tour.idUser === userId)
-        .filter((tour) => !tour.estado || isPastTourDate(tour.fecha));
+        .filter((tour) => tour.idUser === userId);
 
-      return [...tours].sort((a, b) => {
+      const pastTours = tours.filter((tour) => {
+        if (!tour.estado || isPastTourDate(tour.fecha)) return true;
+        
+        const definedHoursCount = Object.keys(tour.disponibilidadOriginal || {}).length;
+        if (definedHoursCount > 0) {
+           const hasAvailableHours = Object.values(tour.disponibilidad).some((v: any) => v === true);
+           if (!hasAvailableHours) return true;
+        }
+
+        return false;
+      });
+
+      return [...pastTours].sort((a, b) => {
         const timeA = parseTourDate(a.fecha)?.getTime() || 0;
         const timeB = parseTourDate(b.fecha)?.getTime() || 0;
         return timeB - timeA;

@@ -8,16 +8,49 @@ import { getWhatsAppLink, renderFormattedText, getRecentStatusLabel } from '../u
 interface InformacionPerfilProps {
   user: any;
   hasTours?: boolean;
+  activeTours?: any[];
   hasRifas?: boolean;
   gallery?: Array<{ link?: string; titulo?: string; fecha?: string }>;
 }
 
-export default function InformacionPerfil({ user, hasTours = false, hasRifas = false, gallery = [] }: InformacionPerfilProps) {
+const parseTourDateLocal = (dateString: string | undefined) => {
+  if (!dateString) return null;
+  const parts = dateString.split('-');
+  if (parts.length === 3) {
+    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  }
+  return new Date(dateString);
+};
+
+const isTourToday = (fecha: string) => {
+  const date = parseTourDateLocal(fecha);
+  if (!date) return false;
+  const today = new Date();
+  return date.getDate() === today.getDate() &&
+         date.getMonth() === today.getMonth() &&
+         date.getFullYear() === today.getFullYear();
+};
+
+export default function InformacionPerfil({ user, hasTours = false, activeTours = [], hasRifas = false, gallery = [] }: InformacionPerfilProps) {
   const [showFullBio, setShowFullBio] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedService, setSelectedService] = useState<any | null>(null);
 
   if (!user) return null;
+
+  const todayTour = activeTours.find(t => t.estado && isTourToday(t.fecha));
+  const isAvailableToday = todayTour ? true : user.disponible;
+  
+  // If there's a tour today, get its locations
+  let todayTourPlaces: string[] = [];
+  if (todayTour) {
+    todayTourPlaces = [todayTour.lugar, todayTour.lugarDisponible].filter(Boolean);
+    todayTourPlaces = Array.from(new Set(todayTourPlaces.map(p => p.trim())));
+  }
+  
+  const availableLocation = todayTour 
+    ? (todayTourPlaces.join(' / ') || 'Tour de hoy') 
+    : (user.disponibleLugar || 'Guatemala');
 
   const ubicaciones = user.ubicaciones || [];
   const servicios = user.servicios || [];
@@ -30,11 +63,10 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
   const contactLinks = [...socialLinks, ...groupLinks];
   
   const defaultContactHref = getWhatsAppLink(user.redes?.whatsapp, 'Hola, me gustaria contactar contigo.') || contactLinks[0]?.href || '';
-  const availableLocation = String(user.disponibleLugar || 'Guatemala').trim();
-  const normalizedLocation = availableLocation.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const normalizedLocation = String(availableLocation).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const availabilityFloatingMessage = normalizedLocation.includes('capital') ? 'Hoy estoy disponible en la capital' : `Solo por hoy estoy disponible en ${availableLocation}`;
   const recentStatusLabel = getRecentStatusLabel(user.estadoTexto, user.estadoActualizadoAt);
-  const footerChipLabel = `Disponible hoy en ${user.disponibleLugar || 'Guatemala'}`;
+  const footerChipLabel = isAvailableToday ? `Disponible hoy en ${availableLocation}` : 'No disponible';
 
   const handleScrollToServices = () => {
     document.getElementById('detail-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -50,6 +82,7 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
           hasRifas={hasRifas} 
           onScrollToServices={handleScrollToServices}
           footerChipLabel={footerChipLabel}
+          isAvailableToday={isAvailableToday}
         />
 
         <div className="profile-copy-panel liquid-glass">
@@ -76,10 +109,6 @@ export default function InformacionPerfil({ user, hasTours = false, hasRifas = f
 
           <div className="profile-meta-grid">
             <article className="profile-meta-card profile-location-card">
-              <div className="profile-location-current">
-                <span className="profile-meta-label">Hoy disponible en</span>
-                <strong>{user.disponibleLugar || 'Guatemala'}</strong>
-              </div>
               {ubicaciones.length > 0 && (
                 <div className="profile-location-extra">
                   <span className="profile-location-extra-label">Lugares que también visito</span>
