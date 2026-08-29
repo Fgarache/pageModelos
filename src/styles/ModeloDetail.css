@@ -1091,7 +1091,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (min-width: 769px) {
@@ -1180,12 +1180,12 @@
 
   .detail-card-grid--tours {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
+    align-items: stretch;
   }
 
   .detail-card-grid--tours > * {
     min-width: 0;
-    align-self: start;
+    align-self: stretch;
   }
 
   .detail-card-grid--rifas {

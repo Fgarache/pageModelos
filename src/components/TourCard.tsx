@@ -203,8 +203,10 @@ export default function TourCard({
       borderRadius: '18px',
       background: '#0d1117',
       transition: 'all 0.3s ease',
-      alignSelf: 'start',
-      cursor: 'default'
+      alignSelf: 'stretch',
+      cursor: 'default',
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       {profilPic ? (
         <>
@@ -235,7 +237,8 @@ export default function TourCard({
         zIndex: 1,
         padding: '6px clamp(12px, 2.8vw, 16px) 10px',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        flex: 1
       }}>
         {fallbackLabel && (
           <div style={{
@@ -258,6 +261,7 @@ export default function TourCard({
           </div>
         )}
 
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <h3 style={{ 
           margin: '0 0 8px 0', 
           color: '#fff',
@@ -299,9 +303,10 @@ export default function TourCard({
             </div>
           </div>
         )}
+        </div>
 
-        <div style={{ marginTop: 'auto' }}>
-          <div style={{ marginBottom: '20px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
+        <div>
+          <div style={{ marginBottom: '0' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
             <div style={{ marginBottom: '12px' }}>
               <p style={{ margin: 0, color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
                 Horarios
@@ -356,7 +361,7 @@ export default function TourCard({
               <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>No hay horarios visibles.</p>
             )}
           </div>
-          <p style={{ marginTop: '10px', color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.62rem', textAlign: 'center', fontWeight: '500' }}>
+          <p style={{ margin: '10px 0 0 0', color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.62rem', textAlign: 'center', fontWeight: '500' }}>
             Toca un horario para agendar
           </p>
           </div>
