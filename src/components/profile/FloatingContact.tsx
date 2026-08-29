@@ -77,22 +77,7 @@ export default function FloatingContact({
 
   return (
     <div className="floating-contact-cta" aria-label="Contacto">
-      {visibleFloatingMessages.length > 0 && (
-        <div className="floating-contact-messages" aria-hidden="false">
-          {visibleFloatingMessages.map((message, index) => (
-            <button
-              key={`${message}-${index}`}
-              type="button"
-              className="floating-contact-message"
-              onClick={onOpenContactModal}
-              aria-label={message}
-              title="Abrir redes disponibles"
-            >
-              {message}
-            </button>
-          ))}
-        </div>
-      )}
+
 
       <button
         type="button"
