@@ -207,7 +207,7 @@ const ModeloDetail = () => {
             />
             <div className="detail-card-grid detail-card-grid--tours">
               {tours.map((tour) => (
-                <TourCard key={tour.id} tour={tour} modelInfo={modelo} onShowModal={setSelectedTour} />
+                <TourCard key={tour.id} tour={tour} modelInfo={modelo} />
               ))}
             </div>
 

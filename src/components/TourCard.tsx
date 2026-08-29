@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useRef as useRefReact, type MouseEvent, type TouchEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import '../styles/TourCard.css';
@@ -9,7 +9,6 @@ interface TourCardProps {
   nombreModelo?: string;
   userAlias?: string;
   isCompact?: boolean;
-  onShowModal?: (tour: any) => void;
 }
 
 const formatHour12 = (time: string) => {
@@ -49,14 +48,11 @@ export default function TourCard({
   modelInfo,
   nombreModelo, 
   userAlias,
-  isCompact = false,
-  onShowModal,
+  isCompact = false
 }: TourCardProps) {
   const navigate = useNavigate();
   const [horarios, setHorarios] = useState<any[]>([]);
   const [cargando, setCargando] = useState(false);
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
-  const lastTouchOpenAt = useRef(0);
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
@@ -107,23 +103,6 @@ export default function TourCard({
       isActive = false;
     };
   }, [isCompact, tour?.id]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
-    const syncViewport = () => setIsMobileViewport(mediaQuery.matches);
-
-    syncViewport();
-
-    if (typeof mediaQuery.addEventListener === 'function') {
-      mediaQuery.addEventListener('change', syncViewport);
-      return () => mediaQuery.removeEventListener('change', syncViewport);
-    }
-
-    mediaQuery.addListener(syncViewport);
-    return () => mediaQuery.removeListener(syncViewport);
-  }, []);
 
   // --- VISTA COMPACTA (Para listados en ToursPage) ---
   if (isCompact) {
@@ -214,60 +193,7 @@ export default function TourCard({
     .filter((item: any) => item.disponible);
   const tourDetailItems = getTextListItems(tour.detalles);
 
-  const shouldIgnoreMobileExpand = (target: EventTarget | null) => {
-    if (!(target instanceof HTMLElement)) return false;
-    return Boolean(target.closest('[data-ignore-mobile-expand="true"]'));
-  };
 
-
-  // --- Tap detection for mobile ---
-  const touchStartRef = useRefReact<{ x: number; y: number } | null>(null);
-
-  const openMobileCard = () => {
-    if (!onShowModal || !isMobileViewport) return;
-    onShowModal(tour);
-  };
-
-  const handleOpenMobileCard = (event: MouseEvent<HTMLDivElement>) => {
-    if (!onShowModal || !isMobileViewport) return;
-
-    // Ignore synthetic click fired right after a touch open.
-    if (Date.now() - lastTouchOpenAt.current < 700) return;
-
-    if (shouldIgnoreMobileExpand(event.target)) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    openMobileCard();
-  };
-
-  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    if (!isMobileViewport) return;
-    if (event.touches.length === 1) {
-      touchStartRef.current = {
-        x: event.touches[0].clientX,
-        y: event.touches[0].clientY,
-      };
-    }
-  };
-
-  const handleTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
-    if (!onShowModal || !isMobileViewport) return;
-    if (shouldIgnoreMobileExpand(event.target)) return;
-
-    if (!touchStartRef.current) return;
-    const touch = event.changedTouches[0];
-    const dx = Math.abs(touch.clientX - touchStartRef.current.x);
-    const dy = Math.abs(touch.clientY - touchStartRef.current.y);
-    // Solo abrir si el movimiento fue pequeño (tap)
-    if (dx < 10 && dy < 10) {
-      event.preventDefault();
-      event.stopPropagation();
-      lastTouchOpenAt.current = Date.now();
-      openMobileCard();
-    }
-    touchStartRef.current = null;
-  };
 
   return (
     <div className="tour-card-liquid detailed" style={{

@@ -79,20 +79,7 @@ export default function ToursPage() {
     }
   };
 
-  const handleShowTourModal = async (tour: Tour) => {
-    setSelectedTour(tour);
-    if (tour.idUser) {
-      try {
-        const allUsers = await API_FIREBASE.getAllUsers();
-        const model = allUsers.find((u: any) => u.id === tour.idUser);
-        if (model) {
-          setModelInfo(model);
-        }
-      } catch (error) {
-        console.error('Error loading model info:', error);
-      }
-    }
-  };
+
 
   return (
     <div className="tours-page">
@@ -132,7 +119,6 @@ export default function ToursPage() {
                   nombreModelo={tour.nombreModelo}
                   userAlias={tour.userAlias}
                   isCompact={true}
-                  onShowModal={handleShowTourModal}
                 />
               </div>
             ))}
