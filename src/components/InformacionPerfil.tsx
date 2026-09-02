@@ -76,6 +76,20 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
   const recentStatusLabel = getRecentStatusLabel(user.estadoTexto, user.estadoActualizadoAt);
   const footerChipLabel = isAvailableToday ? `Hoy disponible en: ${availableLocation}` : 'No disponible';
 
+  const hasActiveTourInLocation = (loc: string) => {
+    const locLower = loc.toLowerCase().trim();
+    return activeTours.some(tour => {
+      const places = [tour.lugar, tour.lugarDisponible].filter(Boolean).map(p => p.toLowerCase().trim());
+      if (places.includes(locLower)) return true;
+      if (Array.isArray(tour.ubicacionesTour)) {
+        return tour.ubicacionesTour.some((ut: any) => ut.label?.toLowerCase().trim() === locLower);
+      }
+      return false;
+    });
+  };
+
+
+
 
 
   return (
@@ -88,7 +102,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
           isAvailableToday={isAvailableToday}
         />
 
-        <div className="profile-copy-panel liquid-glass" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className="profile-copy-panel liquid-glass" style={{ display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
           <div className="profile-tabs">
             <button className={`profile-tab-btn ${activeTab === 'info' ? 'active' : ''}`} onClick={() => setActiveTab('info')}>
               Información
@@ -122,14 +136,16 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
                           )}
                         </h1>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                          {socialLinks.filter((l: any) => !l.tipo.includes('grupo')).map((link: any, idx: number) => {
+                          {socialLinks.filter((l: any) => {
+                            const t = (l.tipo || '').toLowerCase().trim();
+                            return ['whatsapp', 'wa', 'telegram', 'tg', 'facebook', 'fb', 'x', 'twitter'].includes(t);
+                          }).map((link: any, idx: number) => {
                             const Icon = getContactIcon(link.tipo);
                             const t = link.tipo.toLowerCase();
                             let color = 'rgba(255,255,255,0.8)';
-                            if (t.includes('whatsapp') || t === 'wa') color = '#25D366';
-                            if (t.includes('telegram') || t === 'tg') color = '#0088cc';
-                            if (t.includes('facebook') || t === 'fb') color = '#1877F2';
-                            if (t.includes('instagram') || t === 'ig') color = '#E1306C';
+                            if (t === 'whatsapp' || t === 'wa') color = '#25D366';
+                            if (t === 'telegram' || t === 'tg') color = '#0088cc';
+                            if (t === 'facebook' || t === 'fb') color = '#1877F2';
                             
                             return (
                               <a key={idx} href={link.href} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', color, transition: 'transform 0.2s' }} onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.15)'} onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}>
@@ -171,10 +187,26 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
                     {ubicaciones.length > 0 && (
                       <div className="profile-location-extra">
                         <span className="profile-location-extra-label">Lugares que también visito</span>
-                        <div className="profile-tag-row">
-                          {ubicaciones.map((ubicacion: string) => (
-                            <span key={ubicacion} className="profile-tag-chip">{ubicacion}</span>
-                          ))}
+                        <div className="profile-services-row">
+                          {ubicaciones.map((ubicacion: string) => {
+                            const isTourActive = hasActiveTourInLocation(ubicacion);
+                            return (
+                              <span 
+                                key={ubicacion} 
+                                className="profile-service-button"
+                                onClick={isTourActive ? () => setActiveTab('tours') : undefined}
+                                style={isTourActive ? { 
+                                  background: 'rgba(37, 211, 102, 0.15)', 
+                                  borderColor: 'rgba(37, 211, 102, 0.4)', 
+                                  color: '#7af0a5', 
+                                  cursor: 'pointer' 
+                                } : { opacity: 0.4, cursor: 'default' }}
+                                title={isTourActive ? 'Ver tour disponible' : ''}
+                              >
+                                {ubicacion}
+                              </span>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -184,7 +216,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
             )}
 
             {activeTab === 'tours' && (
-              <div className="profile-tab-content">
+              <div className="profile-tab-content edge-to-edge">
                 {activeTours.length > 0 ? (
                   <div className="detail-card-grid detail-card-grid--tours">
                     {activeTours.map((tour) => (
@@ -192,11 +224,11 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
                     ))}
                   </div>
                 ) : (
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>No hay tours activos en este momento.</p>
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', margin: '0 16px' }}>No hay tours activos en este momento.</p>
                 )}
 
                 {pastTours.length > 0 && (
-                  <div className="liquid-glass" style={{ marginTop: '12px', borderRadius: '14px', padding: '10px' }}>
+                  <div className="liquid-glass past-items-box" style={{ marginTop: "24px" }}>
                     <h4 style={{ margin: '0 0 6px 0', color: '#f3d77c', fontSize: '0.64rem', letterSpacing: '0.04em', textTransform: 'uppercase', lineHeight: 1.05 }}>
                       Visita a departamentos pasados
                     </h4>
@@ -224,7 +256,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
             )}
 
             {activeTab === 'rifas' && (
-              <div className="profile-tab-content">
+              <div className="profile-tab-content edge-to-edge">
                 {activeRifas.length > 0 ? (
                   <div className="detail-card-grid detail-card-grid--rifas">
                     {activeRifas.map((rifa) => (
@@ -232,11 +264,11 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
                     ))}
                   </div>
                 ) : (
-                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>No hay rifas activas en este momento.</p>
+                  <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem', margin: '0 16px' }}>No hay rifas activas en este momento.</p>
                 )}
 
                 {pastRifas.length > 0 && (
-                  <div className="liquid-glass" style={{ marginTop: '12px', borderRadius: '14px', padding: '10px' }}>
+                  <div className="liquid-glass past-items-box">
                     <h4 style={{ margin: '0 0 6px 0', color: '#f3d77c', fontSize: '0.64rem', letterSpacing: '0.04em', textTransform: 'uppercase', lineHeight: 1.05 }}>
                       Rifas pasadas
                     </h4>

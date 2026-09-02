@@ -134,7 +134,7 @@ export default function RifaCard({
         }}>
           {rifa.titulo}
         </h3>
-        <p style={{ margin: 0, color: '#d4af37', fontWeight: '600', fontSize: 'clamp(0.55rem, 2vw, 0.65rem)' }}>
+        <p style={{ margin: 0, color: '#d4af37', fontWeight: '600', fontSize: 'clamp(0.65rem, 2.2vw, 0.75rem)' }}>
           🎁 {rifa.premio}
         </p>
       </div>
@@ -142,18 +142,18 @@ export default function RifaCard({
       <div style={{ marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div>
-            <p style={{ margin: '0 0 2px 0', color: '#aaa', fontSize: '9px', fontWeight: '600', textTransform: 'uppercase' }}>
+            <p style={{ margin: '0 0 2px 0', color: '#aaa', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase' }}>
               Precio por numero
             </p>
-            <p style={{ margin: 0, color: '#d4af37', fontSize: '14px', fontWeight: '800' }}>
+            <p style={{ margin: 0, color: '#d4af37', fontSize: '15.5px', fontWeight: '800' }}>
               Q{rifa.precio}
             </p>
           </div>
           <div>
-            <p style={{ margin: '0 0 2px 0', color: '#aaa', fontSize: '9px', fontWeight: '600', textTransform: 'uppercase' }}>
+            <p style={{ margin: '0 0 2px 0', color: '#aaa', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase' }}>
               Fecha del Sorteo
             </p>
-            <p style={{ margin: 0, color: '#fff', fontSize: '10px' }}>
+            <p style={{ margin: 0, color: '#fff', fontSize: '11.5px' }}>
               {rifa.fechaSorteo}
             </p>
           </div>
@@ -162,10 +162,10 @@ export default function RifaCard({
 
       {rifaDetailItems.length > 0 && (
         <div style={{ marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
-          <p style={{ margin: '0 0 4px 0', color: '#aaa', fontSize: '9px', fontWeight: '600', textTransform: 'uppercase' }}>
+          <p style={{ margin: '0 0 4px 0', color: '#aaa', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase' }}>
             Detalles
           </p>
-          <ul style={{ margin: 0, paddingLeft: '12px', color: '#ccc', fontSize: 'clamp(0.55rem, 1.8vw, 0.6rem)', display: 'grid', gap: '2px', lineHeight: 1.15 }}>
+          <ul style={{ margin: 0, paddingLeft: '12px', color: '#ccc', fontSize: 'clamp(0.65rem, 2vw, 0.72rem)', display: 'grid', gap: '2px', lineHeight: 1.15 }}>
             {rifaDetailItems.map((item: string, index: number) => (
               <li key={`${item}-${index}`} style={{ marginBottom: 0, lineHeight: '1.15' }}>{item}</li>
             ))}
@@ -175,10 +175,10 @@ export default function RifaCard({
 
       {rifaTerms.length > 0 && (
         <div style={{ marginBottom: '8px', paddingBottom: '6px', borderBottom: '1px solid rgba(212, 175, 55, 0.1)' }}>
-          <p style={{ margin: '0 0 4px 0', color: '#aaa', fontSize: '9px', fontWeight: '600', textTransform: 'uppercase' }}>
+          <p style={{ margin: '0 0 4px 0', color: '#aaa', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase' }}>
             Términos y Condiciones
           </p>
-          <ul style={{ margin: 0, paddingLeft: '12px', color: '#ccc', fontSize: 'clamp(0.55rem, 1.8vw, 0.6rem)', lineHeight: 1.15 }}>
+          <ul style={{ margin: 0, paddingLeft: '12px', color: '#ccc', fontSize: 'clamp(0.65rem, 2vw, 0.72rem)', lineHeight: 1.15 }}>
             {rifaTerms.map((t: string, i: number) => (
               <li key={`${t}-${i}`} style={{ marginBottom: '2px', lineHeight: '1.15' }}>{t}</li>
             ))}
@@ -188,7 +188,7 @@ export default function RifaCard({
 
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-          <p style={{ margin: 0, color: '#aaa', fontSize: '9px', fontWeight: '600', textTransform: 'uppercase' }}>
+          <p style={{ margin: 0, color: '#aaa', fontSize: '10.5px', fontWeight: '600', textTransform: 'uppercase' }}>
             Distribución de Boletos
           </p>
           <button 
@@ -200,7 +200,7 @@ export default function RifaCard({
               padding: '2px 6px',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '9px',
+              fontSize: '10.5px',
               fontWeight: '600',
               transition: 'all 0.2s ease'
             }}
@@ -241,7 +241,7 @@ export default function RifaCard({
                       background: 'rgba(76, 175, 80, 0.2)',
                       border: '1px solid rgba(76, 175, 80, 0.4)',
                       color: '#4caf50',
-                      fontSize: '9px',
+                      fontSize: '10.5px',
                       fontWeight: '600',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
@@ -268,7 +268,7 @@ export default function RifaCard({
                       background: 'rgba(244, 67, 54, 0.14)',
                       border: '1px solid rgba(244, 67, 54, 0.4)',
                       color: '#ff6b6b',
-                      fontSize: '9px',
+                      fontSize: '10.5px',
                       fontWeight: '800',
                       cursor: 'not-allowed',
                       transition: 'all 0.2s ease'
@@ -299,7 +299,7 @@ export default function RifaCard({
             textDecoration: 'none',
             fontWeight: '800',
             letterSpacing: '0.04em',
-            fontSize: '10px',
+            fontSize: '11.5px',
             textTransform: 'uppercase',
             background: 'rgba(76, 175, 80, 0.16)',
             border: '1px solid rgba(76, 175, 80, 0.35)',

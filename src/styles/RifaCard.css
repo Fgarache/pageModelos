@@ -207,3 +207,8 @@
 .rifa-card-liquid.detailed {
   /* ... tus estilos existentes de la vista detallada ... */
 }
+@media (max-width: 768px) {
+  .rifa-card {
+    border-radius: 16px;
+  }
+}

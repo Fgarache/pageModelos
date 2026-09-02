@@ -1142,7 +1142,7 @@
 /* --- RESPONSIVE GENERAL --- */
 @media (max-width: 768px) {
   .modelo-detail-page {
-    padding: 92px 12px 132px;
+    padding: 55px 0 132px;
   }
 
   .modelo-detail-page > .detail-container > * {
@@ -1331,59 +1331,14 @@
     padding: 6px;
   }
 }
+\n
 /* --- PROFILE TABS --- */
 .profile-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 8px;
-}
-
-.profile-tab-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 8px;
-}
-
-.profile-tab-btn:hover {
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.profile-tab-btn.active {
-  color: #d4af37;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
-}
-
-.profile-tab-content {
-  animation: fadeInTab 0.3s ease forwards;
-}
-
-@keyframes fadeInTab {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-
-
-/* --- PROFILE TABS --- */
-.profile-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   flex-wrap: wrap;
 }
 
@@ -1420,4 +1375,38 @@
 @keyframes fadeInTab {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .modelo-detail-page { padding-left: 0 !important; padding-right: 0 !important; }
+  .profile-hero-card { gap: 0 !important; }
+  .profile-visual-panel, .profile-copy-panel { border-radius: 0 !important; border-left: none !important; border-right: none !important; }
+  .profile-copy-panel { padding-left: 0 !important; padding-right: 0 !important; }
+  .profile-tabs { padding: 0 16px; }
+  .profile-tab-content { padding: 0 16px; }
+  .profile-tab-content.edge-to-edge { padding: 0; }
+  .tour-card-visual, .rifa-card { border-radius: 0 !important; border-left: none !important; border-right: none !important; }
+}
+
+/* --- PAST ITEMS BOX --- */
+.past-items-box {
+  margin-top: 24px;
+  border-radius: 14px;
+  padding: 10px;
+}
+@media (max-width: 768px) {
+  .past-items-box {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 24px;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modelo-detail-page { padding-top: 55px !important; }
 }

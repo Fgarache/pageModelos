@@ -102,8 +102,8 @@ export default function ProfileCarousel({ user, gallery, footerChipLabel = '', i
 
           {slides.length > 1 && (
             <div className="profile-carousel-controls">
-              <button type="button" className="profile-carousel-button" onClick={goToPreviousSlide} aria-label="Foto anterior">‹</button>
-              <button type="button" className="profile-carousel-button" onClick={goToNextSlide} aria-label="Foto siguiente">›</button>
+              <button type="button" className="profile-carousel-button" onClick={goToPreviousSlide} aria-label="Foto anterior" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', borderRadius: '50%', width: '38px', height: '38px', padding: 0, color: 'rgba(255,255,255,0.9)' }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+              <button type="button" className="profile-carousel-button" onClick={goToNextSlide} aria-label="Foto siguiente" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', borderRadius: '50%', width: '38px', height: '38px', padding: 0, color: 'rgba(255,255,255,0.9)' }}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
             </div>
           )}
         </>

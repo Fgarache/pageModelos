@@ -235,7 +235,7 @@ export default function TourCard({
       <div style={{
         position: 'relative',
         zIndex: 1,
-        padding: '6px clamp(12px, 2.8vw, 16px) 10px',
+        padding: '6px clamp(8px, 2.8vw, 12px) 8px',
         display: 'flex',
         flexDirection: 'column',
         flex: 1
@@ -263,7 +263,7 @@ export default function TourCard({
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <h3 style={{ 
-          margin: '0 0 8px 0', 
+          margin: '0 0 4px 0', 
           color: '#fff',
           fontWeight: '800',
           fontSize: 'clamp(0.6rem, 2vw, 0.75rem)',
@@ -273,9 +273,9 @@ export default function TourCard({
           {tour.titulo}
         </h3>
 
-        <div style={{ marginBottom: '15px' }}>
+        <div style={{ marginBottom: '6px' }}>
           {tourDetailItems.length > 0 ? (
-            <ul style={{ margin: 0, paddingLeft: '14px', color: '#ccc', fontSize: 'clamp(0.64rem, 2.2vw, 0.76rem)', lineHeight: '1.15', display: 'grid', gap: '2px' }}>
+            <ul style={{ margin: 0, paddingLeft: '10px', color: '#ccc', fontSize: 'clamp(0.64rem, 2.2vw, 0.76rem)', lineHeight: '1.15', display: 'grid', gap: '2px' }}>
               {tourDetailItems.map((item, index) => (
                 <li key={`${item}-${index}`} style={{ margin: 0 }}>
                   {item}
@@ -286,7 +286,7 @@ export default function TourCard({
         </div>
 
         {locationsToShow.length > 0 && (
-          <div style={{ marginBottom: '12px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
+          <div style={{ marginBottom: '6px' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
             <p style={{ margin: '0 0 6px 0', color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
               Ubicaciones
             </p>
@@ -307,7 +307,7 @@ export default function TourCard({
 
         <div>
           <div style={{ marginBottom: '0' }} data-ignore-mobile-expand="true" onClick={(event) => event.stopPropagation()}>
-            <div style={{ marginBottom: '12px' }}>
+            <div style={{ marginBottom: '6px' }}>
               <p style={{ margin: 0, color: '#aaa', fontSize: 'clamp(0.6rem, 2.1vw, 0.68rem)', fontWeight: '600', textTransform: 'uppercase' }}>
                 Horarios
               </p>
@@ -317,7 +317,7 @@ export default function TourCard({
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '6px',
-            marginTop: '12px'
+            marginTop: '4px'
           }}>
             {cargando ? (
               <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>Cargando horarios...</p>
@@ -361,7 +361,7 @@ export default function TourCard({
               <p style={{ color: '#aaa', fontSize: 'clamp(0.6rem, 2vw, 0.68rem)', margin: 0 }}>No hay horarios visibles.</p>
             )}
           </div>
-          <p style={{ margin: '10px 0 0 0', color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.62rem', textAlign: 'center', fontWeight: '500' }}>
+          <p style={{ margin: '6px 0 0 0', color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.62rem', textAlign: 'center', fontWeight: '500' }}>
             Toca un horario para agendar
           </p>
           </div>

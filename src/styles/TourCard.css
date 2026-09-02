@@ -458,3 +458,8 @@
     font-size: 0.75rem;
   }
 }
+@media (max-width: 768px) {
+  .tour-card-visual {
+    border-radius: 16px;
+  }
+}
