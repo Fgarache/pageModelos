@@ -3,9 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 interface ProfileCarouselProps {
   user: any;
   gallery: Array<{ link?: string; titulo?: string; fecha?: string }>;
-  hasTours?: boolean;
-  hasRifas?: boolean;
-  onScrollToServices: () => void;
   footerChipLabel?: string;
   isAvailableToday?: boolean;
 }
@@ -22,10 +19,10 @@ const getOptimizedImage = (url: string | undefined) => {
   return url; 
 };
 
-export default function ProfileCarousel({ user, gallery, hasTours, hasRifas, onScrollToServices, footerChipLabel = '', isAvailableToday }: ProfileCarouselProps) {
+export default function ProfileCarousel({ user, gallery, footerChipLabel = '', isAvailableToday }: ProfileCarouselProps) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
-  const servicios = user.servicios || [];
+
   const profileWatermark = user.user_alias ? `LindasGT.com/${user.user_alias}` : 'LindasGT.com';
 
   const preventImageActions = (event: React.SyntheticEvent) => {
@@ -84,17 +81,7 @@ export default function ProfileCarousel({ user, gallery, hasTours, hasRifas, onS
 
   return (
     <div className="profile-visual-panel" onContextMenu={preventImageActions}>
-      {(hasTours || hasRifas || servicios.length > 0) && (
-        <div className="profile-image-jump-nav">
-          {hasTours && <a href="#detail-tours" className="profile-image-jump-link">Tours</a>}
-          {hasRifas && <a href="#detail-rifas" className="profile-image-jump-link">Rifas</a>}
-          {servicios.length > 0 && (
-            <button type="button" className="profile-image-jump-link" onClick={onScrollToServices}>
-              Servicios
-            </button>
-          )}
-        </div>
-      )}
+
 
       {currentSlide ? (
         <>

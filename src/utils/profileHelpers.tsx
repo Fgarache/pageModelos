@@ -126,3 +126,67 @@ export const getContactExtraLabel = (tipo: string, href: string) => {
 
   return '';
 };
+
+export const formatDisplayDate = (value: string | undefined) => {
+  const raw = String(value || '').trim();
+  if (!raw) return 'Sin fecha';
+
+  const normalized = raw.split('T')[0];
+  let parsedDate: Date | null = null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
+    parsedDate = new Date(`${normalized}T00:00:00`);
+  } else {
+    const match = normalized.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
+    if (match) {
+      const day = Number(match[1]);
+      const month = Number(match[2]);
+      const year = Number(match[3]);
+      parsedDate = new Date(year, month - 1, day);
+    } else {
+      const fallbackDate = new Date(raw);
+      parsedDate = Number.isNaN(fallbackDate.getTime()) ? null : fallbackDate;
+    }
+  }
+
+  if (!parsedDate || Number.isNaN(parsedDate.getTime())) return raw;
+
+  const dayName = parsedDate.toLocaleDateString('es-ES', { weekday: 'short' }).replace('.', '');
+  const day = parsedDate.getDate();
+  const month = parsedDate.toLocaleDateString('es-ES', { month: 'long' });
+  const year = parsedDate.getFullYear();
+
+  return `${dayName} ${day} de ${month} de ${year}`;
+};
+
+export const extractWinnerParts = (value: any): string[] => {
+  if (value == null) return [];
+
+  if (typeof value === 'string' || typeof value === 'number') {
+    const text = String(value).trim();
+    return text ? [text] : [];
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => extractWinnerParts(item));
+  }
+
+  if (typeof value === 'object') {
+    const preferredName = String(
+      value?.nombre
+      ?? value?.name
+      ?? value?.usuario
+      ?? value?.user
+      ?? '',
+    ).trim();
+    const preferredEmoji = String(value?.emoji ?? value?.emoticono ?? '').trim();
+
+    if (preferredName || preferredEmoji) {
+      return [`${preferredName}${preferredEmoji ? ` ${preferredEmoji}` : ''}`.trim()];
+    }
+
+    return Object.values(value).flatMap((item) => extractWinnerParts(item));
+  }
+
+  return [];
+};
