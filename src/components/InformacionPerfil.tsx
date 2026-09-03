@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import ProfileLocations from './profile/ProfileLocations';
+import ProfileRifaCard from './profile/ProfileRifaCard';
 import ProfileCarousel from './profile/ProfileCarousel';
 import FloatingContact from './profile/FloatingContact';
 import ContactModal from './profile/modals/ContactModal';
@@ -37,7 +39,6 @@ const isTourToday = (fecha: string) => {
 };
 
 export default function InformacionPerfil({ user, hasTours = false, activeTours = [], pastTours = [], hasRifas = false, activeRifas = [], pastRifas = [], gallery = [] }: InformacionPerfilProps) {
-  const [showFullBio, setShowFullBio] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedService, setSelectedService] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'tours' | 'rifas'>('info');
@@ -63,7 +64,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
   const ubicaciones = user.ubicaciones || [];
   const servicios = user.servicios || [];
   const bioLines = (user.info || 'Perfil público activo en la plataforma.').split('\n');
-  const visibleBio = showFullBio || bioLines.length <= 10 ? bioLines.join('\n') : bioLines.slice(0, 10).join('\n');
+  const visibleBio = bioLines.join('\n');
 
   // Redes
   const socialLinks = (user.redesArray || []).map((red: any) => ({ label: red.titulo || red.tipo, href: red.url, tipo: red.tipo })).filter((i: any) => i.href?.trim());
@@ -76,17 +77,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
   const recentStatusLabel = getRecentStatusLabel(user.estadoTexto, user.estadoActualizadoAt);
   const footerChipLabel = isAvailableToday ? `Hoy disponible en: ${availableLocation}` : 'No disponible';
 
-  const hasActiveTourInLocation = (loc: string) => {
-    const locLower = loc.toLowerCase().trim();
-    return activeTours.some(tour => {
-      const places = [tour.lugar, tour.lugarDisponible].filter(Boolean).map(p => p.toLowerCase().trim());
-      if (places.includes(locLower)) return true;
-      if (Array.isArray(tour.ubicacionesTour)) {
-        return tour.ubicacionesTour.some((ut: any) => ut.label?.toLowerCase().trim() === locLower);
-      }
-      return false;
-    });
-  };
+
 
 
 
@@ -175,42 +166,12 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
                   <div className="profile-bio-copy">
                     {renderFormattedText(visibleBio, 'profile-bio-line', 'profile-bio-emphasis')}
                   </div>
-                  {bioLines.length > 10 && (
-                    <button type="button" className="profile-expand-button" onClick={() => setShowFullBio(!showFullBio)}>
-                      {showFullBio ? 'Ver menos' : 'Ver más'}
-                    </button>
-                  )}
+                  
                 </div>
 
                 <div className="profile-meta-grid">
-                  <article className="profile-meta-card profile-location-card">
-                    {ubicaciones.length > 0 && (
-                      <div className="profile-location-extra">
-                        <span className="profile-location-extra-label">Lugares que también visito</span>
-                        <div className="profile-services-row">
-                          {ubicaciones.map((ubicacion: string) => {
-                            const isTourActive = hasActiveTourInLocation(ubicacion);
-                            return (
-                              <span 
-                                key={ubicacion} 
-                                className="profile-service-button"
-                                onClick={isTourActive ? () => setActiveTab('tours') : undefined}
-                                style={isTourActive ? { 
-                                  background: 'rgba(37, 211, 102, 0.15)', 
-                                  borderColor: 'rgba(37, 211, 102, 0.4)', 
-                                  color: '#7af0a5', 
-                                  cursor: 'pointer' 
-                                } : { opacity: 0.4, cursor: 'default' }}
-                                title={isTourActive ? 'Ver tour disponible' : ''}
-                              >
-                                {ubicacion}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </article>
+                  <ProfileLocations user={user} activeTours={activeTours} ubicaciones={ubicaciones} setActiveTab={setActiveTab} />
+                  <ProfileRifaCard activeRifas={activeRifas} setActiveTab={setActiveTab} />
                 </div>
               </div>
             )}

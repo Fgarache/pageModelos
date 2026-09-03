@@ -702,16 +702,154 @@ const findMatchingProfile = (profiles: Array<[string, any]>, userIdOrAlias: stri
 };
 
 export const API_FIREBASE = {
-  getAllUsers: async () => {
+  getAllUsers: async (includeUnavailable = true) => {
     try {
       const profiles = await readPublicProfiles();
       if (profiles.length === 0) return [];
 
       return profiles
         .map(([id, raw]) => normalizeProfile(id, raw))
-        .filter((profile) => profile.disponible && profile.user_alias && profile.perfilActivo && profile.rol === 'model');
+        .filter((profile) => {
+          if (!profile.user_alias || !profile.perfilActivo || profile.rol !== 'model') {
+            return false;
+          }
+          if (!includeUnavailable && !profile.disponible) {
+            return false;
+          }
+          return true;
+        });
     } catch (error) {
       console.warn('Firebase error al leer perfiles públicos:', error);
+      return [];
+    }
+  },
+
+  getAllPublicTours: async () => {
+    try {
+      const [profiles, snapshot] = await Promise.all([
+        readPublicProfiles(),
+        readFirstExistingPath(['tour', 'tours']),
+      ]);
+
+      if (!snapshot || profiles.length === 0) return [];
+
+      const modelsMap = new Map<string, any>();
+      profiles.forEach(([id, raw]) => {
+        const profile = normalizeProfile(id, raw);
+        if (profile.perfilActivo && profile.rol === 'model') {
+          modelsMap.set(id, profile);
+          if (profile.id) modelsMap.set(profile.id, profile);
+          if (profile.googleId) modelsMap.set(profile.googleId, profile);
+          if (profile.user_alias) modelsMap.set(profile.user_alias, profile);
+        }
+      });
+
+      const getModelForTour = (idUser: string) => {
+        if (!idUser) return null;
+        if (modelsMap.has(idUser)) return modelsMap.get(idUser);
+        const matched = findMatchingProfile(profiles, idUser);
+        if (matched) {
+          const prof = normalizeProfile(matched[0], matched[1]);
+          modelsMap.set(idUser, prof);
+          return prof;
+        }
+        return null;
+      };
+
+      const rawTours = Object.entries(snapshot.val() || {})
+        .map(([id, raw]) => normalizeTour(id, raw))
+        .filter((tour) => tour.estado);
+
+      const activeTours = rawTours.filter((tour) => {
+        if (isPastTourDate(tour.fecha)) return false;
+
+        const definedHoursCount = Object.keys(tour.disponibilidadOriginal || {}).length;
+        if (definedHoursCount > 0) {
+          const hasAvailableHours = Object.values(tour.disponibilidad).some((v: any) => v === true);
+          if (!hasAvailableHours) return false;
+        }
+
+        const model = getModelForTour(tour.idUser);
+        // El tour es válido si pertenece a un modelo activo, independientemente de si la modelo está disponible hoy o no
+        return Boolean(model && model.perfilActivo);
+      });
+
+      const toursWithModelData = activeTours.map((tour) => {
+        const model = getModelForTour(tour.idUser);
+        return {
+          ...tour,
+          nombreModelo: model?.nombre || (tour as any).nombreModelo || 'Modelo',
+          userAlias: model?.user_alias || (tour as any).userAlias || '',
+          idUser: model?.id || tour.idUser,
+          fotoPerfil: (tour as any).fotoPerfil || model?.fotoPerfil || '',
+        };
+      });
+
+      return sortByDate(toursWithModelData, 'fecha');
+    } catch (error) {
+      console.warn('Firebase error al leer todos los tours públicos:', error);
+      return [];
+    }
+  },
+
+  getAllPublicRifas: async () => {
+    try {
+      const [profiles, snapshot] = await Promise.all([
+        readPublicProfiles(),
+        readFirstExistingPath(['rifa', 'rifas']),
+      ]);
+
+      if (!snapshot || profiles.length === 0) return [];
+
+      const modelsMap = new Map<string, any>();
+      profiles.forEach(([id, raw]) => {
+        const profile = normalizeProfile(id, raw);
+        if (profile.perfilActivo && profile.rol === 'model') {
+          modelsMap.set(id, profile);
+          if (profile.id) modelsMap.set(profile.id, profile);
+          if (profile.googleId) modelsMap.set(profile.googleId, profile);
+          if (profile.user_alias) modelsMap.set(profile.user_alias, profile);
+        }
+      });
+
+      const getModelForRifa = (idUser: string) => {
+        if (!idUser) return null;
+        if (modelsMap.has(idUser)) return modelsMap.get(idUser);
+        const matched = findMatchingProfile(profiles, idUser);
+        if (matched) {
+          const prof = normalizeProfile(matched[0], matched[1]);
+          modelsMap.set(idUser, prof);
+          return prof;
+        }
+        return null;
+      };
+
+      const rawRifas = Object.entries(snapshot.val() || {})
+        .map(([id, raw]) => normalizeRifa(id, raw))
+        .filter((rifa) => rifa.estado);
+
+      const activeRifas = rawRifas.filter((rifa) => {
+        if (isPastTourDate(rifa.fechaSorteo)) return false;
+
+        const model = getModelForRifa(rifa.idUser);
+        // La rifa es válida si pertenece a una modelo activa, independientemente de si la modelo está disponible hoy o no
+        return Boolean(model && model.perfilActivo);
+      });
+
+      const rifasWithModelData = activeRifas.map((rifa) => {
+        const model = getModelForRifa(rifa.idUser);
+        return {
+          ...rifa,
+          nombreModelo: model?.nombre || (rifa as any).nombreModelo || 'Modelo',
+          userAlias: model?.user_alias || (rifa as any).userAlias || '',
+          idUser: model?.id || rifa.idUser,
+          fotoPerfil: (rifa as any).fotoPerfil || model?.fotoPerfil || '',
+        };
+      });
+
+      return sortByDate(rifasWithModelData, 'fechaSorteo');
+    } catch (error) {
+      console.warn('Firebase error al leer todas las rifas públicas:', error);
       return [];
     }
   },

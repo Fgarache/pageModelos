@@ -68,7 +68,7 @@ export default function TinderCards() {
                     <h3 className="card-name">{user.nombre || user.user} <span className="age">24</span></h3>
                     <p className="card-alias">@{user.user_alias || user.user}</p>
                     <div className="card-meta">
-                      <span>📍 {user.disponibleLugar || 'Disponible por confirmar'}</span>
+                      <span>📍 {user.disponible ? (user.disponibleLugar || 'Guatemala') : 'No disponible'}</span>
                     </div>
                     <p className="card-bio">{user.info?.substring(0, 120) || "Sin descripción disponible."}</p>
                   </div>

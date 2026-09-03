@@ -30,20 +30,7 @@ export default function RifasPage() {
   const fetchRifas = async () => {
     try {
       setLoading(true);
-      const allUsers = await API_FIREBASE.getAllUsers();
-      let todasLasRifas: Rifa[] = [];
-      
-      for (const user of allUsers) {
-        const rifasDelUsuario = await API_FIREBASE.getRifas(user.id);
-        const rifasConDatos = rifasDelUsuario.map((rifa: any) => ({
-          ...rifa,
-          nombreModelo: user.nombre,
-          userAlias: user.user_alias,
-          idUser: user.id,
-          fotoPerfil: user.fotoPerfil
-        }));
-        todasLasRifas = [...todasLasRifas, ...rifasConDatos];
-      }
+      const todasLasRifas = await API_FIREBASE.getAllPublicRifas();
       setRifas(todasLasRifas);
     } catch (error) {
       console.error('Error cargando rifas:', error);

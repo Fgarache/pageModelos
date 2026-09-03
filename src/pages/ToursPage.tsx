@@ -57,20 +57,7 @@ export default function ToursPage() {
   const fetchTours = async () => {
     try {
       setLoading(true);
-      const allUsers = await API_FIREBASE.getAllUsers();
-      let todosLosTours: Tour[] = [];
-      
-      for (const user of allUsers) {
-        const toursDelUsuario = await API_FIREBASE.getTours(user.id);
-        const toursConDatos = toursDelUsuario.map((tour: any) => ({
-          ...tour,
-          nombreModelo: user.nombre,
-          userAlias: user.user_alias,
-          idUser: user.id,
-          fotoPerfil: user.fotoPerfil
-        }));
-        todosLosTours = [...todosLosTours, ...toursConDatos];
-      }
+      const todosLosTours = await API_FIREBASE.getAllPublicTours();
       setTours(todosLosTours);
     } catch (error) {
       console.error('Error cargando tours:', error);

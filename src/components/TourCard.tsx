@@ -56,17 +56,7 @@ export default function TourCard({
 
   const modeloNombre = nombreModelo || modelInfo?.nombre || 'Modelo';
   const modeloAlias = userAlias || modelInfo?.user_alias || '';
-  const [profilPic] = useState<string>(() => {
-    const fallbackPic = modelInfo?.fotoPerfil || tour.fotoPerfil || '';
-    const fotosArray = Object.values(modelInfo?.fotos || {}) as any[];
-    const fotosLinks = fotosArray.map(f => f?.link).filter(Boolean);
-    
-    if (fotosLinks.length > 0) {
-      const randomIndex = Math.floor(Math.random() * fotosLinks.length);
-      return fotosLinks[randomIndex];
-    }
-    return fallbackPic;
-  });
+  const [profilPic] = useState<string>(() => { return modelInfo?.fotoPerfil || tour.fotoPerfil || ''; });
   const whatsAppLink = modelInfo?.redes?.whatsapp || '';
   const places = [tour.lugar, tour.lugarDisponible].filter(Boolean);
   const uniquePlaces = Array.from(new Set(places.map((p: any) => p.trim())));

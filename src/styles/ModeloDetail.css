@@ -192,12 +192,12 @@
   z-index: 2;
   width: calc(100% - 20px);
   text-align: center;
-  font-size: clamp(0.66rem, 2.6vw, 1rem);
+  font-size: clamp(0.8rem, 3.2vw, 1.2rem);
   font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.2;
   overflow-wrap: anywhere;
-  color: rgba(243, 215, 124, 0.42);
+  color: rgba(243, 215, 124, 0.7);
   text-shadow:
     0 2px 4px rgba(0, 0, 0, 0.4),
     0 4px 8px rgba(0, 0, 0, 0.3),
@@ -665,6 +665,399 @@
   gap: 10px;
 }
 
+.profile-locations-card {
+  margin-top: 14px;
+  border-radius: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.profile-locations-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-locations-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.profile-locations-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.profile-locations-icon {
+  color: #d4af37;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.profile-locations-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.15);
+  color: #f3d77c;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  font-size: 0.62rem;
+  font-weight: 800;
+  border-radius: 10px;
+  padding: 1px 7px;
+  line-height: 1.2;
+}
+
+.profile-locations-view-all-btn {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.profile-locations-view-all-btn:hover {
+  color: #fce38a;
+  transform: translateX(2px);
+}
+
+.profile-tours-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-tour-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  text-decoration: none;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.profile-tour-item-btn:hover {
+  background: rgba(212, 175, 55, 0.09);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.12);
+  transform: translateY(-1px);
+}
+
+.profile-tour-destination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #ffffff;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.profile-tour-destination-icon {
+  color: #d4af37;
+  font-size: 0.76rem;
+  flex-shrink: 0;
+}
+
+.profile-tour-name-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-tour-right-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.profile-tour-date-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  color: #f3d77c;
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.profile-tour-arrow {
+  color: rgba(212, 175, 55, 0.5);
+  font-size: 0.72rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.profile-tour-item-btn:hover .profile-tour-arrow {
+  color: #f3d77c;
+  transform: translateX(3px);
+}
+
+.profile-locations-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 2px 0;
+  width: 100%;
+}
+
+.profile-locations-section--compact {
+  gap: 6px;
+}
+
+.profile-locations-icon-small {
+  color: #d4af37;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.profile-meta-label--small {
+  font-size: 0.58rem !important;
+  letter-spacing: 0.14em !important;
+  opacity: 0.85;
+}
+
+.profile-inactive-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.profile-inactive-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+}
+
+.profile-inactive-chip:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(212, 175, 55, 0.3);
+  color: #ffffff;
+}
+
+.profile-inactive-chip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #d4af37;
+  opacity: 0.7;
+}
+
+/* ============================================================
+   PROFILE RIFA CARD (AVAILABLE RAFFLE PROMO - COMPACT)
+   ============================================================ */
+
+.profile-rifa-card {
+  margin-top: 8px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.profile-rifa-card:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.38), 0 0 12px rgba(212, 175, 55, 0.08);
+}
+
+.profile-rifa-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.profile-rifa-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-rifa-icon {
+  color: #d4af37;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+
+.profile-rifa-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(37, 211, 102, 0.12);
+  border: 1px solid rgba(37, 211, 102, 0.3);
+  color: #7af0a5;
+  font-size: 0.52rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-rifa-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.profile-rifa-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-rifa-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.profile-rifa-meta-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.54rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-rifa-meta-value {
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.profile-rifa-meta-value.price {
+  color: #f3d77c;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.profile-rifa-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 12px;
+  min-height: 28px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.06));
+  border: 1px solid rgba(212, 175, 55, 0.38);
+  border-radius: 8px;
+  color: #fce38a;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.1);
+}
+
+.profile-rifa-cta-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(212, 175, 55, 0.12));
+  border-color: rgba(212, 175, 55, 0.6);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.2);
+  transform: translateY(-1px);
+}
+
+.profile-rifa-cta-btn .cta-arrow {
+  transition: transform 0.2s ease;
+}
+
+.profile-rifa-cta-btn:hover .cta-arrow {
+  transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+  .profile-rifa-card {
+    padding: 8px 10px;
+    border-radius: 12px;
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .profile-rifa-title {
+    font-size: 0.72rem;
+  }
+
+  .profile-rifa-meta-grid {
+    padding: 4px 6px;
+    gap: 6px;
+  }
+
+  .profile-rifa-meta-value.price {
+    font-size: 0.8rem;
+  }
+
+  .profile-rifa-cta-btn {
+    padding: 5px 10px;
+    font-size: 0.65rem;
+    min-height: 26px;
+  }
+}
+
 .profile-location-card {
   display: grid;
   gap: 10px;
@@ -753,6 +1146,8 @@
   padding: 10px 14px;
   border-radius: 16px;
   background: rgba(37, 211, 102, 0.12);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(37, 211, 102, 0.35);
   color: #a7f3c2;
   text-decoration: none;

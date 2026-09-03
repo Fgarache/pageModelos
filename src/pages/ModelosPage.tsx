@@ -128,24 +128,33 @@ const ModelosPage: React.FC = () => {
                     zIndex: 2
                   }} />
 
-                  <div style={{
-                    position: 'absolute',
-                    top: '14px',
-                    left: '14px',
-                    zIndex: 3,
-                    padding: '6px 12px',
-                    borderRadius: '999px',
-                    fontSize: '11px',
-                    fontWeight: '700',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    color: '#f3d77c',
-                    background: 'rgba(8, 8, 8, 0.58)',
-                    border: '1px solid rgba(212, 175, 55, 0.34)',
-                    backdropFilter: 'blur(6px)'
-                  }}>
-                    {modelo.disponibleLugar || 'Guatemala'}
-                  </div>
+                  {(() => {
+                    const isAvailable = Boolean(modelo.disponible);
+                    const badgeText = isAvailable
+                      ? (modelo.disponibleLugar || 'Guatemala')
+                      : 'No disponible';
+
+                    return (
+                      <div style={{
+                        position: 'absolute',
+                        top: '14px',
+                        left: '14px',
+                        zIndex: 3,
+                        padding: '6px 12px',
+                        borderRadius: '999px',
+                        fontSize: '11px',
+                        fontWeight: '700',
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        color: isAvailable ? '#f3d77c' : '#ff9b93',
+                        background: isAvailable ? 'rgba(8, 8, 8, 0.58)' : 'rgba(244, 67, 54, 0.18)',
+                        border: isAvailable ? '1px solid rgba(212, 175, 55, 0.34)' : '1px solid rgba(244, 67, 54, 0.4)',
+                        backdropFilter: 'blur(6px)'
+                      }}>
+                        {badgeText}
+                      </div>
+                    );
+                  })()}
 
                   {/* Contenido */}
                   <div style={{
