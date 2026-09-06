@@ -9,6 +9,7 @@ import ModeloDetail from './pages/ModeloDetail';
 import ToursPage from './pages/ToursPage';
 import RifasPage from './pages/RifasPage';
 import TourLocationPage from './pages/toursLocations/TourLocationPage';
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/tours/:locationSlug" element={<TourLocationPage />} />
         <Route path="/rifas" element={<RifasPage />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }
