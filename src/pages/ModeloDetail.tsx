@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { API_FIREBASE } from '../data';
 import InformacionPerfil from '../components/InformacionPerfil';
@@ -15,6 +15,8 @@ const ModeloDetail = () => {
   const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [vistas, setVistas] = useState<number>(0);
+  const vistasTracked = useRef(false);
 
   const closeTourModal = useCallback(() => {
     setSelectedTour(null);
@@ -34,6 +36,14 @@ const ModeloDetail = () => {
         
         setModelo(modelData);
         
+        let currentVistas = await API_FIREBASE.getProfileViews(modelData.id);
+        if (!vistasTracked.current) {
+          vistasTracked.current = true;
+          API_FIREBASE.incrementProfileView(modelData.id);
+          currentVistas += 1;
+        }
+        setVistas(currentVistas);
+
         const toursData = await API_FIREBASE.getTours(modelData.id);
         setTours(toursData);
 
@@ -133,6 +143,7 @@ const ModeloDetail = () => {
           activeRifas={rifas}
           pastRifas={pastOrDisabledRifas}
           gallery={gallery as Array<{ link?: string; titulo?: string; fecha?: string }>} 
+          vistas={vistas}
         />
 
         <TourModal

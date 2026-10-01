@@ -18,6 +18,7 @@ interface InformacionPerfilProps {
   activeRifas?: any[];
   pastRifas?: any[];
   gallery?: Array<{ link?: string; titulo?: string; fecha?: string }>;
+  vistas?: number;
 }
 
 const parseTourDateLocal = (dateString: string | undefined) => {
@@ -38,7 +39,7 @@ const isTourToday = (fecha: string) => {
          date.getFullYear() === today.getFullYear();
 };
 
-export default function InformacionPerfil({ user, hasTours = false, activeTours = [], pastTours = [], hasRifas = false, activeRifas = [], pastRifas = [], gallery = [] }: InformacionPerfilProps) {
+export default function InformacionPerfil({ user, hasTours = false, activeTours = [], pastTours = [], hasRifas = false, activeRifas = [], pastRifas = [], gallery = [], vistas }: InformacionPerfilProps) {
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedService, setSelectedService] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'tours' | 'rifas'>('info');
@@ -91,6 +92,7 @@ export default function InformacionPerfil({ user, hasTours = false, activeTours 
           gallery={gallery} 
           footerChipLabel={footerChipLabel}
           isAvailableToday={isAvailableToday}
+          vistas={vistas}
         />
 
         <div className="profile-copy-panel liquid-glass" style={{ display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>

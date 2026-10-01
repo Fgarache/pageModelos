@@ -5,6 +5,7 @@ interface ProfileCarouselProps {
   gallery: Array<{ link?: string; titulo?: string; fecha?: string }>;
   footerChipLabel?: string;
   isAvailableToday?: boolean;
+  vistas?: number;
 }
 
 // 1. FUNCIÓN PARA AHORRAR COSTOS (CDN)
@@ -19,7 +20,7 @@ const getOptimizedImage = (url: string | undefined) => {
   return url; 
 };
 
-export default function ProfileCarousel({ user, gallery, footerChipLabel = '', isAvailableToday }: ProfileCarouselProps) {
+export default function ProfileCarousel({ user, gallery, footerChipLabel = '', isAvailableToday, vistas }: ProfileCarouselProps) {
   const [activeSlide, setActiveSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
@@ -81,6 +82,12 @@ export default function ProfileCarousel({ user, gallery, footerChipLabel = '', i
 
   return (
     <div className="profile-visual-panel" onContextMenu={preventImageActions}>
+      {vistas !== undefined && vistas >= 0 && (
+        <div className="profile-views-badge" style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', color: '#fff', padding: '6px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 600, zIndex: 10 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          {vistas}
+        </div>
+      )}
 
 
       {currentSlide ? (

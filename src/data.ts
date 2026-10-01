@@ -1,5 +1,5 @@
 import { getApps, initializeApp } from 'firebase/app';
-import { child, get, getDatabase, ref } from 'firebase/database';
+import { child, get, getDatabase, ref, set, increment } from 'firebase/database';
 import { firebaseConfig } from './firebase.config';
 
 const app = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig);
@@ -990,4 +990,22 @@ export const API_FIREBASE = {
       return [];
     }
   },
+
+  getProfileViews: async (userId: string) => {
+    try {
+      const snapshot = await get(child(dbRef, `estadisticas_perfil/${userId}/vistas`));
+      return snapshot.exists() ? snapshot.val() : 0;
+    } catch (error) {
+      console.warn('Firebase error al leer vistas:', error);
+      return 0;
+    }
+  },
+
+  incrementProfileView: async (userId: string) => {
+    try {
+      await set(ref(db, `estadisticas_perfil/${userId}/vistas`), increment(1));
+    } catch (error) {
+      console.warn('Firebase error al incrementar vistas:', error);
+    }
+  }
 };
